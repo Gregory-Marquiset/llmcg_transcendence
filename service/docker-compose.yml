@@ -39,10 +39,10 @@ services:
     
   ####### BLACKBOX EXPORTER #######
   blackbox_exporter:
-    image: prom/blackbox-exporter:latest
+    build: 
+      context: ./metrics/blackbox
     container_name: blackbox_exporter
-    volumes:
-      - ./metrics/blackbox/blackbox.yml:/etc/blackbox_exporter/blackbox.yml
+    restart: unless-stopped
     networks:
       - internal
     expose:
@@ -52,18 +52,39 @@ services:
     
   ####### PROMETHEUS #######
   prometheus:
-    image: prom/prometheus:latest
+    build:
+      context: ./metrics/prometheus
     container_name: prometheus
-    volumes:
-      - ./metrics/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      -prom_data:/prometheus
+    restart: unless-stopped
     ports:
       - "9090:9090"
     networks:
       - internal
     depends_on:
       - nginx_exporter
+      - blackbox_exporter
+
+  ####### GRAFANA #######
+  grafana:
+    build:
+      context: ./grafana
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - internal
 
 networks:
   internal:
@@ -71,3 +92,5 @@ networks:
 volumes:
   gateway_logs:
   gateway_certs:
+  prom_data:
+  grafana_data:
