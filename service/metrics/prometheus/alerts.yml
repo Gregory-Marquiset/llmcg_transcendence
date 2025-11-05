@@ -1,0 +1,68 @@
+groups:
+  - name: general_alerts
+    rules:
+    - alert: PrometheusTargetMissing
+      expr: up == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Prometheus target missing (instance {{ $labels.instance }})
+        description: "A Prometheus target has disappeared. An exporter might be crashed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    
+    - alert: PrometheusRuleEvaluationFailures
+      expr: increase(prometheus_rule_evaluation_failures_total[3m]) > 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Prometheus rule evaluation failures (instance {{ $labels.instance }})
+        description: "Prometheus encountered {{ $value }} rule evaluation failures, leading to potentially ignored alerts.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeFailed
+      expr: probe_success == 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Blackbox probe failed (instance {{ $labels.instance }})
+        description: "Probe failed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxSlowProbe
+      expr: avg_over_time(probe_duration_seconds[1m]) > 1
+      for: 1m
+      labels:
+        severity: warning
+      annotations:
+        summary: Blackbox slow probe (instance {{ $labels.instance }})
+        description: "Blackbox probe took more than 1s to complete\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: BlackboxProbeHttpFailure
+      expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: Blackbox probe HTTP failure (instance {{ $labels.instance }})
+        description: "HTTP status code is not 200-399\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+    
+    - alert: NginxHighHttp5xxErrorRate
+      expr: sum(rate(nginx_http_requests_total{status=~"^5.."}[1m])) / sum(rate(nginx_http_requests_total[1m])) * 100 > 5
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: Nginx high HTTP 5xx error rate (instance {{ $labels.instance }})
+        description: "Too many HTTP requests with status 5xx (> 5%)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+    - alert: NginxHighConnections
+      expr: nginx_connections_active > 100
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High Nginx load"
+        description: "Too many active connections ({{ $value }}) on {{ $labels.instance }}"
+
+
+
