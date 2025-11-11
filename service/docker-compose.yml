@@ -93,6 +93,28 @@ services:
     depends_on:
       - prometheus
 
+  tilt:
+    build:
+      context: ./metrics/tilt
+      dockerfile: Dockerfile
+      args:
+        DOCKER_GID: "${DOCKER_GID}"
+    container_name: tilt
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+      - tilt_home:/home/tilt
+    environment:
+      - DOCKER_HOST=unix://${XDG_RUNTIME_DIR:-/run/user/1000}/docker.sock
+      - HOME=/home/tilt
+    command: ["tilt", "up", "--host=0.0.0.0"]
+    ports:
+      - "10350:10350"
+    networks:
+      - internal
+
 networks:
   internal:
 
@@ -101,3 +123,4 @@ volumes:
   gateway_certs:
   prom_data:
   grafana_data:
+  tilt_home:
