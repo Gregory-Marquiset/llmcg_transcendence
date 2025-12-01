@@ -20,10 +20,12 @@ export const runDatabase = async function () {
 	});
 	user_db.run(`CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT UNIQUE,
-		email TEXT UNIQUE,
-		password TEXT,
-		createdAt TEXT
+		username TEXT UNIQUE NOT NULL,
+		email TEXT UNIQUE NOT NULL,
+		password TEXT NOT NULL,
+		createdAt TEXT,
+		twofa_enabled INTEGER,
+		twofa_secret TEXT UNIQUE
 		)`, (err) => {
 			if (err)
 			{

@@ -20,6 +20,7 @@
     "fastify-bcrypt": "^1.0.1",
     "fastify-sqlite": "^1.1.0",
     "hyperid": "^3.3.0",
+    "otplib": "^12.0.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

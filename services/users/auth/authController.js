@@ -1,5 +1,6 @@
-import { app } from '../../gateway/server.js'
-import { user_db } from '../usersServer.js' 
+import { app } from '../../gateway/server.js';
+import { user_db } from '../usersServer.js';
+import { authenticator } from 'otplib';
 
 export const authRegister = async function (req, reply) {
 	console.log(`\n${JSON.stringify(req.body)}\n`);
@@ -20,8 +21,8 @@ export const authRegister = async function (req, reply) {
 	try {
 		const hashedPWD = await app.bcrypt.hash(req.body.password);
 
-		const result = await insertToDB(`INSERT INTO users(username, email, password, createdAt) 
-			VALUES (?, ?, ?, ?)`, [req.body.username, req.body.email, hashedPWD, dateTime]);
+		const result = await insertToDB(`INSERT INTO users(username, email, password, createdAt, twofa_enabled) 
+			VALUES (?, ?, ?, ?, ?)`, [req.body.username, req.body.email, hashedPWD, dateTime, 0]);
 		
 		return (reply.code(201).send("New entry in database"));
 	} catch (err) {
@@ -170,6 +171,7 @@ export const authRefresh = async function (req, reply) {
 }
 
 
+
 export const authLogout = async function (req, reply) {
 	const deleteFromDB = (sql, params) => {
 		return (new Promise((resolve, reject) => {
@@ -193,5 +195,102 @@ export const authLogout = async function (req, reply) {
 		const e = new Error("Error with suppression in Database");
 		e.statusCode = 500;
 		throw e;
+	}
+}
+
+
+
+
+export const auth2faSetup = async function (req, reply) {
+	const getDbRows = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.get(sql, params, (err, row) => {
+				if (err)
+					reject(err);
+				resolve(row);
+			});
+		}));
+	}
+
+	const updateDb = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.run(sql, params, (err) => {
+				if (err)
+					reject(err);
+				resolve();
+			});
+		}));
+	}
+
+	try {
+		const check_in_db = await getDbRows(`SELECT twofa_enabled, twofa_secret FROM users WHERE id = ?`, [req.user.id]);
+		//console.log(`\n2faSetup check_in_db.twofa_enabled: ${check_in_db.twofa_enabled}\n2faSetup check_in_db.twofa_secret: ${check_in_db.twofa_secret}\n`)
+		if (check_in_db.twofa_enabled === 1)
+		{
+			console.error("2fa already activated");
+			throw new Error();
+		}
+		if (check_in_db.twofa_secret)
+		{
+			return (reply.code(201).send({ secret: check_in_db.twofa_secret }));
+		}
+
+		const secret = authenticator.generateSecret();
+		console.log(`\n2faSetup req.user: ${JSON.stringify(req.user)}\n`);
+		await updateDb(`UPDATE users SET twofa_secret = ? WHERE id = ?`, [secret, req.user.id]);
+
+		return (reply.code(201).send( { secret: secret }));
+	} catch (err) {
+		console.error(err.message);
+		const e = new Error("Error with 2fa setup");
+		e.statusCode = 500;
+		throw e;
+	}
+}
+
+
+
+export const auth2faVerify = async function (req, reply) {
+	const getSecret = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.get(sql, params, (err, row) => {
+				if (err)
+					reject(err);
+				resolve(row);
+			});
+		}));
+	}
+
+	const updateDb = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.run(sql, params, (err) => {
+				if (err)
+					reject(err);
+				resolve();
+			});
+		}));
+	}
+
+	try {
+		const secret = await getSecret(`SELECT twofa_enabled, twofa_secret FROM users WHERE id = ?`, [req.user.id]);
+		console.log(`\n2faVerify: secret.twofa_enabled: ${secret.twofa_enabled}\nsecret.twofa_secret: ${secret.twofa_secret}`);
+		if (secret.twofa_enabled === 1)
+			throw new Error("2fa already enabled");
+		else if (!secret.twofa_secret)
+			throw new Error("2fa secret missing");
+		const code = req.body.code;
+
+		const isVerified = authenticator.verify({ token: code, secret: secret.twofa_secret });
+		console.log(`\n2faVerify: isverified: ${isVerified}\n`);
+		if (isVerified === false)
+			throw new Error("token not verified");
+		await updateDb(`UPDATE users SET twofa_enabled = ? WHERE id = ?`, [1, req.user.id]);
+
+		return (reply.code(201).send({ message: "2fa activated"}));
+	} catch (err) {
+		console.error(`\nERROR in 2faVerify: ${err.message}\n`);
+		const e = new Error("Error with 2fa verify");
+		e.statusCode = 500;
+		throw e
 	}
 }

@@ -95,3 +95,38 @@ export const authLogoutOpts = {
 	},
 	handler: authController.authLogout
 }
+
+export const auth2faSetupOpts = {
+	schema: {
+		response: {
+			201: {
+				type: "object",
+				properties: {
+					secret: { type: "string" }
+				}
+			}
+		}
+	},
+	handler: authController.auth2faSetup
+}
+
+export const auth2faVerifyOpts = {
+	schema: {
+		body: {
+			type: "object",
+			properties: {
+				code: { type: "string" }
+			},
+			required: ["code"]
+		},
+		response: {
+			201: {
+				type: "object",
+				properties: {
+					message: { type: "string" }
+				}
+			}
+		}
+	},
+	handler: authController.auth2faVerify
+}

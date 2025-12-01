@@ -13,6 +13,10 @@ async function authRoutes(app, options) {
 
 	app.delete('/auth/logout', authOpts.authLogoutOpts);
 
+	app.post('/auth/2fa/setup', { onRequest: [app.authenticate], ...authOpts.auth2faSetupOpts });
+
+	app.post('/auth/2fa/verify', { onRequest: [app.authenticate], ...authOpts.auth2faVerifyOpts });
+
 
 	//DEBUGGING ET DELETE TABLE DANS LA DB
 	app.get('/auth/debug_db', async (req, reply) => {
@@ -37,6 +41,8 @@ async function authRoutes(app, options) {
 	});
 
 	app.delete('/auth/delete_all_users', async (req, reply) => {
+		// user_db.run('DROP TABLE IF EXISTS users')
+
 		user_db.run('DELETE FROM users', (err) => {
 			if (err)
 			{
