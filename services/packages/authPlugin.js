@@ -14,7 +14,8 @@ async function authPlugin (app, opts) {
         try {
             await req.jwtVerify();
         } catch (err) {
-            reply.code(401).send({ error: "Invalid token" });
+            console.error(`\nERROR: ${err.message}\n`);
+            reply.code(401).send({ error: "Unauthorized" });
         }
     })
 }

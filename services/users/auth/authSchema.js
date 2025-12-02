@@ -13,14 +13,7 @@ export const authRegisterOpts = {
 		},
 		response: {
 			201: {
-				type: "object",
-				properties: {
-					id: { type: "string" },
-					username: { type: "string" },
-					email: { type: "string" },
-					password: { type: "string" },
-					creationDate: { type: "string" }
-				}
+				type: "string"
 			}
 		}
 	},
@@ -86,10 +79,6 @@ export const authLogoutOpts = {
 	schema: {
 		response: {
 			204: {
-				type: "object",
-				properties: {
-					message: { type: "string" }
-				}
 			}
 		}
 	},
@@ -103,7 +92,8 @@ export const auth2faSetupOpts = {
 				type: "object",
 				properties: {
 					secret: { type: "string" }
-				}
+				},
+				required: ["secret"]
 			}
 		}
 	},

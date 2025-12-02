@@ -46,3 +46,8 @@ export const runDatabase = async function () {
 		});
 }
 
+export const httpError = (code, message) => {
+	const err = new Error(message);
+	err.statusCode = code;
+	return err;
+}
