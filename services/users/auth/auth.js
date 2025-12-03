@@ -7,6 +7,8 @@ async function authRoutes(app, options) {
 
 	app.post('/auth/login', authOpts.authLoginOpts);
 
+	app.post('/auth/login/2fa', authOpts.authLogin2faOpts);
+
 	app.get('/auth/me', { onRequest: [app.authenticate], ...authOpts.authMeOpts });
 
 	app.post('/auth/refresh', authOpts.authRefreshOpts);

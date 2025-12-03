@@ -66,32 +66,100 @@ export const authLogin = async function (req, reply) {
 		if (!userHashedPassword)
 			throw httpError(401, "Invalid email or password");
 		const match = await app.bcrypt.compare(req.body.password, userHashedPassword.password);
-		if (match === true)
+		if (match !== true)
+			throw new Error("Invalid email or password").statusCode(401);
+		const twofa_enabled = await selectFromDB('SELECT twofa_enabled FROM users WHERE email = ?', [req.body.email]);
+		if (twofa_enabled.twofa_enabled === 1)
 		{
-			const userInfo = await selectFromDB('SELECT id, username FROM users WHERE email = ?', [req.body.email]);
-			console.log(`\nauthLogin userInfo: ${JSON.stringify(userInfo)}\n`);
-
-			const access_tok = app.jwt.sign(userInfo , { expiresIn: '5m' });
-			const refresh_tok = app.jwt.sign(userInfo , { expiresIn: '1d' });
-
-			console.log(`\nauthLogin access_token: ${access_tok}\nauthLogin refresh_token: ${refresh_tok}\n`);
-
-			const add_to_db = await insertToken(`INSERT INTO refreshed_tokens(user_id, token)
-				VALUES (?, ?)`, [userInfo.id, refresh_tok]);
-
-			return (reply.
-				setCookie('refreshToken', refresh_tok, {
-					httpOnly: true,
-					path: '/',
-					maxAge: 24 * 60 * 60
-				})
-				.code(200)
-				.send( { access_token: access_tok }));
+			const tempInfo = await selectFromDB('SELECT id FROM users WHERE email = ?', [req.body.email]);
+			tempInfo.twofa_pending = true;
+			console.log(`\nauthLogin temInfo: ${JSON.stringify(tempInfo)}\n`);
+			const temp_token = app.jwt.sign(tempInfo, { expiresIn: '2m' });
+			return (reply.code(200).send({ access_token: temp_token }));
 		}
-		throw new Error("Invalid email or password").statusCode(401);
+		const userInfo = await selectFromDB('SELECT id, username FROM users WHERE email = ?', [req.body.email]);
+		console.log(`\nauthLogin userInfo: ${JSON.stringify(userInfo)}\n`);
+
+		const access_tok = app.jwt.sign(userInfo, { expiresIn: '5m' });
+		const refresh_tok = app.jwt.sign(userInfo, { expiresIn: '1d' });
+		console.log(`\nauthLogin access_token: ${access_tok}\nauthLogin refresh_token: ${refresh_tok}\n`);
+		await insertToken(`INSERT INTO refreshed_tokens(user_id, token) VALUES (?, ?)`, [userInfo.id, refresh_tok]);
+
+		return (reply
+			.setCookie('refreshToken', refresh_tok, {
+				httpOnly: true,
+				path: '/',
+				maxAge: 24 * 60 * 60
+			})
+			.code(200)
+			.send( { access_token: access_tok }));
 	} catch (err) {
 		console.error(`\nERROR authLogin: ${err.message}\n`);
 		if(err.statusCode)
+			throw err;
+		err.statusCode = 500;
+		throw err;
+	}
+}
+
+
+
+export const authLogin2fa = async function (req, reply) {
+	const selectFromDB = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.get(sql, params, (err, row) => {
+				if (err)
+					reject(err);
+				resolve(row);
+			});
+		}));
+	}
+
+	const insertToken = (sql, params) => {
+		return (new Promise((resolve, reject) => {
+			user_db.run(sql, params, (err) => {
+				if (err)
+					reject(err);
+				resolve();
+			});
+		}));
+	}
+	
+	try {
+		const payload = app.jwt.verify(req.body.temp_token);
+		console.log(`\nauthLogin2fa payload : ${JSON.stringify(payload)}\n`);
+		if (payload.twofa_pending !== true)
+			throw httpError(401, "Expired, please login again");
+		const userInfo = await selectFromDB('SELECT id, username, twofa_enabled, twofa_secret FROM users WHERE id = ?', [payload.id]);
+		console.log(`\nauthLogin2fa userInfo: ${JSON.stringify(userInfo)}\n`);
+		if (!userInfo)
+			throw httpError(401, "Invalid 2FA session");
+		else if (userInfo.twofa_enabled !== 1)
+			throw httpError(400, "2FA not enabled for this user");
+		else if (!userInfo.twofa_secret)
+			throw httpError(500, "2FA configuration error");
+
+		const isVerified = authenticator.verify({ token: req.body.code, secret: userInfo.twofa_secret });
+		console.log(`\nauthLogin2fa: isverified: ${isVerified}\n`);
+		if (isVerified === false)
+			throw httpError(401, "Invalid 2FA code");
+
+		const access_tok = app.jwt.sign({ ...userInfo.id, ...userInfo.username }, { expiresIn: "5m" });
+		const refresh_tok = app.jwt.sign({ ...userInfo.id, ...userInfo.username }, { expiresIn: "1d" });
+		console.log(`\nauthLogin2fa access_token: ${access_tok}\nauthLogin refresh_token: ${refresh_tok}\n`);
+		await insertToken(`INSERT INTO refreshed_tokens(user_id, token) VALUES (?, ?)`, [userInfo.id, refresh_tok]);
+
+		return (reply
+			.setCookie('refreshToken', refresh_tok, {
+				httpOnly: true,
+				path: '/',
+				maxAge: 24 * 60 * 60
+			})
+			.code(200)
+			.send({ access_token: access_tok }));
+	} catch (err) {
+		console.error(`\nERROR authLogin2fa: ${err.message}\n`);
+		if (err.statusCode)
 			throw err;
 		err.statusCode = 500;
 		throw err;
