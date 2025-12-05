@@ -182,7 +182,7 @@ export const authMe = async function (req, reply) {
 	}
 	
 	try {
-		const userInfos = await selectFromDB('SELECT id, username, email, avatar_path, twofa_enabled, createdAt FROM users WHERE id = ?', req.user.id);
+		const userInfos = await selectFromDB('SELECT id, username, email, avatar_path, twofa_enabled, createdAt, status FROM users WHERE id = ?', req.user.id);
 		console.log(`\nauthMe userInfos: ${JSON.stringify(userInfos)}\n`);
 		return (reply.code(200).send(userInfos));
 	} catch (err) {

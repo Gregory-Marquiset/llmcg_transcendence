@@ -46,7 +46,7 @@ export const userMe = async function (req, reply) {
 		}
 		
 		await updateDb('UPDATE users SET username = ?, email = ? WHERE id = ?', [user_in_db.username, user_in_db.email, req.user.id]);
-		const newUserInfo = await selectFromDB('SELECT id, username, email, twofa_enabled, createdAt FROM users WHERE id = ?', [req.user.id]);
+		const newUserInfo = await selectFromDB('SELECT id, username, email, avatar_path, twofa_enabled, createdAt, status FROM users WHERE id = ?', [req.user.id]);
 		console.log(`\nuserMe newUserInfo: ${JSON.stringify(newUserInfo)}\n`);
 		return (reply.code(200).send(newUserInfo));
 	} catch (err) {

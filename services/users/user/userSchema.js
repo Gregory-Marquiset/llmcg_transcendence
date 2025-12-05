@@ -16,8 +16,10 @@ export const userMeOpts = {
 					id: { type: "string" },
 					username: { type: "string" },
 					email: { type: "string" },
+					avatar_path: { type: "string" },
 					twofa_enabled: { type: "integer" },
-					createdAt: { type: "string" }
+					createdAt: { type: "string" },
+					status: { type: "string" }
 				}
 			}
 		}
