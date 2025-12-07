@@ -37,3 +37,48 @@ export const manageFriendRequestOpts = {
 	},
 	handler: friendsController.manageFriendRequest
 }
+
+export const deleteFriendOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					status: { type: "string" }
+				},
+				required: ["status"]
+			}
+		}
+	},
+	handler: friendsController.deleteFriend
+}
+
+export const blockUserOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					status: { type: "string" }
+				},
+				required: ["status"]
+			}
+		}
+	},
+	handler: friendsController.blockUser
+}
+
+export const unblockUserOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					status: { type: "string" }
+				},
+				required: ["status"]
+			}
+		}
+	},
+	handler: friendsController.unblockUser
+}

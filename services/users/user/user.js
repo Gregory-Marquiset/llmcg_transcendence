@@ -6,4 +6,6 @@ async function userRoutes(app, options) {
 	app.post('/user/me/avatar', { onRequest: [app.authenticate], ...userOpts.userMeAvatarOpts });
 }
 
+//METTRE UNE SECU SI AVATAR A ETE DELETE !!!!
+
 export { userRoutes };

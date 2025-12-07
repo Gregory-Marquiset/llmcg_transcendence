@@ -50,7 +50,8 @@ export const runDatabase = async function () {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		sender_id INTEGER NOT NULL REFERENCES users(id),
 		receiver_id INTEGER NOT NULL REFERENCES users(id),
-		status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'refused', 'blocked')),
+		status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'refused', 'blocked', 'removed')),
+		blocked_by INTEGER REFERENCES users(id),
 		created_at TEXT,
 		updated_at TEXT,
 		UNIQUE (sender_id, receiver_id)
