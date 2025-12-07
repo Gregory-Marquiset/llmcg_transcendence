@@ -10,6 +10,16 @@ export const getRowFromDB = (sql, params) => {
 	}));
 }
 
+export const getAllRowsFromDB = (sql, params) => {
+	return (new Promise((resolve, reject) => {
+		user_db.all(sql, params, (err, rows) => {
+			if (err)
+				reject(err);
+			resolve(rows);
+		});
+	}));
+}
+
 export const runSql = (sql, params) => {
 	return (new Promise((resolve, reject) => {
 		user_db.run(sql, params, (err) => {

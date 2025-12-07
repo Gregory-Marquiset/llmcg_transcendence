@@ -13,7 +13,7 @@ export const userMeOpts = {
 			200: {
 				type: "object",
 				properties: {
-					id: { type: "string" },
+					id: { type: "integer" },
 					username: { type: "string" },
 					email: { type: "string" },
 					avatar_path: { type: "string" },

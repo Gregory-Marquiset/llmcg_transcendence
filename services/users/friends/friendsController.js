@@ -1,5 +1,6 @@
+import { uploadsDir } from "../../gateway/server.js";
 import { httpError } from "../usersServer.js";
-import { getRowFromDB, runSql } from '../../utils/sqlFunction.js'
+import { getRowFromDB, getAllRowsFromDB, runSql } from '../../utils/sqlFunction.js'
 
 
 export const sendFriendsRequest = async function (req, reply) {
@@ -53,7 +54,7 @@ export const manageFriendRequest = async function (req, reply) {
 
 		if (senderId === req.user.id)
 			throw httpError(400, "Bad request");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
+		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [senderId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
 		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE sender_id = ? AND receiver_id = ?',
@@ -169,7 +170,7 @@ export const unblockUser = async function (req, reply) {
 		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		const searchForFriendship = await getRowFromDB('SELECT ALL FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship)
 			throw httpError(400, "Bad request");
@@ -184,6 +185,43 @@ export const unblockUser = async function (req, reply) {
 		return (reply.code(200).send({ status: "unblocked/removed" }));
 	} catch (err) {
 		console.error(`\nERROR unblockUser: ${err.message}\n`);
+		if (err.statusCode)
+			throw err;
+		err.statusCode = 500;
+		throw err;
+	}
+}
+
+
+
+export const friendsList = async function (req, reply) {
+
+	try {
+		const friendships = await getAllRowsFromDB('SELECT * FROM friendships WHERE status = ? AND (sender_id = ? OR receiver_id = ?)',
+			["accepted", req.user.id, req.user.id]);
+		if (!friendships)
+			throw httpError(404, "No friends added");
+		let friendsIds = [];
+		friendships.forEach(friend => {
+			//console.log(`\nfriendsList friendships: ${JSON.stringify(friend)}\n`);
+			if (friend.sender_id !== req.user.id)
+				friendsIds.push(friend.sender_id);
+			else
+				friendsIds.push(friend.receiver_id);
+		});
+
+		let friends = await Promise.all(
+			friendsIds.map(friendId => {
+				return getRowFromDB('SELECT id, username, avatar_path FROM users WHERE id = ?', [friendId]);
+			})
+		);
+		friends.forEach(friend => {
+			friend.avatar_path = uploadsDir + friend.avatar_path;
+			console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
+		});
+		return (reply.code(200).send(friends));
+	} catch (err) {
+		console.log(`\nERROR friendsList: ${err.message}\n`);
 		if (err.statusCode)
 			throw err;
 		err.statusCode = 500;

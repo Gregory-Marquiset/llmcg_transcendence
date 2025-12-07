@@ -10,6 +10,8 @@ async function friendsRoutes(app, options) {
 	app.post('/friends/:targetId/block', { onRequest: [app.authenticate], ...friendsOpts.blockUserOpts });
 
 	app.post('/friends/:targetId/unblock', { onRequest: [app.authenticate], ...friendsOpts.unblockUserOpts });
+
+	app.get('/friends/list', { onRequest: [app.authenticate], ...friendsOpts.friendsListOpts });
 }
 
 export { friendsRoutes };

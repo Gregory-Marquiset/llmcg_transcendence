@@ -13,7 +13,7 @@ export const authRegister = async function (req, reply) {
 		const hashedPWD = await app.bcrypt.hash(req.body.password);
 
 		await runSql(`INSERT INTO users(username, email, password, avatar_path, createdAt, twofa_enabled, status) 
-			VALUES (?, ?, ?, ?, ?, ?, ?)`, [req.body.username, req.body.email, hashedPWD, "avatars/default.jpg", dateTime, 0, "offline"]);
+			VALUES (?, ?, ?, ?, ?, ?, ?)`, [req.body.username, req.body.email, hashedPWD, "default.jpg", dateTime, 0, "offline"]);
 		
 		return (reply.code(201).send("New entry in database"));
 	} catch (err) {

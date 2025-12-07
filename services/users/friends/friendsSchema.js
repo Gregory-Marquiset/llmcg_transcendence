@@ -82,3 +82,24 @@ export const unblockUserOpts = {
 	},
 	handler: friendsController.unblockUser
 }
+
+export const friendsListOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "array",
+				properties: {
+					friends: {
+						type: "object",
+						properties: {
+							id: { type: "integer" },
+							username: { type: "string" },
+							avatar_path: { type: "string" }
+						}
+					}
+				}
+			}
+		}
+	},
+	handler: friendsController.friendsList
+}
