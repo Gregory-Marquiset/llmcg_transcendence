@@ -6,6 +6,7 @@ import fastifyCookie from '@fastify/cookie'
 import fastifyMultipart from '@fastify/multipart'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import fastifyWebsocket from '@fastify/websocket'
 
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -15,15 +16,21 @@ import * as tournament from '../game/tournaments/tournaments.js'
 import * as auth from '../users/auth/auth.js'
 import * as user from '../users/user/user.js'
 import * as friends from '../users/friends/friends.js'
+import * as wsHandler from './websocketHandler/websocketHandler.js'
 import { runDatabase } from '../users/usersServer.js'
 import authPlugin from '../utils/authPlugin.js'
+
+
 
 export const app = Fastify({
 	logger: true
 });
 
-//###### PLUGIN ######
 const rootDir = dirname(fileURLToPath(import.meta.url));
+//###### AVATAR UPLOADS DIRECTORY
+export const uploadsDir = join(rootDir, '../users/uploads/avatar/');
+
+//###### STATIC PLUGIN ######
 console.log(`\nserver.js rootDir: ${rootDir}\n`);
 app.register(fastifyStatic, {
 	root: join(rootDir, '../users/uploads/avatar/'),
@@ -35,6 +42,7 @@ app.register(fastifyStatic, {
 	root: join(rootDir, '../../frontend/webapp/dist/')
 });
 
+//###### SWAGGER PLUGIN FOR DOCS ######
 app.register(fastifySwagger, {
 	openapi: {
 		openapi: '3.0.0',
@@ -77,8 +85,16 @@ app.register(fastifySwaggerUi, {
 	}
 });
 
+//###### COOKIE PLUGIN ######
 app.register(fastifyCookie);
+
+//###### PLUGIN PERSO ######
 app.register(authPlugin);
+
+//###### WEBSOCKET PLUGIN ######
+app.register(fastifyWebsocket, {
+	options: { maxPayload: 1048576 }
+});
 
 //###### PARSE MULTIPART FORM DATA ######
 app.register(fastifyMultipart, {
@@ -102,11 +118,11 @@ app.register(fastifyBcrypt, {
 // });
 
 
+
 //###### RUN DATABASE ######
 runDatabase();
 
-//###### AVATAR UPLOADS DIRECTORY
-export const uploadsDir = join(rootDir, '../users/uploads/avatar/');
+
 
 //####### ROUTES #######
 app.register(health.healthRoute);
@@ -115,6 +131,10 @@ app.register(tournament.tournamentsRoutes, { prefix: '/api/v1' });
 app.register(auth.authRoutes, { prefix: '/api/v1' });
 app.register(user.userRoutes, { prefix: '/api/v1' });
 app.register(friends.friendsRoutes, { prefix: '/api/v1' });
+
+//###### WEBSOCKET ROUTES ######
+app.get('/ws', { websocket: true }, wsHandler.websocketHandler);
+
 
 
 
@@ -145,6 +165,8 @@ app.get('/jeu', async (req, reply) => {
 });
 
 
+
+//###### LANCEMENT DU SERV ######
 const start = async () => {
 	try {
 		await app.listen({port: 5000, host: '0.0.0.0'})
