@@ -1,4 +1,4 @@
-This project has been created as part of the 42 curriculum by lobriott, lzaengel, cdutel, gmarquis.
+This project has been created as part of the 42 curriculum by [lobriott](https://profile.intra.42.fr/users/lobriott), [lzaengel](https://profile.intra.42.fr/users/lzaengel), [cdutel](https://profile.intra.42.fr/users/cdutel), [gmarquis](https://profile.intra.42.fr/users/gmarquis).
 
 # ft_transcendence — 42 Gamification Platform
 
@@ -317,6 +317,7 @@ Conventions:
   * `feat(auth): add JWT login`
   * `fix(api): validate payload`
   * `ci: add docker build job`
+  * `docs(README.md): basic README.md added`
 
 ---
 
