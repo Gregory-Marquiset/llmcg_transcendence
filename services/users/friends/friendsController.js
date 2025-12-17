@@ -1,6 +1,7 @@
 import { uploadsDir } from "../../gateway/server.js";
 import { httpError } from "../usersServer.js";
 import { getRowFromDB, getAllRowsFromDB, runSql } from '../../utils/sqlFunction.js'
+import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
 
 
 export const sendFriendsRequest = async function (req, reply) {
@@ -208,12 +209,17 @@ export const friendsList = async function (req, reply) {
 				friendsIds.push(friend.receiver_id);
 		});
 
+		let friendsStatusMap = getPresenceForUsers(friendsIds);
 		let friends = await Promise.all(
 			friendsIds.map(friendId => {
 				return getRowFromDB('SELECT id, username, avatar_path FROM users WHERE id = ?', [friendId]);
 			})
 		);
 		friends.forEach(friend => {
+			let friendStatus = friendsStatusMap.get(friend.id);
+			friend.status = friendStatus.status;
+			friend.lastSeenAt = friendStatus.lastSeenAt;
+			friend.activeSince = friendStatus.activeSince;
 			friend.avatar_path = uploadsDir + friend.avatar_path;
 			console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
 		});

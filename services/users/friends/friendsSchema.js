@@ -94,6 +94,9 @@ export const friendsListOpts = {
 						properties: {
 							id: { type: "integer" },
 							username: { type: "string" },
+							status: { type: "string" },
+							lastSeenAt: { type: "string" },
+							activeSince: { type: "string" },
 							avatar_path: { type: "string" }
 						}
 					}

@@ -1,7 +1,6 @@
-const connectionsIndex = new Map();
-const sessionsByUser = new Map();
-const userPresence = new Map();
+import * as presence from "../presence/presenceService.js";
 
+const connectionsIndex = new Map();
 let connectId = 0;
 
 /* struct connectionsIndex :
@@ -10,22 +9,6 @@ let connectId = 0;
 	connectionId,
 	ip
 	isAlive
-}
-*/
-
-/* struct sessionsByUser :
-{
-	socketSet: Set(),
-	offlineTimer,
-	connectedSince
-}
-*/
-
-/* struct userPresence :
-{
-	status,
-	lastSeenAt,
-	activeSince
 }
 */
 
@@ -51,48 +34,14 @@ export const websocketHandler = async function (socket, req) {
 			socket.isAlive = true;
 		});
 
-		let currentUserSession = sessionsByUser.get(req.user.id);
-		if (!currentUserSession)
-		{
-			currentUserSession = {
-				socketSet: new Set(),
-				offlineTimer: null,
-				connectedSince: date,
-			};
-			sessionsByUser.set(req.user.id, currentUserSession);
-		}
-		currentUserSession.socketSet.add(socket);
-
-		const currentUserPresence = userPresence.get(req.user.id);
-		let isOnlineNow = currentUserSession.socketSet.size > 0;
-		if (!currentUserPresence)
-		{
-			userPresence.set(req.user.id, {
-				status: "online",
-				lastSeenAt: null,
-				activeSince: date
-			});
-		}
-		else if (currentUserPresence.status === "offline" && isOnlineNow === true)
-		{
-			currentUserPresence.status = "online";
-			currentUserPresence.lastSeenAt = null;
-			currentUserPresence.activeSince = date;
-		}
+		presence.onSocketConnected(req.user.id, socket, date);
 
 		socket.on("message", (event) => {
 			console.log(`\nwebsocketHandler Message: ${event.data}\n`);
 		});
 
 		socket.on("close", (code) => {
-			currentUserSession.socketSet?.delete(socket);
-			if (currentUserSession.socketSet.size === 0)
-			{
-				currentUserPresence = userPresence.get(req.user.id);
-				currentUserPresence.status = "offline";
-				currentUserPresence.lastSeenAt = date;
-				currentUserPresence.activeSince = null;
-			}
+			presence.onSocketDisconnected(req.user.id, socket, date);
 			connectionsIndex.delete(socket);
 			console.log(`\nwebsocketHandler socket.on close, code: ${code}\n`);
 		});
