@@ -68,6 +68,19 @@ button {
   text-align: centre;
 }
 
+.submit{
+  background-color: #eab2bb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 35px;
+  width: 200px;
+  font-size: 18px;
+  margin: 8px 0;
+  transition: all 500ms;
+  text-align: centre;
+}
 
 button:hover {
   background-color: #545454;
@@ -80,8 +93,42 @@ a{
   color: #eab2bb;
 }
 
+.feild{
+  background-color: white;
+  color: #eab2bb;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 35px;
+  width: 200px;
+  font-size: 18px;
+  margin: 8px 0;
+  transition: all 500ms;
+  text-align: centre;
+}
 code{
   color: white;
+}
+
+.field-name{
+  color: #545454;
+  float: left;
+  clear: left;
+  width: 100%;
+  padding-bottom: 1em;
+  border-radius: 5px;
+}
+
+label .password-icon {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  width: 20px;
+  color: #f9f9f9;
+  transition: all 0.2s;
 }
 
 .footer{

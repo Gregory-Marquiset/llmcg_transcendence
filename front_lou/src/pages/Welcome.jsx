@@ -12,7 +12,7 @@ function Welcome(){
     const handleSignUp= () => {
         navigate('/signUp');
     }
-    const handleAuth2= () =>{
+    const handleAuth2= () => {
         navigate('/Auth2');
     }
     return (
