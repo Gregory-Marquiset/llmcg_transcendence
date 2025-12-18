@@ -4,7 +4,7 @@
   text-align: center;
 }
 
-.logo {
+.favicon {
   height: 90px;
   padding: 1.5em;
   will-change: filter;
@@ -12,6 +12,11 @@
   left: 0;
   top: 0;
   animation: logo-spin infinite 20s linear;
+  filter: drop-shadow(0 0 1em #545454);
+}
+
+.favicon:hover{
+  filter: drop-shadow(3px 0 2em #eab2bb);
 }
 
 @keyframes logo-spin {
@@ -24,18 +29,19 @@
 }
 
 .logoheader{
-  height: 300px;
+  height: 250px;
   padding: 10px;
   will-change: filter;
   transition: filter 300ms;
   animation: slidein;
+  filter: drop-shadow(0 0 2em #545454);
 }
 
 .logo:hover {
   filter: drop-shadow(0 0 2em #eab2bb);
 }
 .logoheader:hover {
-  filter: drop-shadow(0 0 2em #545454);
+  filter: drop-shadow(0 0 1em #eab2bb);
 }
 
 
@@ -66,6 +72,8 @@ button {
   margin: 8px 0;
   transition: all 500ms;
   text-align: centre;
+  filter: drop-shadow(0 2px 2px #545454);
+
 }
 
 .submit{
@@ -139,4 +147,9 @@ label .password-icon {
   width: 100%;
   text-align: center;
 }
-
+.welcome-title{
+  filter: none;
+}
+.welcome-title:hover{
+  filter: drop-shadow(0 0 1em #eab2bb);
+}

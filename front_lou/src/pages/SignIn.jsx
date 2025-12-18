@@ -11,7 +11,7 @@ function SignIn(){
                 <img src={logoheader} className="logoheader" alt="42 Tracker"/>
             </a>
         </div>
-        <h1 className="text-4xl w-full text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] p-2">Connection</h1>
+        <h1 class="welcome-title" className="text-4xl w-full text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] p-2">Connection</h1>
         <br/>
         <form>
         <label class="field-name">
@@ -28,7 +28,7 @@ function SignIn(){
         <br/>
         <input type="submit" class="submit" value="Se connecter" />
         </form>
-        <img src={favicon} className="logo"/>
+        <img src={favicon} className="favicon"/>
         <Footer/>
     </div>
     </>
