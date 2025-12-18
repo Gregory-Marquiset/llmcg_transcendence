@@ -1,7 +1,9 @@
 import { sessionsByUser, userPresence } from "./presenceStore.js";
+import { presenceBroadcaster } from "./presenceBroadcaster.js";
 
 export const onSocketConnected = function (userId, socket, date) {
     
+    let wasOnline = false;
     let currentUserSession = sessionsByUser.get(userId);
     if (!currentUserSession)
     {
@@ -12,10 +14,12 @@ export const onSocketConnected = function (userId, socket, date) {
         };
         sessionsByUser.set(userId, currentUserSession);
     }
+    else if (currentUserSession.socketSet.size > 0)
+        wasOnline = true;
     currentUserSession.socketSet.add(socket);
-
-    const currentUserPresence = userPresence.get(userId);
     let isOnlineNow = currentUserSession.socketSet.size > 0;
+
+    let currentUserPresence = userPresence.get(userId);
     if (!currentUserPresence)
     {
         userPresence.set(userId, {
@@ -29,6 +33,17 @@ export const onSocketConnected = function (userId, socket, date) {
         currentUserPresence.status = "online";
         currentUserPresence.lastSeenAt = null;
         currentUserPresence.activeSince = date;
+    }
+    if (wasOnline === false && isOnlineNow === true)
+    {
+        currentUserPresence = userPresence.get(userId);
+        presenceBroadcaster({ 
+            type: "presence:update",
+            userId,
+            status: currentUserPresence.status,
+            lastSeenAt: currentUserPresence.lastSeenAt,
+            activeSince: currentUserPresence.activeSince
+        });
     }
 }
 
@@ -48,6 +63,13 @@ export const onSocketDisconnected = function (userId, socket, date) {
         currentUserPresence.status = "offline";
         currentUserPresence.lastSeenAt = date;
         currentUserPresence.activeSince = null;
+        presenceBroadcaster({
+            type: "presence:update",
+            userId,
+            status: currentUserPresence.status,
+            lastSeenAt: currentUserPresence.lastSeenAt,
+            activeSince: currentUserPresence.activeSince
+        });
     }
 }
 

@@ -1,16 +1,8 @@
 import * as presence from "../presence/presenceService.js";
+import { connectionsIndex } from "./connexionRegistry.js";
 
-const connectionsIndex = new Map();
+
 let connectId = 0;
-
-/* struct connectionsIndex :
-{
-	userId,
-	connectionId,
-	ip
-	isAlive
-}
-*/
 
 export const websocketHandler = async function (socket, req) {
 	try {
@@ -20,7 +12,7 @@ export const websocketHandler = async function (socket, req) {
 		// console.log(`websocketHandler socket typeof socket.socket?.close: ${typeof socket.socket?.close}\n`);
 		await req.jwtVerify();
 		socket.isAlive = true;
-		const date = new Date().toISOString();
+		let date = new Date().toISOString();
 		console.log(`\nwebsocketHandler: new socket\n`);
 
 		connectionsIndex.set(socket, {
@@ -41,13 +33,14 @@ export const websocketHandler = async function (socket, req) {
 		});
 
 		socket.on("close", (code) => {
+			date = new Date().toISOString();
 			presence.onSocketDisconnected(req.user.id, socket, date);
 			connectionsIndex.delete(socket);
 			console.log(`\nwebsocketHandler socket.on close, code: ${code}\n`);
 		});
 
 	} catch (err) {
-		console.error(`ERROR connectionHandler: ${err.message}\n`);
+		console.error(`ERROR websocketHandler: ${err.message}\n`);
 		socket.close();
 		err.statusCode = 401;
 		err.message = "Unhautorized"
@@ -62,7 +55,7 @@ export const heartbeat = function () {
 			return;
 		console.log(`value.userId: ${value.userId}`);
 		console.log(`value.connectionId: ${value.connectionId}`);
-		console.log(`value.ip: ${value.ip}`);
+		console.log(`value.ip: ${value.ip}\n`);
 		if (key.isAlive === false)
 		{
 			key.terminate();
