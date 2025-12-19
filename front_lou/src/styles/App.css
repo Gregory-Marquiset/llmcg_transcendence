@@ -4,6 +4,13 @@
   text-align: center;
 }
 
+.welcome-transition{
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) * 8);
+  margin-bottom: calc(var(--spacing) * 8); 
+}
+
 .favicon {
   height: 90px;
   padding: 1.5em;
@@ -28,15 +35,19 @@
   }
 }
 
-.logoheader{
+.logoheader {
+  position: fixed;
+  top: 5rem;              /* Hauteur depuis le haut */
+  left: 50%;              /* ⚠️ IMPORTANT : position à 50% */
+  transform: translateX(-50%);  /* ⚠️ IMPORTANT : décale de la moitié de sa largeur */
   height: 250px;
   padding: 10px;
+  z-index: 100;           /* ⚠️ IMPORTANT : pour être au-dessus */
   will-change: filter;
   transition: filter 300ms;
   animation: slidein;
   filter: drop-shadow(0 0 2em #545454);
 }
-
 .logo:hover {
   filter: drop-shadow(0 0 2em #eab2bb);
 }

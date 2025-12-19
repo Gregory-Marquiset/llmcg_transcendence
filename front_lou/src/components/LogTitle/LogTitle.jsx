@@ -7,6 +7,7 @@ export default function ({text}){
             <h1 className="log-title">
                 {text}
             </h1>
+            <br/><br/><br/><br/><br/>
         </>
     )
 }
