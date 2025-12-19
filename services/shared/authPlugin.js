@@ -17,7 +17,7 @@ async function authPlugin (app, opts) {
             console.error(`\nERROR: ${err.message}\n`);
             reply.code(401).send({ error: "Unauthorized" });
         }
-    })
+    });
 }
 
-export default fp(authPlugin)
+export default fp(authPlugin);

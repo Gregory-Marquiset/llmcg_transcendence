@@ -1,6 +1,6 @@
 import { uploadsDir } from "../../gateway/server.js";
 import { httpError } from "../usersServer.js";
-import { getRowFromDB, getAllRowsFromDB, runSql } from '../../utils/sqlFunction.js'
+import { getRowFromDB, getAllRowsFromDB, runSql } from '../../shared/sqlFunction.js'
 import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
 
 

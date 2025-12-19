@@ -1,24 +1,23 @@
 import Fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import fastifyBcrypt from 'fastify-bcrypt'
-import fastifyJwt from '@fastify/jwt'
 import fastifyCookie from '@fastify/cookie'
 import fastifyMultipart from '@fastify/multipart'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import fastifyWebsocket from '@fastify/websocket'
+import fastifyHttpProxy from '@fastify/http-proxy'
 
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 //###IMPORT OWN FILES ###
 import * as health from './routes/health.js'
-import * as tournament from '../game/tournaments/tournaments.js'
-import * as auth from '../users/auth/auth.js'
-import * as user from '../users/user/user.js'
-import * as friends from '../users/friends/friends.js'
+//import * as auth from '../auth/auth.js'
+//import * as user from '../users/user/user.js'
+//import * as friends from '../users/friends/friends.js'
 import * as wsHandler from './websocketHandler/websocketHandler.js'
-import { runDatabase } from '../users/usersServer.js'
-import authPlugin from '../utils/authPlugin.js'
+//import { runDatabase } from '../users/usersServer.js'
+import authPlugin from '../shared/authPlugin.js'
 
 
 
@@ -38,9 +37,20 @@ app.register(fastifyStatic, {
 	decorateReply: false
 });
 
-app.register(fastifyStatic, {
-	root: join(rootDir, '../../frontend/webapp/dist/')
+// app.register(fastifyStatic, {
+// 	root: join(rootDir, '../../frontend/webapp/dist/')
+// });
+
+//###### HTTP PROXY PLUGIN ######
+app.register(fastifyHttpProxy, {
+	upstream: 'http://auth-service:5000',
+	prefix: '/api/v1'
 });
+
+// app.register(fastifyHttpProxy, {
+// 	upstream: 'http://user-service:5000',
+// 	prefix: '/api/v1'
+// });
 
 //###### SWAGGER PLUGIN FOR DOCS ######
 app.register(fastifySwagger, {
@@ -86,7 +96,7 @@ app.register(fastifySwaggerUi, {
 });
 
 //###### COOKIE PLUGIN ######
-app.register(fastifyCookie);
+// app.register(fastifyCookie);
 
 //###### PLUGIN PERSO ######
 app.register(authPlugin);
@@ -120,17 +130,16 @@ app.register(fastifyBcrypt, {
 
 
 //###### RUN DATABASE ######
-runDatabase();
+//runDatabase();
 
 
 
 //####### ROUTES #######
 app.register(health.healthRoute);
 app.register(health.ping);
-app.register(tournament.tournamentsRoutes, { prefix: '/api/v1' });
-app.register(auth.authRoutes, { prefix: '/api/v1' });
-app.register(user.userRoutes, { prefix: '/api/v1' });
-app.register(friends.friendsRoutes, { prefix: '/api/v1' });
+// app.register(auth.authRoutes, { prefix: '/api/v1' });
+// app.register(user.userRoutes, { prefix: '/api/v1' });
+// app.register(friends.friendsRoutes, { prefix: '/api/v1' });
 
 //###### WEBSOCKET ROUTES ######
 app.register(async function (app){
@@ -141,29 +150,16 @@ app.register(async function (app){
 
 //###### ERROR HANDLER ######
 app.setErrorHandler((error, req, reply) => {
-		app.log.error(error);
-		if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500)
-				return (reply.code(error.statusCode).send({ message: error.message}));
-		reply.code(500).send({ message: "Internal server error" });
+	app.log.error(error);
+	if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500)
+			return (reply.code(error.statusCode).send({ message: error.message}));
+	reply.code(500).send({ message: "Internal server error" });
 });
 app.setNotFoundHandler(function (req, reply) {
-		app.log.info('\nexecuting setNotFoundHandler\n');
-		reply.code(404).send( { message:'404 Not found' });
+	app.log.info('\nexecuting setNotFoundHandler\n');
+	reply.code(404).send( { message:'404 Not found' });
 });
 
-
-
-
-//###### FRONT ###### (surement à changer)
-app.get('/', async (req, reply) => {
-	return reply.sendFile('index.html');
-});
-app.get('/tournois', async (req, reply) => {
-	return reply.sendFile('index.html');
-});
-app.get('/jeu', async (req, reply) => {
-	return reply.sendFile('index.html');
-});
 
 
 

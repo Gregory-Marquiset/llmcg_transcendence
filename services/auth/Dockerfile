@@ -2,15 +2,15 @@ FROM node:20
 
 WORKDIR /app
 
-COPY services/gateway/package*.json ./
+COPY services/auth/package*.json ./
 RUN npm install
 
-COPY services/gateway/ ./gateway/
+COPY services/auth/ ./auth/
 COPY services/shared/ ./shared/
 
-WORKDIR /app/gateway
+WORKDIR /app/auth
 
 EXPOSE 5000
 ENV HOST=0.0.0.0 PORT=5000
 
-CMD ["node", "server.js"]
+CMD ["node", "authServer.js"]

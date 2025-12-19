@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 
 import { app, uploadsDir } from '../../gateway/server.js';
 import { user_db, httpError } from '../usersServer.js';
-import { getRowFromDB, runSql } from '../../utils/sqlFunction.js'
+import { getRowFromDB, runSql } from '../../shared/sqlFunction.js'
 
 
 export const userMe = async function (req, reply) {
