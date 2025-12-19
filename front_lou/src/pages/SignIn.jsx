@@ -9,6 +9,7 @@ function SignIn(){
         isLoggedIn,
         setIsLoggedIn} = useAuth();
     const navigate = useNavigate();
+
     const handleOnClick = () => {
         navigate('/');
     }
@@ -18,6 +19,7 @@ function SignIn(){
         setIsLoggedIn(true);
         setAuthUser({Name: "Lou"})
     }
+    //
     return <>
     <Background>
         <div className="flex justify-center gap-8 mb-8">
