@@ -38,14 +38,14 @@ app.setErrorHandler((error, req, reply) => {
     app.log.error(error);
     if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500)
         return (reply.code(error.statusCode).send({ message: error.message }));
-    reply.code(500).send({ message: "Internal server error "});
+    reply.code(500).send({ message: "Internal server error" });
 });
 app.setNotFoundHandler((req, reply) => {
     app.log.info('\nexecuting setNotFoundHandler\n');
-    reply.code(404).send( { message: '404 Not Found' });
+    reply.code(404).send({ message: '404 Not Found' });
 });
 
-//###### LANCEMENT DU SERV ######
+//###### STARTING SERVER ######
 const start = async () => {
     try {
         await app.listen({ port: 5000, host: '0.0.0.0' });

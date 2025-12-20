@@ -8,8 +8,8 @@ import fastifySwaggerUi from '@fastify/swagger-ui'
 import fastifyWebsocket from '@fastify/websocket'
 import fastifyHttpProxy from '@fastify/http-proxy'
 
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+// import { dirname, join } from 'node:path'
+// import { fileURLToPath } from 'node:url'
 //###IMPORT OWN FILES ###
 import * as health from './routes/health.js'
 //import * as auth from '../auth/auth.js'
@@ -25,17 +25,17 @@ export const app = Fastify({
 	logger: true
 });
 
-const rootDir = dirname(fileURLToPath(import.meta.url));
+//const rootDir = dirname(fileURLToPath(import.meta.url));
 //###### AVATAR UPLOADS DIRECTORY
-export const uploadsDir = join(rootDir, '../users/uploads/avatar/');
+//export const uploadsDir = join(rootDir, '../users/uploads/avatar/');
 
 //###### STATIC PLUGIN ######
-console.log(`\nserver.js rootDir: ${rootDir}\n`);
-app.register(fastifyStatic, {
-	root: join(rootDir, '../users/uploads/avatar/'),
-	prefix: '/avatars/',
-	decorateReply: false
-});
+// console.log(`\nserver.js rootDir: ${rootDir}\n`);
+// app.register(fastifyStatic, {
+// 	root: join(rootDir, '../users/uploads/avatar/'),
+// 	prefix: '/avatars/',
+// 	decorateReply: false
+// });
 
 // app.register(fastifyStatic, {
 // 	root: join(rootDir, '../../frontend/webapp/dist/')
@@ -44,13 +44,13 @@ app.register(fastifyStatic, {
 //###### HTTP PROXY PLUGIN ######
 app.register(fastifyHttpProxy, {
 	upstream: 'http://auth-service:5000',
-	prefix: '/api/v1'
+	prefix: '/api/v1/auth'
 });
 
-// app.register(fastifyHttpProxy, {
-// 	upstream: 'http://user-service:5000',
-// 	prefix: '/api/v1'
-// });
+app.register(fastifyHttpProxy, {
+	upstream: 'http://users-service:5000',
+	prefix: '/api/v1'
+});
 
 //###### SWAGGER PLUGIN FOR DOCS ######
 app.register(fastifySwagger, {
@@ -107,11 +107,11 @@ app.register(fastifyWebsocket, {
 });
 
 //###### PARSE MULTIPART FORM DATA ######
-app.register(fastifyMultipart, {
-	limits: {
-		fileSize: 5 * 1024 * 1024
-	}
-});
+// app.register(fastifyMultipart, {
+// 	limits: {
+// 		fileSize: 5 * 1024 * 1024
+// 	}
+// });
 
 
 //###### HASH DU PASSWORD #######

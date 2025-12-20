@@ -1,34 +1,33 @@
-import { pipeline } from 'node:stream/promises'
+import { pipeline } from 'node:stream/promises';
 import * as fs from 'node:fs';
 
-import { app, uploadsDir } from '../../gateway/server.js';
-import { user_db, httpError } from '../usersServer.js';
-import { getRowFromDB, runSql } from '../../shared/sqlFunction.js'
+import { app, uploadsDir, httpError } from '../usersServer.js';
+import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js';
 
 
 export const userMe = async function (req, reply) {
 
 	try {
-		const user_in_db = await getRowFromDB('SELECT * FROM users WHERE id = ?', [req.user.id]);
+		const user_in_db = await getRowFromDB(app.pg, 'SELECT * FROM users WHERE id = $1', [req.user.id]);
 		if (!user_in_db.id || req.user.id !== user_in_db.id)
 			throw httpError(401, "Invalid id");
 		if (req.body.new_username)
 		{
 			user_in_db.username = req.body.new_username;
-			const searchUsername = await getRowFromDB('SELECT username FROM users WHERE (id != ? AND username = ?)', [req.user.id, req.body.new_username]);
+			const searchUsername = await getRowFromDB(app.pg, 'SELECT username FROM users WHERE (id != $1 AND username = $2)', [req.user.id, req.body.new_username]);
 			if (searchUsername && searchUsername.username)
 				throw httpError(409, "Username is already taken");
 		}
 		if (req.body.new_email)
 		{
 			user_in_db.email = req.body.new_email;
-			const searchEmail = await getRowFromDB('SELECT email FROM users WHERE (id != ? AND email = ?)', [req.user.id, req.body.new_email]);
+			const searchEmail = await getRowFromDB(app.pg, 'SELECT email FROM users WHERE (id != $1 AND email = $2)', [req.user.id, req.body.new_email]);
 			if (searchEmail && searchEmail.email)
 				throw httpError(409, "Email is already taken");
 		}
 		
-		await runSql('UPDATE users SET username = ?, email = ? WHERE id = ?', [user_in_db.username, user_in_db.email, req.user.id]);
-		const newUserInfo = await getRowFromDB('SELECT id, username, email, avatar_path, twofa_enabled, createdAt, status FROM users WHERE id = ?', [req.user.id]);
+		await runSql(app.pg, 'UPDATE users SET username = $1, email = $2 WHERE id = $3', [user_in_db.username, user_in_db.email, req.user.id]);
+		const newUserInfo = await getRowFromDB(app.pg, 'SELECT id, username, email, avatar_path, twofa_enabled, createdAt FROM users WHERE id = $1', [req.user.id]);
 		console.log(`\nuserMe newUserInfo: ${JSON.stringify(newUserInfo)}\n`);
 		return (reply.code(200).send(newUserInfo));
 	} catch (err) {
@@ -59,14 +58,14 @@ export const userMeAvatar = async function (req, reply) {
 		console.log(`\nuserMeAvatar filepath: ${filepath}\n`);
 		await pipeline(data.file, fs.createWriteStream(filepath));
 
-		const oldFileName = await getRowFromDB('SELECT avatar_path FROM users WHERE id = ?', [req.user.id]);
+		const oldFileName = await getRowFromDB(app.pg, 'SELECT avatar_path FROM users WHERE id = $1', [req.user.id]);
 		if (oldFileName?.avatar_path !== "default.jpg")
 		{
 			const oldFilepath = uploadsDir + oldFileName.avatar_path;
 			fs.unlink(oldFilepath, () => {});
 		}
 
-		await runSql('UPDATE users SET avatar_path = ? WHERE id = ?', [filename, req.user.id]);
+		await runSql(app.pg, 'UPDATE users SET avatar_path = $1 WHERE id = $2', [filename, req.user.id]);
 		reply.send({ avatar_url: filename });
 	} catch (err)
 	{

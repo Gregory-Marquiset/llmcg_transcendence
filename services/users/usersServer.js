@@ -1,70 +1,74 @@
-import sqlite3 from 'sqlite3'
+import Fastify from 'fastify';
+import fastifyStatic from '@fastify/static';
+import fastifyMultipart from '@fastify/multipart';
 
-export const user_db = new sqlite3.Database('./users/data/usersDatabase.sqlite', (err) => {
-	if (err)
-	{
-		console.error(err.message);
-		throw new Error("userDB not init");
-	}
-	console.log(`\ndatabase\n`);
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+//### IMPORT OWN FILES ###
+import * as user from './user/user.js';
+import * as friends from './friends/friends.js';
+import authPlugin from '../shared/authPlugin.js';
+import postgresPlugin from '../shared/postgresPlugin.js';
+import { initDb } from '../shared/postgresFunction.js';
+
+export const app = Fastify({
+	logger: true
 });
-
-export const runDatabase = async function () {
-	user_db.run(`PRAGMA foreign_keys = ON`, (err) => {
-		if(err)
-		{
-			console.error(err.message);
-			//throw new Error("PRAGMA error");
-		}
-			
-	});
-	user_db.run(`CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT UNIQUE NOT NULL,
-		email TEXT UNIQUE NOT NULL,
-		password TEXT NOT NULL,
-		avatar_path TEXT,
-		createdAt TEXT,
-		twofa_enabled INTEGER,
-		twofa_secret TEXT UNIQUE,
-		status TEXT
-		)`, (err) => {
-			if (err)
-			{
-				console.error(err.message);
-				//throw new Error("user table run error");
-			}
-		});
-	user_db.run(`CREATE TABLE IF NOT EXISTS refreshed_tokens (
-		jwt_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		user_id INTEGER REFERENCES users(id),
-		token TEXT
-		)`, (err) => {
-			if(err)
-			{
-				console.error(err.message);
-				//throw new Error("refreshed table run error");
-			}
-		});
-	user_db.run(`CREATE TABLE IF NOT EXISTS friendships (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		sender_id INTEGER NOT NULL REFERENCES users(id),
-		receiver_id INTEGER NOT NULL REFERENCES users(id),
-		status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'refused', 'blocked', 'removed')),
-		blocked_by INTEGER REFERENCES users(id),
-		created_at TEXT,
-		updated_at TEXT,
-		UNIQUE (sender_id, receiver_id)
-		)`, (err) => {
-			if (err)
-			{
-				console.error(err.message);
-			}
-		});
-}
 
 export const httpError = (code, message) => {
 	const err = new Error(message);
 	err.statusCode = code;
 	return err;
 }
+
+const rootDir = dirname(fileURLToPath(import.meta.url));
+//###### AVATAR UPLOADS DIRECTORY
+export const uploadsDir = join(rootDir, './uploads/avatar/');
+
+//###### STATIC PLUGIN ######
+app.register(fastifyStatic, {
+	root: uploadsDir,
+	decorateReply: false
+})
+
+//###### PARSE MULTIPART FORM DATA ######
+app.register(fastifyMultipart, {
+	limits: {
+		fileSize: 5 * 1024 * 1024
+	}
+});
+
+//###### PLUGIN PERSO ######
+app.register(authPlugin);
+app.register(postgresPlugin);
+
+//###### USER ROUTES ######
+app.register(user.userRoutes);
+
+//###### FRIENDS ROUTES ######
+app.register(friends.friendsRoutes);
+
+
+//###### ERROR HANDLER ######
+app.setErrorHandler((error, req, reply) => {
+	if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500)
+		return (reply.code(error.statusCode).send({ message: error.message }));
+	reply.code(500).send({ message: "Internal server error" });
+});
+app.setNotFoundHandler((req, reply) => {
+	console.log(`\nExecuting setNotFoundHandler\n`);
+	reply.code(404).send({ message: '404 Not Found' });
+})
+
+//###### STARTING SERVER ######
+const start = async () => {
+	try {
+		await app.listen({ port: 5000, host: '0.0.0.0' });
+		await initDb(app);
+	} catch (err) {
+		console.error(`\nERROR userServer\n`);
+		process.exit(1);
+	}
+}
+
+start();

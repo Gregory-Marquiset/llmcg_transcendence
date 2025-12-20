@@ -1,7 +1,6 @@
-import { uploadsDir } from "../../gateway/server.js";
-import { httpError } from "../usersServer.js";
-import { getRowFromDB, getAllRowsFromDB, runSql } from '../../shared/sqlFunction.js'
-import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
+import { app, uploadsDir, httpError } from "../usersServer.js";
+import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js'
+//import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
 
 
 export const sendFriendsRequest = async function (req, reply) {
@@ -12,10 +11,10 @@ export const sendFriendsRequest = async function (req, reply) {
 
 		if (targetId === req.user.id)
 			throw httpError(400, "Can't add yourself as friend");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
+		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[req.user.id, targetId, targetId, req.user.id]);
 		if (searchForFriendship?.status === "pending")
 			throw httpError(400, "Friend request already sent");
@@ -26,14 +25,14 @@ export const sendFriendsRequest = async function (req, reply) {
 		else if (searchForFriendship?.status === "refused" || searchForFriendship?.status === "removed")
 		{
 			const date = new Date().toISOString();
-			await runSql('UPDATE friendships SET status = ?, updated_at = ? WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+			await runSql(app.pg, 'UPDATE friendships SET status = $1, updated_at = $2 WHERE (sender_id = $3 AND receiver_id = $4) OR (sender_id = $5 AND receiver_id = $6)',
 				["pending", date, req.user.id, targetId, targetId, req.user.id]);
 			return (reply.code(201).send({ sender_id: req.user.id, receiver_id: targetId, status: "pending" }));
 		}
 
 		const date = new Date().toISOString();
-		await runSql(`INSERT INTO friendships(sender_id, receiver_id, status, created_at, updated_at)
-			VALUES (?, ?, ?, ?, ?)`, [req.user.id, targetId, "pending", date, date]);
+		await runSql(app.pg, `INSERT INTO friendships(sender_id, receiver_id, status, created_at, updated_at)
+			VALUES ($1, $2, $3, $4, $5)`, [req.user.id, targetId, "pending", date, date]);
 		return (reply.code(201).send({ sender_id: req.user.id, receiver_id: targetId, status: "pending" }));
 	} catch (err)
 	{
@@ -55,10 +54,10 @@ export const manageFriendRequest = async function (req, reply) {
 
 		if (senderId === req.user.id)
 			throw httpError(400, "Bad request");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [senderId]);
+		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [senderId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE sender_id = ? AND receiver_id = ?',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE sender_id = $1 AND receiver_id = $2',
 			[senderId, req.user.id]);
 		if (!searchForFriendship)
 			throw httpError(400, "This friend request doesn't exist");
@@ -72,13 +71,13 @@ export const manageFriendRequest = async function (req, reply) {
 		let status;
 		if (req.body.action === "accept")
 		{
-			await runSql('UPDATE friendships SET status = ?, updated_at = ? WHERE sender_id = ? AND receiver_id = ?',
+			await runSql(app.pg, 'UPDATE friendships SET status = $1, updated_at = $2 WHERE sender_id = $3 AND receiver_id = $4',
 				["accepted", date, senderId, req.user.id]);
 			status = "accepted";
 		}
 		else if (req.body.action === "refuse")
 		{
-			await runSql('UPDATE friendships SET status = ?, updated_at = ? WHERE sender_id = ? AND receiver_id = ?',
+			await runSql(app.pg, 'UPDATE friendships SET status = $1, updated_at = $2 WHERE sender_id = $3 AND receiver_id = $4',
 				["refused", date, senderId, req.user.id]);
 			status = "refused";
 		}
@@ -102,10 +101,10 @@ export const deleteFriend = async function (req, reply) {
 
 		if (targetId === req.user.id)
 			throw httpError(400, "Bad request");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
+		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship || searchForFriendship.status === "refused" ||
 			searchForFriendship.status === "pending" || searchForFriendship.status === "removed")
@@ -114,7 +113,7 @@ export const deleteFriend = async function (req, reply) {
 			throw httpError(400, "This friendships is blocked");
 		
 		const date = new Date().toISOString();
-		await runSql('UPDATE friendships SET status = ?, updated_at = ? WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		await runSql(app.pg, 'UPDATE friendships SET status = $1, updated_at = $2 WHERE (sender_id = $3 AND receiver_id = $4) OR (sender_id = $5 AND receiver_id = $6)',
 			["removed", date, targetId, req.user.id, req.user.id, targetId]);
 		return (reply.code(200).send({ status: "removed" }));
 	} catch (err) {
@@ -133,10 +132,10 @@ export const blockUser = async function (req, reply) {
 		const targetId = Number(req.params.targetId);
 		if (targetId === req.user.id)
 			throw httpError(400, "Can't block yourself");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
+		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT * FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (searchForFriendship?.status === "blocked")
 			throw httpError(400, "User already blocked");
@@ -144,11 +143,11 @@ export const blockUser = async function (req, reply) {
 		const date = new Date().toISOString();
 		if (!searchForFriendship)
 		{
-			await runSql(`INSERT INTO friendships(sender_id, receiver_id, status, blocked_by, created_at, updated_at)
-				VALUES (?, ?, ?, ?, ?, ?)`, [req.user.id, targetId, "blocked", req.user.id, date, date]);
+			await runSql(app.pg, `INSERT INTO friendships(sender_id, receiver_id, status, blocked_by, created_at, updated_at)
+				VALUES ($1, $2, $3, $4, $5, $6)`, [req.user.id, targetId, "blocked", req.user.id, date, date]);
 			return (reply.code(200).send({ status: "blocked" }));
 		}
-		await runSql('UPDATE friendships SET status = ?, blocked_by = ?, updated_at = ? WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		await runSql(app.pg, 'UPDATE friendships SET status = $1, blocked_by = $2, updated_at = $3 WHERE (sender_id = $4 AND receiver_id = $5) OR (sender_id = $6 AND receiver_id = $7)',
 			["blocked", req.user.id, date, targetId, req.user.id, req.user.id, targetId]);
 		return (reply.code(200).send({ status: "blocked" }));
 	} catch (err) {
@@ -168,10 +167,10 @@ export const unblockUser = async function (req, reply) {
 		const targetId = Number(req.params.targetId);
 		if (targetId === req.user.id)
 			throw httpError(400, "Bad request");
-		const searchForTarget = await getRowFromDB('SELECT id FROM users WHERE id = ?', [targetId]);
+		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB('SELECT ALL FROM friendships WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT ALL FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship)
 			throw httpError(400, "Bad request");
@@ -181,7 +180,7 @@ export const unblockUser = async function (req, reply) {
 			throw httpError(400, "Can't unblock someone that blocked you");
 		
 		const date = new Date().toISOString();
-		await runSql('UPDATE friendships SET status = ?, blocked_by = ?, updated_at = ? WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)',
+		await runSql(app.pg, 'UPDATE friendships SET status = $1, blocked_by = $2, updated_at = $3 WHERE (sender_id = $4 AND receiver_id = $5) OR (sender_id = $6 AND receiver_id = $7)',
 			["removed", null, date, targetId, req.user.id, req.user.id, targetId]);
 		return (reply.code(200).send({ status: "unblocked/removed" }));
 	} catch (err) {
@@ -198,7 +197,7 @@ export const unblockUser = async function (req, reply) {
 export const friendsList = async function (req, reply) {
 
 	try {
-		const friendships = await getAllRowsFromDB('SELECT * FROM friendships WHERE status = ? AND (sender_id = ? OR receiver_id = ?)',
+		const friendships = await getAllRowsFromDb(app.pg, 'SELECT * FROM friendships WHERE status = $1 AND (sender_id = $2 OR receiver_id = $3)',
 			["accepted", req.user.id, req.user.id]);
 		let friendsIds = [];
 		friendships.forEach(friend => {
@@ -209,17 +208,17 @@ export const friendsList = async function (req, reply) {
 				friendsIds.push(friend.receiver_id);
 		});
 
-		let friendsStatusMap = getPresenceForUsers(friendsIds);
+		//let friendsStatusMap = getPresenceForUsers(friendsIds);
 		let friends = await Promise.all(
 			friendsIds.map(friendId => {
-				return getRowFromDB('SELECT id, username, avatar_path FROM users WHERE id = ?', [friendId]);
+				return getRowFromDB(app.pg, 'SELECT id, username, avatar_path FROM users WHERE id = $1', [friendId]);
 			})
 		);
 		friends.forEach(friend => {
-			let friendStatus = friendsStatusMap.get(friend.id);
-			friend.status = friendStatus.status;
-			friend.lastSeenAt = friendStatus.lastSeenAt;
-			friend.activeSince = friendStatus.activeSince;
+			// let friendStatus = friendsStatusMap.get(friend.id);
+			// friend.status = friendStatus.status;
+			// friend.lastSeenAt = friendStatus.lastSeenAt;
+			// friend.activeSince = friendStatus.activeSince;
 			friend.avatar_path = uploadsDir + friend.avatar_path;
 			console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
 		});

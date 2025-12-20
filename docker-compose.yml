@@ -154,7 +154,22 @@ services:
       - backend
     depends_on:
       - postgres
+      - gateway
 
+  users-service:
+    build:
+      context: .
+      dockerfile: ./services/users/Dockerfile
+    container_name: users_cont
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL}
+    restart: unless-stopped
+    networks:
+      - backend
+    depends_on:
+      - postgres
+      - gateway
 
   ####### TILT #######
   # tilt:
