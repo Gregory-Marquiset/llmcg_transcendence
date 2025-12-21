@@ -1,7 +1,7 @@
-import { Button, Footer, LogTitle, Background } from '../components'
+import { Button, Footer, LogTitle, Background } from '../../components'
 import { useNavigate } from 'react-router-dom'
-import { logoheader, favicon } from '../assets'
-import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../animations'
+import { logoheader, favicon } from '../../assets'
+import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 

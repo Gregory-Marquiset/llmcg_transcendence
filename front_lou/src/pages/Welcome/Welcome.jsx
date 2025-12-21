@@ -1,10 +1,10 @@
-import { Button, Footer, LogTitle, Background, Separator } from '../components'
+import { Button, Footer, LogTitle, Background, Separator } from '../../components'
 import { useNavigate } from 'react-router-dom'
-import { logoheader, favicon } from '../assets'
+import { logoheader, favicon } from '../../assets'
 import '../styles/App.css'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../animations'
+import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 
 function Welcome() {
   const navigate = useNavigate()
