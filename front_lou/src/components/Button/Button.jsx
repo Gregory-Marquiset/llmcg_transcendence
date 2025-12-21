@@ -6,7 +6,6 @@ export default function Button({ text, onClick }){
             <button className="btn" onClick={onClick}>
                 {text}
             </button>
-            <br/>
         </>
     );
 }

@@ -1,5 +1,3 @@
-import logoheader from './assets/logoheader.png'
-import favicon from './assets/favicon.png'
 import './styles/App.css'
 import { Welcome, SignIn, SignUp, Auth2, Dashboard } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'

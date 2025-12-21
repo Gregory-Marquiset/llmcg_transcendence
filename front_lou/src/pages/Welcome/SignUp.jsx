@@ -20,7 +20,6 @@ function SignUp() {
 
   return (
     <Background>
-      <div className="page-wrapper">
         <div className="header-container">
           <div className="flex justify-center gap-8 mb-8">
             <a onClick={handleOnClick}>
@@ -126,7 +125,6 @@ function SignUp() {
         
         <img src={favicon} className="favicon"/>
         <Footer />
-      </div>
     </Background>
   )
 }

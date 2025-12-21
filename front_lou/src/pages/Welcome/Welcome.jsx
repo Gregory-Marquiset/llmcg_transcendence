@@ -1,7 +1,8 @@
 import { Button, Footer, LogTitle, Background, Separator } from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
-import '../styles/App.css'
+import '../../styles/App.css'
+import './WelcomeStyles.css'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
@@ -23,7 +24,6 @@ function Welcome() {
   return (
     <>
       <Background>
-        <div className="page-wrapper">
         <div className='header-container'>
         <motion.div
           className="welcome-transition"
@@ -66,7 +66,6 @@ function Welcome() {
         </div>
         <img src={favicon} className="favicon" />
         <Footer />
-        </div>
       </Background>
     </>
   )

@@ -24,7 +24,6 @@ function SignIn(){
 
     return (
         <Background>
-            <div className="page-wrapper">
                 <div className="header-container">
                     <div className="flex justify-center gap-8 mb-8">
                         <a onClick={handleOnClick}>
@@ -81,7 +80,6 @@ function SignIn(){
                 
                 <img src={favicon} className="favicon mt-8" alt="Logo animé"/>
                 <Footer/>
-            </div>
         </Background>
     )
 }
