@@ -76,3 +76,24 @@ export const userMeAvatar = async function (req, reply) {
 		throw err;
 	}
 }
+
+
+
+export const userProfil = async function (req, reply) {
+	try {
+		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE id = $1`, [req.params.targetId]);
+		if (!userInDb)
+			throw httpError(404, "User not found");
+		const isBlocked = await getRowFromDB(app.pg, `SELECT status FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
+			[req.user.id, req.params.targetId]);
+		if (isBlocked?.status === "blocked")
+			throw httpError(401, "Unhauthorized");
+		reply.code(200).send(userInDb);
+	} catch (err) {
+		console.error(`ERROR userProfil: ${ err.message }`);
+		if (err.statusCode)
+			throw err;
+		err.statusCode = 500;
+		throw err;
+	}
+}

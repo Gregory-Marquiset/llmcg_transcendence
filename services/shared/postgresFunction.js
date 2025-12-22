@@ -18,9 +18,9 @@ export const initDb = async function (app) {
     try {
         await app.pg.transact(async (client) => {
             await client.query(`CREATE TABLE IF NOT EXISTS users (
-                id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                username varchar(30) UNIQUE NOT NULL,
-                email varchar(50) UNIQUE NOT NULL,
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                username text UNIQUE NOT NULL,
+                email text UNIQUE NOT NULL,
                 password text NOT NULL,
                 avatar_path text NOT NULL,
                 createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -28,15 +28,16 @@ export const initDb = async function (app) {
                 twofa_secret text UNIQUE)`);
 
             await client.query(`CREATE TABLE IF NOT EXISTS refreshed_tokens (
-                jwt_id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                user_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                jwt_id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 token text NOT NULL)`);
 
             await client.query(`CREATE TABLE IF NOT EXISTS friendships (
-                id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                sender_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                receiver_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                status varchar(20) NOT NULL CHECK (status IN ('pending', 'accepted', 'refused', 'blocked', 'removed')),
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                sender_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                receiver_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                status text NOT NULL CHECK (status IN ('pending', 'accepted', 'refused', 'blocked', 'removed')),
+                blocked_by integer REFERENCES users(id) ON DELETE CASCADE,
                 created_at timestamp DEFAULT CURRENT_TIMESTAMP,
                 updated_at timestamp,
                 UNIQUE (sender_id, receiver_id))`);

@@ -137,7 +137,8 @@ export const authRefresh = async function (req, reply) {
 	try {
 		if (!req.cookies.refreshToken)
 			throw httpError(401, "Missing refresh token");
-		const decoded = app.jwt.verify(req.cookies.refreshToken);
+		const decoded  = app.jwt.verify(req.cookies.refreshToken);
+		console.log(`\nauthRefresh: decode.id: ${decoded.id}, decode.username: ${decoded.username}\n`);
 		const old_token_in_db = await getRowFromDB(app.pg, `SELECT token FROM refreshed_tokens WHERE token = $1`, [req.cookies.refreshToken]);
 		if (!old_token_in_db)
 			throw httpError(401, "Missing refresh token");
@@ -147,7 +148,7 @@ export const authRefresh = async function (req, reply) {
 		const new_refresh_token = app.jwt.sign({ id: decoded.id, username: decoded.username }, { expiresIn: '1d' });
 		console.log(`authRefresh new refresh token not in db: ${new_refresh_token}\n`);
 
-		await runSql(app.pg, `UPDATE refreshed_tokens SET token = $1 WHERE token = $2 AND user_id = $3)`, [new_refresh_token, req.cookies.refreshToken, req.user.id]);
+		await runSql(app.pg, `UPDATE refreshed_tokens SET token = $1 WHERE token = $2 AND user_id = $3`, [new_refresh_token, req.cookies.refreshToken, decoded.id]);
 		return (reply
 			.clearCookie('refreshToken', { path: '/' })
 			.setCookie('refreshToken', new_refresh_token, {

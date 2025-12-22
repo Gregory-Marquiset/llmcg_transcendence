@@ -174,9 +174,9 @@ export const unblockUser = async function (req, reply) {
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship)
 			throw httpError(400, "Bad request");
-		if (searchForFriendship?.status !== "blocked")
+		if (searchForFriendship.status !== "blocked")
 			throw httpError(400, "User isn't blocked");
-		if (searchForFriendship?.blocked_by === targetId)
+		if (searchForFriendship.blocked_by === targetId)
 			throw httpError(400, "Can't unblock someone that blocked you");
 		
 		const date = new Date().toISOString();

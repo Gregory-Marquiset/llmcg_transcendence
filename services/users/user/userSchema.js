@@ -19,7 +19,6 @@ export const userMeOpts = {
 					avatar_path: { type: "string" },
 					twofa_enabled: { type: "integer" },
 					createdAt: { type: "string" },
-					status: { type: "string" }
 				}
 			}
 		}
@@ -40,4 +39,20 @@ export const userMeAvatarOpts = {
 		}
 	},
 	handler: userController.userMeAvatar
+}
+
+export const userProfilOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					id: { type: "integer" },
+					username: { type: "string" },
+					avatar_path: { type: "string" }
+				}
+			}
+		}
+	},
+	handler: userController.userProfil
 }
