@@ -36,7 +36,7 @@ function SignUp() {
             initial="hidden"
             animate={isExiting ? 'exit' : 'visible'}
           >
-            <form className="space-y-7">
+            <form onSubmit={manageSignUp} className="space-y-7">
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
