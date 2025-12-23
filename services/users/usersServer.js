@@ -23,9 +23,11 @@ export const runDatabase = async function () {
 		username TEXT UNIQUE NOT NULL,
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
+		avatar_path TEXT,
 		createdAt TEXT,
 		twofa_enabled INTEGER,
-		twofa_secret TEXT UNIQUE
+		twofa_secret TEXT UNIQUE,
+		status TEXT
 		)`, (err) => {
 			if (err)
 			{
@@ -42,6 +44,21 @@ export const runDatabase = async function () {
 			{
 				console.error(err.message);
 				//throw new Error("refreshed table run error");
+			}
+		});
+	user_db.run(`CREATE TABLE IF NOT EXISTS friendships (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		sender_id INTEGER NOT NULL REFERENCES users(id),
+		receiver_id INTEGER NOT NULL REFERENCES users(id),
+		status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'refused', 'blocked', 'removed')),
+		blocked_by INTEGER REFERENCES users(id),
+		created_at TEXT,
+		updated_at TEXT,
+		UNIQUE (sender_id, receiver_id)
+		)`, (err) => {
+			if (err)
+			{
+				console.error(err.message);
 			}
 		});
 }

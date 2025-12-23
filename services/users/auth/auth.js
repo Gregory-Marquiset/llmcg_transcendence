@@ -3,9 +3,11 @@ import { user_db } from "../usersServer.js"
 
 async function authRoutes(app, options) {
 
-	app.post('/auth/register',authOpts.authRegisterOpts);
+	app.post('/auth/register', authOpts.authRegisterOpts);
 
 	app.post('/auth/login', authOpts.authLoginOpts);
+
+	app.post('/auth/login/2fa', authOpts.authLogin2faOpts);
 
 	app.get('/auth/me', { onRequest: [app.authenticate], ...authOpts.authMeOpts });
 
@@ -41,7 +43,7 @@ async function authRoutes(app, options) {
 	});
 
 	app.delete('/auth/delete_all_users', async (req, reply) => {
-		// user_db.run('DROP TABLE IF EXISTS users')
+		user_db.run('DROP TABLE IF EXISTS users')
 
 		user_db.run('DELETE FROM users', (err) => {
 			if (err)

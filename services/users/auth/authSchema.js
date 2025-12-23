@@ -43,16 +43,42 @@ export const authLoginOpts = {
 	handler: authController.authLogin
 }
 
+export const authLogin2faOpts = {
+	schema: {
+		body: {
+			type: "object",
+			properties: {
+				temp_token: { type: "string" },
+				code: { type: "string" }
+			},
+			required: ["temp_token", "code"]
+		},
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					access_token: { type: "string" }
+				},
+				required: ["access_token"]
+			}
+		}
+	},
+	handler: authController.authLogin2fa
+}
+
 export const authMeOpts = {
 	schema: {
 		response: {
 			200: {
 				type: "object",
 				properties: {
-					id: { type: "string" },
+					id: { type: "integer" },
 					username: { type: "string" },
 					email: { type: "string" },
-					createdAt: { type: "string" }
+					avatar_path: { type: "string" },
+					twofa_enabled: { type: "integer" },
+					createdAt: { type: "string" },
+					status: { type: "string" }
 				}
 			}
 		}
