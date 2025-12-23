@@ -1,23 +1,32 @@
+@media (max-width: 500px){
+    .header-bar{
+        overflow-y: hidden;
+    }
+    .group-search-bar{
+        overflow-y: hidden;
+    }
+    .navbar-btn{
+        overflow-y: hidden;
+    }
+}
+
 .header-bar{
     position:relative;
     flex-wrap: wrap;
     background-color: #545454;
+
     /* align-items: flex-start; */
     flex-direction: row;
     justify-content: flex-end;
     gap: 20px;
     -ms-flex-item-align: auto;
     top: 0;
-    height: 50px;
+    height: 60px;
     z-index: 2;
     display:flex;
     padding: 12px;
-
-}
-
-.cosmetic-header{
-    border: solid #858585 7px;
-    z-index: 1;
+    border-bottom: solid 10px #858585;
+    transition: all 350ms;
 }
 
 .search-bar{
@@ -27,16 +36,8 @@
     margin: 0px 20px;
     flex-shrink: 1;
     min-width: 0;
+    transition: all 350ms;
 }
-
-.group-search-bar{
-    display: flex;
-    /* right: 250px; */
-    top: 10px;
-    margin: 0 20px;
-}
-
-
 .navbar-btn{
     background-color: transparent;
     outline: none;
@@ -44,12 +45,44 @@
     width: 45px; 
     z-index: 3;
     padding: 0;
+    transition: all 350ms;
+}
+
+
+
+.header-bar:hover{
+    border-bottom: solid 10px #eab2bb;
+    filter: drop-shadow(0 0 10px #eab2bb);
+}
+
+
+
+.search-bar:hover{
+    filter:drop-shadow(0 0 10px #eab2bb);
+}
+
+.group-search-bar{
+    display: flex;
+    /* right: 250px; */
+    top: 10px;
+    margin: 0 20px;
+    transition: all 350ms;
+}
+
+.group-search-bar:hover{
+    filter:drop-shadow(0 0 10px #eab2bb);
+}
+
+
+.navbar-btn:hover{
+    filter: drop-shadow(0 0 10px #545454);
+    transform: scale(1.1);
 }
 
 .logo-bar{
     position: absolute;
-    top: 15px;
-    left: 90px; /* Change à 0 au lieu de 100px */
+    top: 10px;
+    left: 90px;
     outline: none;
     border: none;
     background-color: transparent;
@@ -58,7 +91,13 @@
     z-index: 100;
     padding: 0;
     cursor: pointer;
+    filter: drop-shadow(0 0 15px white);
+    transition: all  330ms ;
+}
+
+.logo-bar:hover{
     filter: drop-shadow(0 0 10px #eab2bb);
+    transform: scale(1.1) ;
 }
 
 .logo-bar img {
@@ -66,7 +105,9 @@
     height: 100%;
     object-fit: contain;
 }
+
+
 .header-wrapper {
-    position: relative; /* Important pour que position absolute fonctionne */
+    position: relative;
     width: 100%;
 }

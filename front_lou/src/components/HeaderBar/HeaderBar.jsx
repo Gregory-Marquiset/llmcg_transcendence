@@ -1,11 +1,14 @@
 import { setting, profile, logoheader } from '../../assets'
 import './HeaderBar.css'
+import { useNavigate } from 'react-router-dom'
 
 export default function () {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className='header-wrapper'>
-        <button className="logo-bar">
+        <button className="logo-bar" onClick={() => navigate("/dashboard")}>
           <img src={logoheader} />
         </button>
         <div className="header-bar">
@@ -29,14 +32,13 @@ export default function () {
             />
           </form>
         </div>
-        <button className="navbar-btn">
+        <button className="navbar-btn" onClick={() => navigate("/dashboard/profile")}>
           <img src={profile} />
         </button>
-        <button className="navbar-btn">
+        <button className="navbar-btn" onClick={() => navigate("/dashboard/settings")}>
           <img src={setting} />
         </button>
       </div>
-      <div className="cosmetic-header" />
       </div>
     </>
   )

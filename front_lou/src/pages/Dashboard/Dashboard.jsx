@@ -11,9 +11,14 @@ function Dashboard() {
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
-          <LeftMenu/>
+          <div className='core-container'>
+            <LeftMenu/>
+            <div className='content-container'>
+              HELLO
+            </div>
+          </div>
         </div>
-        <Footer />
+        <Footer/>
       </Background>
     </>
   )

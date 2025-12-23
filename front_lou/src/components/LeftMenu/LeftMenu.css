@@ -27,5 +27,6 @@
   text-align: center;
   filter: drop-shadow(0 2px 2px #545454);
   margin: 10px;
+  z-index: 4;
 }
 
