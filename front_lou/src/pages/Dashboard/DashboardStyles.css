@@ -2,7 +2,7 @@
 
 .content-container {
     display: flex;
-    position:static;
+    position: static;
     border: solid 7px #858585;
     width: 75%;
     height: 900px;
@@ -18,7 +18,7 @@
     display: flex;
     top: 20px;
     gap : 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex-direction: row;
     border: solid 10px  red;
     /* background-color: red; */

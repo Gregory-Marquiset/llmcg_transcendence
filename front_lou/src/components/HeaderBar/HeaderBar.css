@@ -12,7 +12,7 @@
 
 .header-bar{
     position:relative;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     background-color: #545454;
 
     /* align-items: flex-start; */
@@ -108,6 +108,8 @@
 
 
 .header-wrapper {
+        position:relative;
+    flex-wrap: nowrap;
     position: relative;
     width: 100%;
 }
