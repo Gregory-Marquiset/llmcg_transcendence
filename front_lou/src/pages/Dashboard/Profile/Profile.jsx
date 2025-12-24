@@ -8,7 +8,7 @@ function Profile() {
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
-          <div className=' '>Mon profil</div>
+          <LogTitle text="Mon profil"/>
           <div className='profile-wrapper'>
             <div className='profile-picture'/>
               <div className='personal-infos'>

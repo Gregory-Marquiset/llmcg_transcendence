@@ -2,8 +2,6 @@ import { Button, Footer, LogTitle, Background} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { useAuth } from '../../context/AuthContext'
-import { motion, AnimatePresence } from 'framer-motion'
-import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 
 function SignIn(){
     const { authUser,

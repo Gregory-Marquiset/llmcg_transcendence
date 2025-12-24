@@ -1,5 +1,4 @@
 .profile-wrapper{
-    border: solid red 10px;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column ;
@@ -16,8 +15,14 @@
     border-radius: 150px;
     height: 250px;
     width: 250px;
+    transition: all 300ms;
 }
 
+.profile-picture:hover{
+    border: solid #eab2bb 10px;
+    box-shadow: 0 8px 16px #eab2bb;
+
+}
 .personal-infos{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
@@ -34,4 +39,6 @@
 
 .personal-infos:hover{
   box-shadow: 0 8px 16px #eab2bb;
+  border: #eab2bb solid 10px;
+  background-color: white;
 }
