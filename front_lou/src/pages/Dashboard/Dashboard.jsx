@@ -1,11 +1,14 @@
-import { useNavigate } from 'react-router-dom'
-import { logoheader, favicon } from '../../assets'
 import '../../styles/App.css'
 import './DashboardStyles.css'
-import { Button, Footer, Background, HeaderBar, LeftMenu} from '../../components'
-import { profile, setting } from '../../assets'
+import { Footer, Background, HeaderBar, LeftMenu} from '../../components'
+import { useEffect, useState } from 'react'
+
 
 function Dashboard() {
+  const [quote, setQuote] = useState();
+
+
+
   return (
     <>
       <Background>
@@ -14,7 +17,7 @@ function Dashboard() {
           <div className='core-container'>
             <LeftMenu/>
             <div className='content-container'>
-              HELLO
+              \
             </div>
           </div>
         </div>
