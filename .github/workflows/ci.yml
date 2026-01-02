@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure .env exists
+        run: |
+          if [ ! -f .env ]; then
+            echo "# CI env" > .env
+          fi
+
+      - name: clean logs
+        run: |
+          rm -rf tests/logs/*
+
+      - name: Run test runner
+        run: make test
+
+      - name: Show health
+        if: always()
+        run: make health
+
+      - name: Set timestamp
+        if: failure()
+        id: ts
+        run: echo "ts=$(date -u +'%Y%m%d_%H%M%S')" >> "$GITHUB_OUTPUT"
+
+      - name: Dump logs on failure
+        if: failure()
+        run: |
+          make logs-dump > tests/logs/compose-logs_${{ steps.ts.outputs.ts }}.txt
+
+      - name: Upload logs artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-logs_${{ steps.ts.outputs.ts }}
+          path: tests/logs/compose-logs_${{ steps.ts.outputs.ts }}.txt
+
+      - name: Stop stack
+        if: always()
+        run: make clean
