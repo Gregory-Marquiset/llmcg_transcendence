@@ -1,5 +1,3 @@
-# Test
-
 This project has been created as part of the 42 curriculum by [lobriott](https://profile.intra.42.fr/users/lobriott), [lzaengel](https://profile.intra.42.fr/users/lzaengel), [cdutel](https://profile.intra.42.fr/users/cdutel), [gmarquis](https://profile.intra.42.fr/users/gmarquis).
 
 # ft_transcendence — 42 Gamification Platform
