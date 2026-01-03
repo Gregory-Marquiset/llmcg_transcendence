@@ -3,7 +3,7 @@ import { LogTitle, Footer, Background, HeaderBar, LeftMenu} from '../../../compo
 import './Profile.css' 
 import { useState, useEffect } from 'react'
 import { profilepicture } from '../../../assets'
-
+import { AuthProvider } from '../../../context/AuthContext'
 function Profile() {
   const [userData, setUserData] = useState ({
       id: '',
@@ -51,7 +51,11 @@ function Profile() {
               <img src={userData.avatar_path} className='profilepic'/>
             </div>
               <div className='personal-infos'>
-                Mes informations personnelles
+                <h3>Mes informations personnelles</h3>
+                <br/>
+                <h4>{userData.username}</h4>
+                <br/>
+                <h4>Since :{userData.createdAt}</h4>
               </div>
               <div className='personal-infos'>
                   Mes badges

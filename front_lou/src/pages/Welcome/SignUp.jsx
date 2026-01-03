@@ -37,8 +37,8 @@ function SignUp() {
     console.log('Status:', response.status)
     console.log('Content-Type:', response.headers.get('content-type'))
     const data = await response.json()// Parse la réponse
-    if (response.ok) // response.ok = true si status 200-299
-      navigate('/signIn')  // Redirige vers login
+    if (!response.ok) // response.ok = true si status 200-299
+        navigate('/signin')  // Redirige vers login
     else 
         console.error('Erreur:', data) // Affiche un message d'erreur à l'user
     
