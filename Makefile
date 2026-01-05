@@ -86,7 +86,6 @@ pull:
 ## Build & démarre en détaché
 up:
 	$(COMPOSE) up -d --build
-	cd front_lou && npm install && npm run dev
 
 ## Démarre en mode attach (utile pour voir les logs en direct)
 up-fg:

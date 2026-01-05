@@ -1,102 +1,19 @@
 #version: "3.8"
 
 services:
-  # ####### NGINX #######
-  # gateway:
-  #   build:
-  #     context: ../frontend
-  #     dockerfile: Dockerfile
-  #   container_name: gateway
-  #   ports:
-  #     - "8080:80"
-  #   expose:
-  #     - "81"
-  #   restart: unless-stopped
-  #   networks:
-  #     - internal
-  #   volumes:
-  #     - gateway_logs:/var/log/nginx
-  #     - gateway_certs:/etc/nginx/certs
+  front:
+    build:
+      context: ./services/frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - users-service
+    networks:
+      - backend
 
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "wget -qO- http://localhost || exit 1"]
-  #     interval: 10s
-  #     timeout: 3s
-  #     retries: 10
-  
-  # ####### NGINX EXPORTER #######
-  # nginx_exporter:
-  #   image: nginx/nginx-prometheus-exporter:latest
-  #   container_name: nginx_exporter
-  #   command:
-  #     - "--nginx.scrape-uri=http://gateway:81/stub_status"
-  #   networks:
-  #     - internal
-  #   expose:
-  #     - "9113"
-  #   depends_on:
-  #     - gateway
-    
-  # ####### BLACKBOX EXPORTER #######
-  # blackbox_exporter:
-  #   build: 
-  #     context: ../infra/metrics/blackbox
-  #   container_name: blackbox_exporter
-  #   restart: unless-stopped
-  #   networks:
-  #     - internal
-  #   expose:
-  #     - "9115"
-  #   depends_on:
-  #     - gateway
-    
-  # ####### PROMETHEUS #######
-  # prometheus:
-  #   build:
-  #     context: ../infra/metrics/prometheus
-  #   container_name: prometheus
-  #   command:
-  #     - --config.file=/etc/prometheus/prometheus.yml
-  #     - --storage.tsdb.path=/prometheus
-  #     - --storage.tsdb.retention.time=15d
-  #   volumes:
-  #     - prom_data:/prometheus
-  #   restart: unless-stopped
-  #   ports:
-  #     - "9090:9090"
-  #   networks:
-  #     - internal
-  #   depends_on:
-  #     - nginx_exporter
-  #     - blackbox_exporter
-
-  # ####### GRAFANA #######
-  # grafana:
-  #   build:
-  #     context: ../infra/metrics/grafana
-  #   container_name: grafana
-  #   volumes:
-  #     - grafana_data:/var/lib/grafana
-  #   environment:
-  #     - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-  #     - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-  #     - GF_SECURITY_DISABLE_LOGIN_FORM=${GF_SECURITY_DISABLE_LOGIN_FORM}
-  #     - GF_SECURITY_ALLOW_EMBEDDING=${GF_SECURITY_ALLOW_EMBEDDING}
-  #     - GF_AUTH_ANONYMOUS_ENABLED=${GF_AUTH_ANONYMOUS_ENABLED}
-  #     - GF_USERS_ALLOW_SIGN_UP=${GF_USERS_ALLOW_SIGN_UP}
-  #     - GF_AUTH_DISABLE_SIGNOUT_MENU=${GF_AUTH_DISABLE_SIGNOUT_MENU}
-  #   restart: unless-stopped
-  #   ports:
-  #     - "3000:3000"
-  #   networks:
-  #     - internal
-  #   depends_on:
-  #     - prometheus
-
-  ####### POSTGRESQL #######
   postgres:
     build:
-      context: ./database
+      context: ./services/database
     container_name: postgresql_cont
     volumes:
       - postgresql_data:/var/lib/postgresql/data
@@ -171,37 +88,8 @@ services:
       - postgres
       - gateway
 
-  ####### TILT #######
-  # tilt:
-  #   build:
-  #     context: ./metrics/tilt
-  #     dockerfile: Dockerfile
-  #     args:
-  #       DOCKER_GID: "${DOCKER_GID}"
-  #   container_name: tilt
-  #   user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
-  #   working_dir: /app
-  #   volumes:
-  #     - .:/app
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - tilt_home:/home/tilt
-  #   environment:
-  #     - DOCKER_HOST=unix://${XDG_RUNTIME_DIR:-/run/user/1000}/docker.sock
-  #     - HOME=/home/tilt
-  #   command: ["tilt", "up", "--host=0.0.0.0"]
-  #   ports:
-  #     - "10350:10350"
-  #   netwo
-  #     - internal
-
 networks:
-  internal:
   backend:
 
 volumes:
-  gateway_logs:
-  gateway_certs:
-  prom_data:
-  grafana_data:
   postgresql_data:
-  # tilt_home:
