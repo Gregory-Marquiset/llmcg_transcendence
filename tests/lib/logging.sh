@@ -11,7 +11,7 @@ test()      { printf "%s" " [${ON}${MAG}${SEP}${BLINK}${OFF}"   "   TEST   " "${
 info()      { printf "%s" " [${ON}${CYA}${OFF}"                 "   INFO   " "${RES}] " "$*"; ret; }
 logs()      { printf "%s" " [${ON}${BLU}${OFF}"                 "   LOGS   " "${RES}] " "$*"; ret; }
 warn()      { printf "%s" " [${ON}${YEL}${OFF}"                 "   WARN   " "${RES}] " "$*"; ret; }
-skiped()    { printf "%s" " [${ON}${BRO}${OFF}"                 "  SKIPED  " "${RES}] " "$*"; ret; }
+skiped()    { printf "%s" " [${ON}${BRO}${OFF}"                 "   SKIP   " "${RES}] " "$*"; ret; }
 
 ok()        { printf "%s" " [${ON}${GRE}${OFF}"                 "    OK    " "${RES}] " "$*"; ret; }
 pass()      { printf "%s" " [${ON}${LGR}${OFF}"                 "   PASS   " "${RES}] " "$*"; ret; }

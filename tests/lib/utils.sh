@@ -132,7 +132,7 @@ local_resume()
     fi
 
     if [ "$L_COUNT" -eq 0 ] || { [ "$L_OK" -eq 0 ] && [ "$L_KO" -eq 0 ]; }; then
-        skiped "script skiped ($_dur_str)"
+        skiped "script skipped ($_dur_str)"
         ret; separator; ret; ret
         G_ERRNO=2
     else

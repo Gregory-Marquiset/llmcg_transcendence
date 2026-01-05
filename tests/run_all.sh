@@ -15,7 +15,7 @@ require_cmd curl
 require_cmd grep
 
 ret; separator; ret
-launch "Lancement des tests depuis: $NAME"
+launch "Run tests from $NAME"
 separator; ret
 
 for _t in "$DIR"/*/[0-9][0-9]_*__*.sh; do

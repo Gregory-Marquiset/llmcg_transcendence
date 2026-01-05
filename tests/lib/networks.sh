@@ -96,7 +96,7 @@ net_wget_http()
     logs net wget "$url"
 
     if [ "$NET_NAME" = "" ]; then
-        ko "valide [ net_exists <network_name> ] test first"
+        ko "valid [ net_exists <network_name> ] test first"
         L_KO=$((L_KO + 1))
         L_ERRNO=1
         ret
@@ -143,7 +143,7 @@ net_wget_https()
     logs net wget_https "$url"
 
     if [ "$NET_NAME" = "" ]; then
-        ko "valide [ net_exists <network_name> ] test first"
+        ko "valid [ net_exists <network_name> ] test first"
         L_KO=$((L_KO + 1))
         L_ERRNO=1
         ret

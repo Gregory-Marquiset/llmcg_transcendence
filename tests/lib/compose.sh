@@ -19,13 +19,13 @@ compose_config()
 
     if [ "$1" = "v" ]; then
         if compose config; then
-            ok compose config valide
+            ok compose config valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose config invalide
+            ko compose config invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -33,13 +33,13 @@ compose_config()
         fi
     else
         if compose config > /dev/null 2>&1; then
-            ok compose config valide
+            ok compose config valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose config invalide
+            ko compose config invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -56,13 +56,13 @@ compose_build()
 
     if [ "$1" = "v" ]; then
         if compose build --no-cache; then
-            ok compose build valide
+            ok compose build valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose build invalide
+            ko compose build invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -70,13 +70,13 @@ compose_build()
         fi
     else
         if compose build --no-cache > /dev/null 2>&1; then
-            ok compose build valide
+            ok compose build valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose build invalide
+            ko compose build invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -93,13 +93,13 @@ compose_up()
 
     if [ "$1" = "v" ]; then
         if compose up -d --build --remove-orphans; then
-            ok compose up valide
+            ok compose up valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose up invalide
+            ko compose up invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -107,13 +107,13 @@ compose_up()
         fi
     else
         if compose up -d --build --remove-orphans > /dev/null 2>&1; then
-            ok compose up valide
+            ok compose up valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose up invalide
+            ko compose up invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -130,13 +130,13 @@ compose_down()
 
     if [ "$1" = "v" ]; then
         if compose down -v --remove-orphans; then
-            ok compose down valide
+            ok compose down valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose down invalide
+            ko compose down invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
@@ -144,13 +144,13 @@ compose_down()
         fi
     else
         if compose down -v --remove-orphans > /dev/null 2>&1; then
-            ok compose down valide
+            ok compose down valid
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
         else
-            ko compose down invalide
+            ko compose down invalid
             L_KO=$((L_KO + 1))
             L_ERRNO=1
             ret
