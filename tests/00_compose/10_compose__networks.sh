@@ -11,8 +11,10 @@ LOG_LIB_FILE="$ROOT/lib/lib.sh"
 
 local_init
 
-# net_exists "internal"
+net_exists "net_db"
 
-# net_exists "backend"
+net_exists "backend"
+
+net_exists "gate_bakend"
 
 local_resume

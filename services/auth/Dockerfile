@@ -1,16 +1,21 @@
-FROM node:20
+# ---- deps stage (prod deps only) ----
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY services/auth/package*.json ./
+RUN npm ci --omit=dev
 
+# ---- runtime stage ----
+FROM node:20-alpine AS runtime
 WORKDIR /app
 
-COPY services/auth/package*.json ./
-RUN npm install
+ENV NODE_ENV=production
 
+# node_modules depuis deps
+COPY --from=deps /app/node_modules ./node_modules
+
+# code
 COPY services/auth/ ./auth/
 COPY services/shared/ ./shared/
 
 WORKDIR /app/auth
-
-EXPOSE 5000
-ENV HOST=0.0.0.0 PORT=5000
-
 CMD ["node", "authServer.js"]

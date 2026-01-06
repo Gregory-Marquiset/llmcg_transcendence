@@ -1,31 +1,24 @@
 #version: "3.8"
 
 services:
-  front:
-    build:
-      context: ./services/frontend
-    ports:
-      - "5173:80"
-    depends_on:
-      - users-service
-    networks:
-      - gate
+
+### Database
 
   postgres:
     build:
       context: ./services/database
-    container_name: postgresql_cont
-    volumes:
-      - postgresql_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-    restart: unless-stopped
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
       - backend
+      - net_db
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -34,64 +27,131 @@ services:
 
   adminer:
     image: adminer:latest
-    container_name: adminer_cont
-    restart: unless-stopped
     ports:
       - "8080:8080"
     networks:
-      - backend
+      - net_db
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "php -r \"exit(@file_get_contents('http://127.0.0.1:8080')===false);\""]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+### Backend
 
   gateway:
     build:
       context: .
       dockerfile: ./services/gateway/Dockerfile
-    container_name: gateway_cont
     environment:
-      - JWT_SECRET=${JWT_SECRET}
-    restart: unless-stopped
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+    expose:
+      - "5000"
     ports:
       - "5000:5000"
     networks:
       - backend
-      - gate
+      - gate_backend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
   
   auth-service:
     build:
       context: .
       dockerfile: ./services/auth/Dockerfile
-    container_name: auth_cont
     environment:
-      - JWT_SECRET=${JWT_SECRET}
-      - DATABASE_URL=${DATABASE_URL}
-    restart: unless-stopped
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+    expose: 
+      - "5000"
     networks:
       - backend
     depends_on:
-      - postgres
-      - gateway
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
 
   users-service:
     build:
       context: .
       dockerfile: ./services/users/Dockerfile
-    container_name: users_cont
     environment:
-      - JWT_SECRET=${JWT_SECRET}
-      - DATABASE_URL=${DATABASE_URL}
-    restart: unless-stopped
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+    expose:
+      - "5000"
     networks:
       - backend
     depends_on:
-      - postgres
       - gateway
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+### Frontend
+
+  frontend:
+    build:
+      context: ./services/frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      gateway:
+        condition: service_healthy
+    networks:
+      - gate_backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+### Config
 
 networks:
   backend:
-  gate:
+  gate_backend:
+  net_db:
 
 volumes:
   postgresql_data:

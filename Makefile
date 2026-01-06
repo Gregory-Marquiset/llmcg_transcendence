@@ -127,6 +127,8 @@ exec:
 test:
 	@sh tests/run_all.sh
 
+re:	nuke up
+
 ## Rebuild tout sans cache puis recrée/redémarre les conteneurs
 no-cache:
 	@$(COMPOSE) build --no-cache
