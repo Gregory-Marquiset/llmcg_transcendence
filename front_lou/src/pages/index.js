@@ -11,4 +11,5 @@ export { default as ExportData } from './Dashboard/ExportData/ExportData'
 export { default as About } from './Dashboard/About/About'
 export { default as Profile } from './Dashboard/Profile/Profile'
 export { default as Settings } from './Dashboard/Settings/Settings'
+export { default as SetProfile } from './Dashboard/Profile/SetProfile/SetProfile.jsx'
 

@@ -1,9 +1,10 @@
 import '../../../styles/App.css'
-import { LogTitle, Footer, Background, HeaderBar, LeftMenu} from '../../../components'
+import { LogTitle, Footer, Background, HeaderBar, LeftMenu, Button} from '../../../components'
 import './Profile.css' 
 import { useState, useEffect } from 'react'
 import { profilepicture } from '../../../assets'
 import { useAuth } from '../../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 function Profile() {
   const [userData, setUserData] = useState ({
@@ -13,14 +14,12 @@ function Profile() {
       avatar_path: '',
       twofa_enabled: ''
   });
-    const { authUser,
-          setAuthUser,
-          isLoggedIn,
-          setIsLoggedIn,
-          accessToken,
-          setAccessToken
+  const navigate = useNavigate();
+  const [modify, setModify] = useState(false);
+    const {
+          accessToken
         } = useAuth();
-  
+  const handleOnClick = () =>  navigate("/dashboard/profile/modify");
   useEffect(() => {
   const fetchProfile = async () => {
     try {
@@ -31,7 +30,7 @@ function Profile() {
         }
       });
       if (!responseMe.ok) {
-        console.error("Error fetching info");
+        console.error("Error while fetching info");
         return;
       }
       const fetchedUserData = await responseMe.json();
@@ -55,16 +54,17 @@ function Profile() {
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
-          <LogTitle text="Mon profil"/>
+          {/* <LogTitle text="Mon profil"/> */}
           <div className='profile-wrapper'>
             <div className='profile-picture'>
-              <img src={userData.avatar_path} className='profilepic'/>
+              <img src={profilepicture || userData.avatar_path} className='profilepic'/>
             </div>
               <div className='personal-infos'>
-                <h3 className='div-title'>Mes informations personnelles</h3>
-                <h4 className='infos'> Name : {userData.username}</h4>
-                <h4 className='infos'> Email : {userData.email}</h4>
-                <h4 className='infos'> Campus : (// set le campus via 42)</h4>
+                  <h3 className='div-title'>Mes informations personnelles</h3>
+                  <h4 className='infos'> <strong>Name        :   </strong>  {userData.username}</h4>
+                  <h4 className='infos'> <strong>Email        :   </strong> {userData.email}</h4>
+                  <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
+                  <Button text="Modifier mes infos" onClick={handleOnClick}/>
               </div>
               <div className='personal-infos'>
                   <h3 className='div-title'>Mes badges</h3>

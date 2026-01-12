@@ -37,10 +37,12 @@
     /* display: flex; */
     border: solid #858585 10px;
     border-radius: 40px;
-    height: 250px;
+    height: 300px;
     background-color: whitesmoke;
-    justify-content: center;
+    /* justify-content: center; */
     transition: all 300ms;
+
+
 }
 .div-title{
     font-family: Arial, Helvetica, sans-serif;
@@ -52,4 +54,13 @@
   box-shadow: 0 8px 16px #eab2bb;
   border: #eab2bb solid 10px;
   background-color: white;
+}
+
+.infos{
+    font-size: 20px;
+    text-align: start;
+    font-weight: 500;
+    margin: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    white-space: pre;
 }

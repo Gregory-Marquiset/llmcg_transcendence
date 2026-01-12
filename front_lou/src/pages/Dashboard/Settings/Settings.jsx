@@ -4,7 +4,7 @@ import { LogTitle } from '../../../components'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Footer, Background, HeaderBar, LeftMenu } from '../../../components'
-import { useAuth } from '../../../context/AuthContext'
+
 function Settings() {
   const [openSection, setOpenSection] = useState(null)
 
