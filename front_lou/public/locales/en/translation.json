@@ -1,0 +1,31 @@
+{
+    "home":{
+        "login": "Sign in",
+        "register": "Sign Up",
+        "login42": "Sign in with 42",
+        "language": "Change language"
+    },
+    "signup":{
+        "username":"Username :",
+        "email": "Email adress :",
+        "password": "Password :",
+        "confirm": "Confirm Password :",
+        "submit": "Create an account :",
+        "errors": {
+            "password_mismatch": "Passwords are not matching",
+            "registration_failed": "Registration failed",
+            "network": "Network error"
+        },
+        "success": "Account created succesfully"
+    },
+        "signin":{
+        "email": "Email adress :",
+        "password": "Password :",
+        "password_reset":" Forgot password?",
+        "submit": "Sign in",
+        "errors": {
+            "login_failed": "sign in failed",
+            "network": "Network error"
+        }
+    }
+}

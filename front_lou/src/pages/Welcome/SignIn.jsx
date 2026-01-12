@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { useState } from 'react'
 import { useEffect } from 'react'
-
+import { useTranslation } from 'react-i18next'
 
 function SignIn(){
+    const { t } = useTranslation()
     const { authUser,
         setAuthUser,
         isLoggedIn,
@@ -36,7 +37,7 @@ function SignIn(){
         });
         if(!response.ok)
         {
-          alert("Login failed")
+          alert(t('signin.errors.login_failed'))
           return;
         }
 
@@ -63,7 +64,7 @@ function SignIn(){
         setIsLoggedIn(true);
 
         } catch (err) {
-        alert("Network error: " + err.message);
+            alert(`${t('signin.errors.network')}: ${err.message}`)
         }
 
     }
@@ -89,7 +90,7 @@ function SignIn(){
                     <form onSubmit={manageLogIn} className="space-y-6">
                         <div className="flex items-center gap-4">
                             <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] font-semibold text-lg w-40 text-right">
-                                Adresse mail :
+                                {t('signin.email')}
                             </label>
                             <input 
                                 type="email" 
@@ -101,7 +102,7 @@ function SignIn(){
                         
                         <div className="flex items-center gap-4">
                             <label htmlFor="pass" className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] font-semibold text-lg w-40 text-right">
-                                Mot de passe :
+                               {t('signin.password')}
                             </label>
                             <input 
                                 className="feild px-4 py-2 rounded-lg w-80" 
@@ -116,7 +117,7 @@ function SignIn(){
                         
                         <div className="text-center">
                             <a href="/" className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#545454] to-[#eab2bb]">
-                                Mot de passe oublié ?
+                                {t('signin.password_reset')}
                             </a>
                         </div>
                         
@@ -126,7 +127,7 @@ function SignIn(){
                             <input
                                 type="submit" 
                                 className="submit cursor-pointer" 
-                                value="Se connecter"
+                                value={t('signin.submit')}
                             />
                         </div>
                     </form>

@@ -4,6 +4,7 @@ import { logoheader, favicon } from '../../assets'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 function SignUp() {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ function SignUp() {
   const [password, setPassword] = useState("")
   const [confpassword, setconfPassword] = useState("")
   const [username, setUsername] = useState("")
+
+  const { t } = useTranslation()
 
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
@@ -24,7 +27,7 @@ function SignUp() {
         
         if(password !== confpassword)
         {
-          alert("Passwords are differents");
+          alert(t('signup.errors.password_mismatch'));
           return;
         }
         const payload = { username, email, password };
@@ -39,13 +42,13 @@ function SignUp() {
 
         if(!response.ok)
         {
-          alert("Registration failed")
+          alert(t('signup.errors.registration_failed'))
           return;
         }
-        alert("success")
+        alert(t('signup.success'))
         navigate('/signIn');
         } catch (err) {
-        alert("Network error: " + err.message);
+        alert(`${t('signup.errors.network')}: ${err.message}`)
     }
   }
   const handleOnClick = () => handleNavigateWithDelay('/', 600)
@@ -73,7 +76,7 @@ function SignUp() {
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
-                    Username :
+                    {t('signup.username')}
                   </label>
                   <input
                     type="text"
@@ -87,7 +90,7 @@ function SignUp() {
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
-                    Adresse mail :
+                    {t('signup.email')}
                   </label>
                   <input
                     type="email"
@@ -104,7 +107,7 @@ function SignUp() {
                     htmlFor="password"
                     className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right"
                   >
-                    Mot de passe :
+                    {t('signup.password')}
                   </label>
                   <input
                     className="feild px-4 py-2 rounded-lg w-80"
@@ -122,7 +125,7 @@ function SignUp() {
                     htmlFor="confirmPassword"
                     className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right"
                   >
-                    Confirmez :
+                    {t('signup.confirm')}
                   </label>
                   <input
                     className="feild px-4 py-2 rounded-lg w-80"
@@ -139,7 +142,7 @@ function SignUp() {
                   <input
                     type="submit"
                     className="submit cursor-pointer"
-                    value="Créer un compte"
+                    value={t('signup.submit')}
                   />
                 </div>
               </motion.div>

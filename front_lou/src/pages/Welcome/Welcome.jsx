@@ -6,6 +6,7 @@ import './WelcomeStyles.css'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
+import { useTranslation } from 'react-i18next'
 
 function Welcome() {
   const navigate = useNavigate()
@@ -21,6 +22,13 @@ function Welcome() {
   const handleSignUp = () => handleNavigateWithDelay('/signUp', 600)
   const handleAuth2 = () => handleNavigateWithDelay('/Auth2', 600)
   
+  const { t, i18n } = useTranslation()
+  const handleLanguageChange = () => {
+    const nextLang = i18n.language === 'fr' ? 'en' : 'fr'
+    i18n.changeLanguage(nextLang)
+    localStorage.setItem('lang', nextLang)
+  }
+
   return (
     <>
       <Background>
@@ -51,16 +59,25 @@ function Welcome() {
             animate={isExiting ? 'exit' : 'visible'}
           >
             <motion.div variants={itemVariants}>
-              <Button onClick={handleSignIn} text="Se connecter" />
+              <Button onClick={handleSignIn} text={t('home.login')}/>
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Button onClick={handleSignUp} text="Créer un compte" />
+              <Button onClick={handleSignUp} text={t('home.register')} />
             </motion.div>
             <motion.div variants={itemVariants}>
               <Separator />
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Button onClick={handleAuth2} text="Se connecter avec 42" />
+              <Button onClick={handleAuth2} text={t('home.login42')} />
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Separator />
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Button
+                onClick={handleLanguageChange}
+                text={t('home.language')}
+              />
             </motion.div>
           </motion.div>
         </div>
