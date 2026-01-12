@@ -1,7 +1,7 @@
 
 
 .content-container {
-    display: flex;
+    /* display: flex; */
     position: static;
     border: solid 7px #858585;
     width: 75%;

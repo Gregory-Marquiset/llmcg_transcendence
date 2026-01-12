@@ -20,12 +20,14 @@ export function useAuth(){
 export function AuthProvider ({ children }) {
     const [authUser, setAuthUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+    const [accessToken, setAccessToken] = useState(null);
     const value = { 
         authUser,
         setAuthUser, 
         isLoggedIn,
-        setIsLoggedIn
+        setIsLoggedIn,
+        accessToken,
+        setAccessToken
     };
     return (
         <AuthContext.Provider value={value}>

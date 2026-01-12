@@ -12,6 +12,42 @@ function SignUp() {
   const [password, setPassword] = useState("")
   const [confpassword, setconfPassword] = useState("")
   const [username, setUsername] = useState("")
+<<<<<<< HEAD
+=======
+
+  const handleChange = (e) => {
+    const {name, value} = e.target //e.target =>input sur lequel on a tape
+    setFormData({                
+      ...formData, //...formData = copie tout l'objet existant
+       [name] : value //e.target.name = l'attribut name de cet input (ex: "username")
+                                  //e.target.value = ce que l'user a tapé [name]: value = met à jour juste la clé qui correspond au name
+    })
+  }
+
+  const handleSubmit = async (e) => {
+  e.preventDefault()  // evite le rechargement de page
+  
+  try {
+    const response = await fetch('http://localhost:5000/api/v1/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'  // dit au backend qu'on envoie du JSON
+      },
+      body: JSON.stringify(formData)  // convertit l'objet JS en string JSON
+    })
+    console.log('Status:', response.status)
+    console.log('Content-Type:', response.headers.get('content-type'))
+    const data = await response.json()// Parse la réponse
+    if (!response.ok) // response.ok = true si status 200-299
+        navigate('/signin')  // Redirige vers login
+    else 
+        console.error('Erreur:', data) // Affiche un message d'erreur à l'user
+    
+  } catch (error) {
+    console.error('Erreur réseau:', error) // Affiche un message d'erreur réseau
+  }
+}
+>>>>>>> feat/frontend
 
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
@@ -69,7 +105,10 @@ function SignUp() {
             animate={isExiting ? 'exit' : 'visible'}
           >
             <form onSubmit={manageSignUp} className="space-y-7">
+<<<<<<< HEAD
 
+=======
+>>>>>>> feat/frontend
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
@@ -78,6 +117,22 @@ function SignUp() {
                   <input
                     type="text"
                     className="feild px-4 py-2 rounded-lg w-80"
+<<<<<<< HEAD
+=======
+                    name="lastname"
+                  />
+                </div>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <div className="flex items-center gap-4">
+                  <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
+                    Prénom :
+                  </label>
+                  <input
+                    type="text"
+                    className="feild px-4 py-2 rounded-lg w-80"
+>>>>>>> feat/frontend
                     name="firstname"
                     onChange={(event) => setUsername(event.target.value)}
                   />

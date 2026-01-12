@@ -19,8 +19,7 @@ function Welcome() {
   }
   const handleSignIn = () => handleNavigateWithDelay('/signIn', 300)
   const handleSignUp = () => handleNavigateWithDelay('/signUp', 600)
-  const handleAuth2 = () => handleNavigateWithDelay('/Auth2', 600)
-  
+  const handleAuth2 = () => window.location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-9743d53b19228f117a0398613384ce2f24e93b2e8dfac976803e09761ddd8a6d&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2F&response_type=code';
   return (
     <>
       <Background>
