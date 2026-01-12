@@ -4,9 +4,9 @@ export default function ({text}){
     return (
         <>
             <br/>
-            <h1 className="log-title">
+            <div className="log-title">
                 {text}
-            </h1>
+            </div>
         </>
     )
 }

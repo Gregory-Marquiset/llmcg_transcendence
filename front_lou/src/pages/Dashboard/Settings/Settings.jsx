@@ -18,9 +18,9 @@ function Settings() {
         <div className="page-wrapper">
           <HeaderBar />
           <div className="content-wrapper">
-            <h1 className="settings-title">
+            <h2 className="settings-title">
               <LogTitle text="Réglages" />
-            </h1>
+            </h2>
 
             <section onClick={() => handleSection('profile')}>
               <LogTitle text="Mon profil" />

@@ -6,23 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { useState } from 'react'
 import { useEffect } from 'react'
-<<<<<<< HEAD
-
-=======
->>>>>>> feat/frontend
-
 function SignIn(){
     const { authUser,
         setAuthUser,
         isLoggedIn,
-<<<<<<< HEAD
-        setIsLoggedIn} = useAuth();
-=======
         setIsLoggedIn,
         accessToken,
         setAccessToken
             } = useAuth();
->>>>>>> feat/frontend
         const navigate = useNavigate();
         const [email, setEmail] = useState("")
         const [password, setPassword] = useState("")
@@ -48,7 +39,6 @@ function SignIn(){
         {
           alert("Login failed")
           return;
-<<<<<<< HEAD
         }
 
 
@@ -65,32 +55,13 @@ function SignIn(){
             console.error("Error fetching info ");
             return ;
         }
-
-=======
-        }
-
-        // request info from db from back
-        const data = await response.json();
-         setAccessToken(data.access_token);
-        const responseMe = await fetch('/api/v1/auth/me', {
-            method: 'GET',
-            headers: {
-            'Authorization': `Bearer ${data.access_token}`
-            }
-        });
-        if (!responseMe.ok) {
-            console.error("Error fetching info ");
-            return ;
-        }
-
->>>>>>> feat/frontend
         const userData = await responseMe.json();
         console.log(userData);
         //process information and navigateto dashboard
         setAuthUser({Name: userData.username})
         navigate('/dashboard');
         setIsLoggedIn(true);
-
+        setAccessToken(data.access_token)
         } catch (err) {
         alert("Network error: " + err.message);
         }

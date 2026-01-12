@@ -12,8 +12,6 @@ function SignUp() {
   const [password, setPassword] = useState("")
   const [confpassword, setconfPassword] = useState("")
   const [username, setUsername] = useState("")
-<<<<<<< HEAD
-=======
 
   const handleChange = (e) => {
     const {name, value} = e.target //e.target =>input sur lequel on a tape
@@ -47,7 +45,6 @@ function SignUp() {
     console.error('Erreur réseau:', error) // Affiche un message d'erreur réseau
   }
 }
->>>>>>> feat/frontend
 
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
@@ -105,10 +102,6 @@ function SignUp() {
             animate={isExiting ? 'exit' : 'visible'}
           >
             <form onSubmit={manageSignUp} className="space-y-7">
-<<<<<<< HEAD
-
-=======
->>>>>>> feat/frontend
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
@@ -117,8 +110,6 @@ function SignUp() {
                   <input
                     type="text"
                     className="feild px-4 py-2 rounded-lg w-80"
-<<<<<<< HEAD
-=======
                     name="lastname"
                   />
                 </div>
@@ -132,7 +123,6 @@ function SignUp() {
                   <input
                     type="text"
                     className="feild px-4 py-2 rounded-lg w-80"
->>>>>>> feat/frontend
                     name="firstname"
                     onChange={(event) => setUsername(event.target.value)}
                   />

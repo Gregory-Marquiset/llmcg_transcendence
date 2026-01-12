@@ -11,7 +11,7 @@ function Profile() {
       username: '',
       email: '',
       avatar_path: '',
-      createdAt: ''
+      twofa_enabled: ''
   });
     const { authUser,
           setAuthUser,
@@ -20,35 +20,36 @@ function Profile() {
           accessToken,
           setAccessToken
         } = useAuth();
+  
   useEffect(() => {
-    const fetchProfile = async () => {
+  const fetchProfile = async () => {
     try {
-            const reponse = await fetch('http://localhost:5000/api/v1/auth/me', {
-                method : 'GET',
-                headers :{
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer {accessToken}`
-                },
-                credentials: 'include'
-            })
-            if (reponse.ok){
-                const data = await reponse.json();
-                console.log(data.avatar_path);
-                setUserData(data);
-            }
+      const responseMe = await fetch('/api/v1/auth/me', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
         }
-        catch (err){
-            console.error('Erreur :', err)
-        }
+      });
+      if (!responseMe.ok) {
+        console.error("Error fetching info");
+        return;
       }
-  fetchProfile()
-     }, [setAuthUser]);
-     if (!userData.avatar_path){
+      const fetchedUserData = await responseMe.json();
+      console.log(fetchedUserData);
       setUserData({
-        ...userData,
-        avatar_path : profilepicture
-      })
-     }
+        ...fetchedUserData,
+        avatar_path: profilepicture || fetchedUserData.avatar_path 
+      });
+      
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  }
+    if (accessToken) {
+      fetchProfile();
+    }
+  }, [accessToken]);
+
   return (
     <>
       <Background>
@@ -61,12 +62,12 @@ function Profile() {
             </div>
               <div className='personal-infos'>
                 <h3 className='div-title'>Mes informations personnelles</h3>
-                <h4> Name : {authUser?.Name}</h4>
-                <h4> Email : {authUser?.email}</h4>
-                <p> {accessToken}</p>
+                <h4 className='infos'> Name : {userData.username}</h4>
+                <h4 className='infos'> Email : {userData.email}</h4>
+                <h4 className='infos'> Campus : (// set le campus via 42)</h4>
               </div>
               <div className='personal-infos'>
-                  Mes badges
+                  <h3 className='div-title'>Mes badges</h3>
               </div>
           </div>
           </div>
