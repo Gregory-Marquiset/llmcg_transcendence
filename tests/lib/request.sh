@@ -4,16 +4,21 @@
 # =========
 
 # v -> imprime la reponse
-
-http_code_match()
+_code_match()
 {
     expected="$1"
     actual="$2"
 
-    echo "$expected" | grep -q "," 2>/dev/null && {
-        echo "$expected" | tr ',' '\n' | grep -qx "$actual"
+    actual="$(printf '%s' "$actual" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+    if printf '%s' "$expected" | grep -q "," 2>/dev/null; then
+        printf '%s' "$expected" \
+          | tr -d '\r' \
+          | tr ',' '\n' \
+          | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' \
+          | grep -Fxq "$actual"
         return $?
-    }
+    fi
 
     case "$expected" in
         [1-5]xx)
@@ -23,8 +28,10 @@ http_code_match()
         ;;
     esac
 
+    expected="$(printf '%s' "$expected" | tr -d '\r' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
     [ "$expected" = "$actual" ]
 }
+
 
 # Usage: https_get [v] <url> <expected>
 https_get()
@@ -57,7 +64,7 @@ https_get()
         code="$(curl -sS -o /dev/null -w '%{http_code}' "$url" 2>/dev/null || echo "000")"
     fi
 
-    if http_code_match "$expected" "$code"; then
+    if _code_match "$expected" "$code"; then
         ok https GET "code=$code"
         L_OK=$((L_OK + 1))
         L_ERRNO=0
@@ -75,11 +82,11 @@ https_get()
 }
 
 #   https_post [v][t] <url> <expected> <data>
-https_post() {
-    local flags="" verbose="" want_token=""
-    local url expected data
-    local body http_code tmpfile token
-    local -a curl_args
+https_post()
+{
+    flags=""
+    verbose=""
+    want_token=""
 
     case "${1:-}" in
         v|t|vt|tv)
@@ -88,8 +95,8 @@ https_post() {
             ;;
     esac
 
-    [ -n "$flags" ] && echo "$flags" | grep -q "v" && verbose="1"
-    [ -n "$flags" ] && echo "$flags" | grep -q "t" && want_token="1"
+    echo "$flags" | grep -q "v" && verbose="1"
+    echo "$flags" | grep -q "t" && want_token="1"
 
     url="$1"
     expected="${2:-200}"
@@ -108,55 +115,52 @@ https_post() {
 
     tmpfile="$(mktemp)"
 
-    curl_args=(
-        --silent --show-error
-        -o "$tmpfile"
-        -w '%{http_code}'
-        -H 'Content-Type: application/json'
-        -d "$data"
-        "$url"
-    )
-    [ -n "$verbose" ] && curl_args=(-v "${curl_args[@]}")
-
-    http_code="$(curl "${curl_args[@]}")" || {
-        body="$(cat "$tmpfile" 2>/dev/null)"
-        rm -f "$tmpfile"
-        ko https POST "curl failed"
-        [ -n "$body" ] && echo "$body"
-        L_KO=$((L_KO + 1))
-        L_ERRNO=1
-        ret
-        return 1
-    }
+    if [ -n "$verbose" ]; then
+        http_code="$(curl -v --silent --show-error -o "$tmpfile" -w '%{http_code}' \
+            -H 'Content-Type: application/json' -d "$data" "$url")" || {
+            body="$(cat "$tmpfile" 2>/dev/null)"
+            rm -f "$tmpfile"
+            ko https POST "curl failed"
+            [ -n "$body" ] && echo "$body"
+            L_KO=$((L_KO + 1))
+            L_ERRNO=1
+            ret
+            return 1
+        }
+    else
+        http_code="$(curl --silent --show-error -o "$tmpfile" -w '%{http_code}' \
+            -H 'Content-Type: application/json' -d "$data" "$url")" || {
+            body="$(cat "$tmpfile" 2>/dev/null)"
+            rm -f "$tmpfile"
+            ko https POST "curl failed"
+            [ -n "$body" ] && echo "$body"
+            L_KO=$((L_KO + 1))
+            L_ERRNO=1
+            ret
+            return 1
+        }
+    fi
 
     body="$(cat "$tmpfile")"
     rm -f "$tmpfile"
 
-    if [ "$http_code" != "$expected" ]; then
+    if [ -n "$want_token" ]; then
+        token="$(printf '%s' "$body" \
+            | sed -n 's/.*"access_token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+        if [ -n "$token" ]; then
+            UI_TOKEN="$token"
+        fi
+    fi
+
+    if ! _code_match "$expected" "$http_code"; then
         ko https POST "http_code=$http_code expected=$expected"
-        echo "$body"
         L_KO=$((L_KO + 1))
         L_ERRNO=1
         ret
         return 1
     fi
 
-    if [ -n "$want_token" ]; then
-        token="$(printf '%s' "$body" \
-            | sed -n 's/.*"access_token"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
-
-        if [ -n "$token" ]; then
-            JWT_TOKEN="$token"
-            export JWT_TOKEN
-            [ -n "$verbose" ] && echo "[JWT_TOKEN] $JWT_TOKEN" >&2
-        else
-            [ -n "$verbose" ] && echo "[JWT_TOKEN] not found in response" >&2
-        fi
-    fi
-
     ok https POST "http_code=$http_code"
-    echo "$body"
-
     L_OK=$((L_OK + 1))
     L_ERRNO=0
     ret

@@ -114,6 +114,14 @@ local_init()
     ret
 }
 
+user_info()
+{
+    UI_USERNAME=testos
+    UI_MAIL=test@test.com
+    UI_PASSWORD=1234
+    UI_TOKEN=0
+}
+
 local_resume()
 {
     _end="$(_now_ms)"

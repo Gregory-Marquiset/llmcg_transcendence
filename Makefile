@@ -36,6 +36,7 @@ help:
 	@echo ""
 	@echo "Tests :"
 	@echo "  make test                  - down puis lance tests/run_all.sh"
+	@echo "  make test-re               - lance tests/run_light.sh"
 	@echo "  make test-nc               - nuke puis lance tests/run_all.sh"
 	@echo ""
 	@echo "Nettoyage :"
@@ -124,6 +125,12 @@ logs-tail:
 test: down
 	clear
 	@sh tests/run_all.sh
+	@echo "		http://localhost:5173/"
+	@echo ""
+
+test-re:
+	clear
+	@sh tests/run_light.sh
 	@echo "		http://localhost:5173/"
 	@echo ""
 
