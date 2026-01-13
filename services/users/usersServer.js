@@ -91,6 +91,10 @@ app.setNotFoundHandler((req, reply) => {
 	reply.code(404).send({ message: '404 Not Found' });
 })
 
+app.get('/health', async (req, reply) => {
+	reply.code(200).send({ status: 'ok' });
+});
+
 await app.ready();
 //app.log.info('\nUSERS ROUTES:\n' + app.printRoutes());
 //###### STARTING SERVER ######

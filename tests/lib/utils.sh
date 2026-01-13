@@ -73,7 +73,7 @@ _fail_log_append()
 
     _base="$(_root_dir)"
     LOG_DIR_NAME="${RUN_ID:-$(date +%Y%m%d_%H%M%S)_$$}"
-    LOG_DIR="$_base/logs/${LOG_DIR_NAME}"
+    LOG_DIR="$_base/tests_logs/${LOG_DIR_NAME}"
     FAIL_LOG="$LOG_DIR/fail.log"
 
     mkdir -p "$LOG_DIR" 2>/dev/null || { rm -f "$CAPTURE_TMP" 2>/dev/null || true; return 0; }
@@ -112,6 +112,14 @@ local_init()
     ret; separator; ret; ret
     info "→ RUN $NAME"
     ret
+}
+
+user_info()
+{
+    UI_USERNAME=testos
+    UI_MAIL=test@test.com
+    UI_PASSWORD=1234
+    UI_TOKEN=0
 }
 
 local_resume()

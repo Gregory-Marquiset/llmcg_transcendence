@@ -2,149 +2,159 @@
 # Makefile  (racine du projet)
 # =========
 
-# Utilitaires
-SHELL := /bin/sh
-PROJECT := llmcg_transcendence
-
-# Chemin du compose (pas besoin de cd)
 COMPOSE := docker compose --env-file .env -f docker-compose.yml
+SERVICE ?= project_health
 
-# Par défaut, on cible "gateway" pour les logs/exec ; tu peux surcharger: make logs SERVICE=game
-SERVICE ?= gateway
-
-# Cible par défaut
 .DEFAULT_GOAL := help
+.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci
 
-.PHONY: help show show-config health build pull up up-fg down restart logs logs-all logs-tail logs-dump sh exec test clean no-cache no-cache-service prune nuke
+## <----------------- Helper ----------------->
 
-## Affiche l’aide
 help:
 	@echo ""
 	@echo "Commandes disponibles :"
-	@echo "  make help            - Affiche cette aide"
+	@echo "  make help                  - Affiche cette aide"
 	@echo ""
-	@echo "  make show            - Liste l’état des services"
-	@echo "  make show-config     - Liste l’état de la config compose"
-	@echo "  make health          - Affiche l’état + healthcheck de chaque conteneur"
+	@echo "Build / Run :"
+	@echo "  make build                 - Build les images"
+	@echo "  make up                    - Build puis démarre les services (detach)"
+	@echo "  make up-nc                 - Rebuild et recrée un service (no-cache)"
+	@echo "  make down                  - Stoppe et supprime les conteneurs"
+	@echo "  make restart               - Redémarre proprement (down puis up)"
+	@echo "  make re                    - Redémarre en nettoyant tout (nuke puis up-nc)"
 	@echo ""
-	@echo "  make build           - (Re)build les images"
-	@echo "  make pull            - Récupère les images depuis le registre (si applicable)"
+	@echo "Inspection :"
+	@echo "  make show                  - Liste l’état des services, images, volumes, networks"
+	@echo "  make show-config           - Affiche la config compose résolue"
+	@echo "  make health                - Affiche l’état + healthcheck de chaque conteneur"
 	@echo ""
-	@echo "  make up              - Build & démarre les services en arrière-plan"
-	@echo "  make up-fg           - Démarre en attach (pratique en dev)"
-	@echo "  make down            - Stoppe et supprime les conteneurs"
-	@echo "  make restart         - Redémarre proprement (down puis up)"
+	@echo "Logs :"
+	@echo "  make logs                  - Suit les logs du service (SERVICE=..., défaut: project_health)"
+	@echo "  make logs-tail             - Suit les logs du service (SERVICE=..., 200 dernières lignes)"
+	@echo "  make logs-all              - Suit les logs de tous les services"
+	@echo "  make logs-dump             - Dump logs (utils CI)"
 	@echo ""
-	@echo "  make logs            - Affiche les logs du service (SERVICE=..., défaut: gateway)"
-	@echo "  make logs-all        - Suit les logs de tous les services"
-	@echo "  make logs-tail       - Suit les logs du service (SERVICE=..., 200 dernières lignes)"
-	@echo "  make logs-dump       - Suit les logs de tous les services avec dump pour CI non bloquante"
+	@echo "Tests :"
+	@echo "  make test                  - down puis lance tests/run_all.sh"
+	@echo "  make test-re               - lance tests/run_light.sh"
+	@echo "  make test-nc               - nuke puis lance tests/run_all.sh"
 	@echo ""
-	@echo "  make sh              - Shell dans un service (SERVICE=...)"
-	@echo "  make exec CMD=...    - Exécute une commande dans un service (SERVICE=...)"
+	@echo "Nettoyage :"
+	@echo "  make clean                 - Down + supprime les volumes (DB incluse)"
+	@echo "  make nuke                  - Purge globale (dangereux si d’autres projets tournent)"
 	@echo ""
-	@echo "  make check           - Vérifie que la gateway répond (http://localhost:8080)"
-	@echo ""
-	@echo "  make no-cache        - Rebuild tout sans cache puis recrée/redémarre les conteneurs"
-	@echo "  make no-cache-service- Rebuild sans cache du service (SERVICE=...) puis recrée/redémarre sans deps"
-	@echo ""
-	@echo "  make clean           - Down + supprime les volumes du compose"
-	@echo "  make nuke            - Stoppe tout + purge global (dangereux si d’autres projets tournent)"
+	@echo "Utils CI :"
+	@echo "  make logs-ci               - Dump logs (utils CI)"
+	@echo "  make test-ci               - Lance tests/run_all.sh (utils CI)"
+	@echo "Variables :"
+	@echo "  SERVICE=<name>             - Cible pour logs (ex: make logs SERVICE=gateway)"
 	@echo ""
 
-## Affiche l’état actuel des services
-show:
-	- $(COMPOSE) ls
-	- $(COMPOSE) ls -a
-	- $(COMPOSE) ps
-	- $(COMPOSE) images
-	- $(COMPOSE) volumes
-	- docker network ls
+## <----------------- Build / Run ----------------->
 
-## Affiche l’état attendu des services
-show-config:
-	- $(COMPOSE) config --environment
-	- $(COMPOSE) config --profiles
-	- $(COMPOSE) config --services
-	- $(COMPOSE) config --variables
-	- $(COMPOSE) config --images
-	- $(COMPOSE) config --volumes
-	- $(COMPOSE) config --networks
-
-## Affiche l’état + healthcheck de chaque conteneur
-health:
-	@$(COMPOSE) ps --format "table {{.Name}}\t{{.State}}\t{{.Health}}"
-
-## (Re)build les images
 build:
 	$(COMPOSE) build
 
-## Récupère les images depuis le registre (si tu pushes ailleurs)
-pull:
-	$(COMPOSE) pull
+up: build
+	$(COMPOSE) up -d
+	@echo "		http://localhost:5173/"
 
-## Build & démarre en détaché
-up:
-	$(COMPOSE) up -d --build
-	cd front_lou && npm install && npm run dev
+up-nc:
+	$(COMPOSE) build --no-cache
+	$(COMPOSE) up -d --force-recreate
+	@echo "		http://localhost:5173/"
+	@echo ""
 
-## Démarre en mode attach (utile pour voir les logs en direct)
-up-fg:
-	$(COMPOSE) up --build
-
-## Stoppe & supprime les conteneurs
 down:
 	$(COMPOSE) down
 
-## Redémarre proprement
 restart: down up
 
-## Affiche les logs (par défaut: gateway). Exemple: make logs SERVICE=gateway
+re:	nuke up-nc
+
+## <----------------- Inspection ----------------->
+
+show:
+	@echo ""
+	- $(COMPOSE) ls
+	@echo ""
+	- $(COMPOSE) ls -a
+	@echo ""
+	- $(COMPOSE) ps
+	@echo ""
+	- $(COMPOSE) images
+	@echo ""
+	- $(COMPOSE) volumes
+	@echo ""
+	- docker network ls
+	@echo ""
+
+show-config:
+	@echo ""
+	- $(COMPOSE) config --environment
+	@echo ""
+	- $(COMPOSE) config --profiles
+	@echo ""
+	- $(COMPOSE) config --services
+	@echo ""
+	- $(COMPOSE) config --variables
+	@echo ""
+	- $(COMPOSE) config --images
+	@echo ""
+	- $(COMPOSE) config --volumes
+	@echo ""
+	- $(COMPOSE) config --networks
+	@echo ""
+
+health:
+	@$(COMPOSE) ps --format "table {{.Name}}\t{{.State}}\t{{.Health}}"
+
+## <----------------- Logs ----------------->
+
 logs:
 	$(COMPOSE) logs -f $(SERVICE)
 
-## Suit les logs de tous les services
 logs-all:
 	@$(COMPOSE) logs -f
 
-## Suit les logs du service $(SERVICE) (200 dernières lignes au départ)
 logs-tail:
 	@$(COMPOSE) logs --tail=200 -f $(SERVICE)
 
-## Pour generer les logs si echec en CI
-logs-dump:
-	$(COMPOSE) logs --no-color
+## <----------------- Tests ----------------->
 
-## Ouvre un shell dans un service (par défaut: gateway). Exemple: make sh SERVICE=gateway
-sh:
-	$(COMPOSE) exec $(SERVICE) sh
-
-## Exécute une commande dans un service : make exec SERVICE=gateway CMD="nginx -t"
-exec:
-	@if [ -z "$(CMD)" ]; then echo "Usage: make exec SERVICE=svc CMD=\"...\""; exit 2; fi
-	$(COMPOSE) exec $(SERVICE) sh -lc '$(CMD)'
-
-## Lance run_all.sh
-test:
+test: down
+	clear
 	@sh tests/run_all.sh
+	@echo "		http://localhost:5173/"
+	@echo ""
 
-## Rebuild tout sans cache puis recrée/redémarre les conteneurs
-no-cache:
-	@$(COMPOSE) build --no-cache
-	@$(COMPOSE) up -d --force-recreate
+test-re:
+	clear
+	@sh tests/run_light.sh
+	@echo "		http://localhost:5173/"
+	@echo ""
 
-## Rebuild sans cache uniquement $(SERVICE) puis le recrée/redémarre sans ses dépendances
-no-cache-service:
-	@$(COMPOSE) build --no-cache $(SERVICE)
-	@$(COMPOSE) up -d --no-deps --force-recreate $(SERVICE)
+test-nc: nuke
+	clear
+	@sh tests/run_all.sh
+	@echo "		http://localhost:5173/"
+	@echo ""
 
-## Down + supprime les volumes du compose (attention aux données locales)
+## <----------------- Nettoyage ----------------->
+
 clean:
 	$(COMPOSE) down -v
 
-## Stoppe tout + supprime volumes/orphelins puis purge les images Docker inutilisées (global)
 nuke:
 	@$(COMPOSE) down -v --remove-orphans
 	@docker image prune -af
 	docker system prune -af
 	docker network prune -f || true
+
+## <----------------- Utils CI ----------------->
+
+logs-ci:
+	$(COMPOSE) logs --no-color
+
+test-ci:
+	@sh tests/run_all.sh
