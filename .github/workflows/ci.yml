@@ -20,11 +20,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ensure .env exists
+      - name: Ensure .denv exists
         run: |
-          if [ ! -f .env ]; then
-            echo "# CI env" > .env
-          fi
+          cat .denv > .env
 
       - name: clean tests_logs
         run: |
