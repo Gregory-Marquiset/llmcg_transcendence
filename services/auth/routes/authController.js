@@ -9,7 +9,7 @@ export const authRegister = async function (req, reply) {
 		const hashedPWD = await app.bcrypt.hash(req.body.password);
 
 		await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
-			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "default.jpg"]);
+			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "avatar/default.jpg"]);
 		
 		return (reply.code(201).send({message: "New entry in database"}));
 	} catch (err) {

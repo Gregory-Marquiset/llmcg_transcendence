@@ -52,9 +52,9 @@ export const userMeAvatar = async function (req, reply) {
 		const filetype = data.mimetype.substring(data.mimetype.indexOf("/") + 1);
 		// console.log(`\nuserMeAvatar filetype: ${filetype}\n`);
 		const filename = req.user.id + "_" + Date.now() + "." + filetype;
-		// console.log(`\nuserMeAvatar filename: ${filename}\n`);
-		// console.log(`\nuserMeAvatar uploadsDir: ${uploadsDir}\n`);
-		const filepath = uploadsDir + filename;
+		console.log(`\nuserMeAvatar filename: ${filename}\n`);
+		console.log(`\nuserMeAvatar uploadsDir: ${uploadsDir}\n`);
+		const filepath = uploadsDir + '/' + filename;
 		console.log(`\nuserMeAvatar filepath: ${filepath}\n`);
 		await pipeline(data.file, fs.createWriteStream(filepath));
 
@@ -65,8 +65,8 @@ export const userMeAvatar = async function (req, reply) {
 			fs.unlink(oldFilepath, () => {});
 		}
 
-		await runSql(app.pg, 'UPDATE users SET avatar_path = $1 WHERE id = $2', [filename, req.user.id]);
-		reply.send({ avatar_url: filename });
+		await runSql(app.pg, 'UPDATE users SET avatar_path = $1 WHERE id = $2', [`avatar/${filename}`, req.user.id]);
+		reply.send({ avatar_url: `avatar/${filename}` });
 	} catch (err)
 	{
 		console.error(`\nERROR userMeAvatar: ${err.message}\n`);
@@ -81,11 +81,11 @@ export const userMeAvatar = async function (req, reply) {
 
 export const userProfil = async function (req, reply) {
 	try {
-		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE id = $1`, [req.params.targetId]);
+		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE username = $1`, [req.params.targetUsername]);
 		if (!userInDb)
 			throw httpError(404, "User not found");
 		const isBlocked = await getRowFromDB(app.pg, `SELECT status FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
-			[req.user.id, req.params.targetId]);
+			[req.user.id, userInDb.id]);
 		if (isBlocked?.status === "blocked")
 			throw httpError(401, "Unhauthorized");
 		reply.code(200).send(userInDb);

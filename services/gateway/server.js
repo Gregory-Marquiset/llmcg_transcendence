@@ -64,6 +64,12 @@ await app.register(fastifyHttpProxy, {
 	rewritePrefix: '/docs'
 });
 
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://users-service:5000',
+	prefix: '/avatar',
+	rewritePrefix: '/avatar'
+});
+
 //###### SWAGGER PLUGIN FOR DOCS ######
 // app.register(fastifySwagger, {
 // 	openapi: {
