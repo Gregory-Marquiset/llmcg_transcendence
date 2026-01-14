@@ -2,9 +2,9 @@ import './styles/App.css'
 import { Welcome, SignIn, SignUp, Auth2, Settings, Profile, About, Dashboard, Ressources, Activity, Achievement, Conversations, ExportData } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
-
+import { useTranslation, Trans } from 'react-i18next'
 function App() {
-
+  const { t } = useTranslation()
   return (
       <Routes>
         <Route path="/" element={<Welcome />} />
