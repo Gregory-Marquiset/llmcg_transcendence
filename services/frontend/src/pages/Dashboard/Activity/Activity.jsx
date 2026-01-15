@@ -1,23 +1,25 @@
 import '../../../styles/App.css'
-import { Footer, Background, HeaderBar, LeftMenu} from '../../../components'
-
+import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
+import { useState } from 'react'
 function Activity() {
-  return (
-    <>
-      <Background>
-        <div className="page-wrapper">
-          <HeaderBar/>
-          <div className='core-container'>
-            <LeftMenu/>
-            <div className='content-container'>
-              <h1>HELLO</h1>
+    const [isLoading, setIsLoading] = useState(false);
+    if (isLoading) return <Loading/>
+    return (
+      <>
+        <Background>
+          <div className="page-wrapper">
+            <HeaderBar/>
+            <div className='core-container'>
+              <LeftMenu setIsLoading={setIsLoading}/>
+              <div className='content-container'>
+                <h1>HELLO</h1>
+              </div>
             </div>
           </div>
-        </div>
-        <Footer/>
-      </Background>
-    </>
-  )
+          <Footer/>
+        </Background>
+      </>
+    )
 }
 
 export default Activity

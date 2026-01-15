@@ -16,7 +16,8 @@ function Profile() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [modify, setModify, wantModify, setWantModify] = useState(false);
+  const [modify, setModify] = useState(false);
+  const [onError, setOnError] = useState(false);
     const {
           setIsLoggedIn,
           accessToken
@@ -33,6 +34,7 @@ function Profile() {
       });
       if (!responseLogOut.ok){
         alert("cant logout");
+        setIsLoggedIn(false);
         return ;
       }
        setTimeout(() => {
@@ -57,6 +59,7 @@ function Profile() {
       });
       if (!responseMe.ok) {
         console.error("Error while fetching info");
+        setIsLoggedIn(false);
         return;
       }
       const fetchedUserData = await responseMe.json();
@@ -79,9 +82,9 @@ const handleModify = () => {
   else
     setModify(true);
 }
-const avatarUrl = userData.avatar_path
-  ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
-  : profilepicture;
+const avatarUrl = userData.avatar_path && !onError
+    ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
+    : profilepicture;
 
   if (loading) return <Loading/>
   return (
@@ -91,7 +94,7 @@ const avatarUrl = userData.avatar_path
           <HeaderBar/>
           <div className='profile-wrapper'>
             <div className='profile-picture'>
-              <img src={avatarUrl} className='profilepic' onMouseEnter={handleModify}/>
+              <img onError={() => setOnError(true)} src={avatarUrl} className='profilepic' onMouseEnter={handleModify}/>
               {modify && (<>
                 <p>Changer l'avatar ?</p>
                   <Button text="Oui" onClick={handleOnClick}/><Button text="Non" onClick={() => setModify(false)}/>

@@ -5,14 +5,9 @@ import { useNavigate } from 'react-router-dom'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../components'
 import { useEffect, useState } from 'react'
 
-
 function Dashboard() {
   const [quote, setQuote] = useState();
   const navigate = useNavigate();
-    // const { authUser,
-    //       setAuthUser,
-    //       isLoggedIn,
-    //       setIsLoggedIn} = useAuth();
         const { authUser,
           setAuthUser,
           isLoggedIn,
@@ -20,22 +15,24 @@ function Dashboard() {
           accessToken,
           setAccessToken
         } = useAuth();
-  if(!isLoggedIn)
-  {
-    navigate('/signIn');
-  }
+  const [isLoading, setIsLoading] = useState(false);
 
+useEffect(() => {
+      if (!isLoggedIn) {
+        navigate('/signIn');
+      }
+    }, [isLoggedIn, navigate]);
+
+    if (isLoading) return<Loading/>
   return (
     <>
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
           <div className='core-container'>
-            <LeftMenu/>
+            <LeftMenu setIsLoading={setIsLoading} />
             <div className='content-container'>
-              \ {authUser?.Name}
-              {accessToken}
-              <Loading/>
+              Bonjour {authUser?.Name},
             </div>
           </div>
         </div>
