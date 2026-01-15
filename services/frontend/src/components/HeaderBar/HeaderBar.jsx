@@ -88,9 +88,11 @@ export default function HeaderBar() {
                   onMouseEnter={() => setSelectedIndex(index)}
                   onClick={() => handleSelection(page)}
                   >
-                    <span>{page.icon}</span>
-                    <div>{page.title}</div>
+                    <span className='icon-notification'>{page.icon}</span>
+                    <div className='notif-text'>
+                    <div className='notif-title'><strong>{page.title}</strong></div>
                     <div>{page.description}</div>
+                    </div>
                     <span className="text-slate-400 text-sm font-medium uppercase tracking-wider"/>
                   </div>
                 ))}
