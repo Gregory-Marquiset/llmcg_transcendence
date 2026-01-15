@@ -1,7 +1,7 @@
-import { Button, Footer, LogTitle, Background } from '../../components'
+import { Footer, LogTitle, Background, Loading} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
-import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
+import { containerVariants, itemVariants} from '../../animations'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,7 +14,7 @@ function SignUp() {
   const [confpassword, setconfPassword] = useState("")
   const [username, setUsername] = useState("")
   const { t } = useTranslation()
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
     setTimeout(() => {
@@ -23,10 +23,11 @@ function SignUp() {
   }
   const manageSignUp = async (event) => {
         event.preventDefault();
-        
+        setIsLoading(true);
         if(password !== confpassword)
         {
           alert(t('signup.errors.password_mismatch'));
+          setIsLoading(false);
           return;
         }
         const payload = { username, email, password };
@@ -42,16 +43,18 @@ function SignUp() {
         if(!response.ok)
         {
           alert(t('signup.errors.registration_failed'))
+          setIsLoading(false);
           return;
         }
         alert(t('signup.success'))
+        setIsLoading(false);
         navigate('/signIn');
         } catch (err) {
         alert(`${t('signup.errors.network')}: ${err.message}`)
     }
   }
   const handleOnClick = () => handleNavigateWithDelay('/', 600)
-
+  if (isLoading) return <Loading showHeader={false} showButton={false}/>
   return (
     <Background>
         <div className="header-container">

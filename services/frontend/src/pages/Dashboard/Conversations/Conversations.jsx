@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 function Conversations() {
   const [isLoading, setIsLoading] = useState(false);
-  if (isLoading) return <Loading/>
+  if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
     <>
       <Background>

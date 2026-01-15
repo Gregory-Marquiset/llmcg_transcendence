@@ -13,7 +13,7 @@ export default function LeftMenu({setIsLoading}){
             setIsLoading(false);
             setHide(false);
             navigate(path);
-        }, 100);
+        }, 400);
     }
     if (hide) return <></>
     return (

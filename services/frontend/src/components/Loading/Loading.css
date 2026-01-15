@@ -54,8 +54,8 @@
     animation: spin 2s infinite ease;
     width: 80px;
     height: 80px;
-    position: relative;
     margin: 40px auto;
+    margin-top: 280px;
 }
 
 .progress-bar {
@@ -85,4 +85,10 @@
   background: linear-gradient(90deg, #eab2bb, #eab2bb);
   border-radius: 15px;
   box-shadow: 0 0 10px #eab2bb;
+}
+
+.page-wrapper {
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
 }

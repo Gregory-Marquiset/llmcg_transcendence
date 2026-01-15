@@ -23,7 +23,7 @@ useEffect(() => {
       }
     }, [isLoggedIn, navigate]);
 
-    if (isLoading) return<Loading/>
+    if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
     <>
       <Background>

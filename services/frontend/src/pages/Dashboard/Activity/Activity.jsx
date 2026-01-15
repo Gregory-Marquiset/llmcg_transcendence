@@ -3,7 +3,7 @@ import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../compon
 import { useState } from 'react'
 function Activity() {
     const [isLoading, setIsLoading] = useState(false);
-    if (isLoading) return <Loading/>
+    if (isLoading) return <Loading duration={400}  showButton={false}/>
     return (
       <>
         <Background>
