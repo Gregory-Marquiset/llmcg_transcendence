@@ -16,9 +16,7 @@ function Dashboard() {
         const { authUser,
           setAuthUser,
           isLoggedIn,
-          setIsLoggedIn,
-          accessToken,
-          setAccessToken
+          setIsLoggedIn
         } = useAuth();
   if(!isLoggedIn)
   {
@@ -33,8 +31,6 @@ function Dashboard() {
           <div className='core-container'>
             <LeftMenu/>
             <div className='content-container'>
-              \ {authUser?.Name}
-              {accessToken}
               <Loading/>
             </div>
           </div>

@@ -1,17 +1,23 @@
 import { Button, Footer, LogTitle, Background, Separator } from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
+import { useAuth } from '../../context/AuthContext'
 import '../../styles/App.css'
 import './WelcomeStyles.css'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { useTranslation } from 'react-i18next'
 
 function Welcome() {
   const navigate = useNavigate()
   const [isExiting, setIsExiting] = useState(false)
-
+  const { isLoggedIn } = useAuth()
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard') // redirect automatically
+    }
+  }, [isLoggedIn, navigate]) 
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
     setTimeout(() => {
@@ -27,6 +33,7 @@ function Welcome() {
     i18n.changeLanguage(nextLang)
     localStorage.setItem('lang', nextLang)
   }
+  
 
   return (
     <>
