@@ -1,4 +1,4 @@
-> This project has been created as part of the 42 curriculum by 5 42 [students](#contributors-responsibilities).
+> This project has been created as part of the 42 curriculum by 5 42 [students](#contributors-responsabilities).
 
 # llmcg_transcendence — 42 Gamification Platform
 
