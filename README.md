@@ -438,4 +438,24 @@ This is a 42 school project. No license is provided.
 
 ---
 
+## Contributor
+
+<p align="center">
+  <a href="https://profile.intra.42.fr/users/lobriott">
+    <img alt="Lou's 42 stats" src="https://badge.mediaplus.ma/darkblue/lobriott?1337Badge=off&UM6P=off" />
+  </a>
+  <a href="https://profile.intra.42.fr/users/lzaengel">
+    <img alt="Liam's 42 stats" src="https://badge.mediaplus.ma/darkblue/lzaengel?1337Badge=off&UM6P=off" />
+  </a>
+  <a href="https://profile.intra.42.fr/users/mda-cunh">
+    <img alt="Mathieu's 42 stats" src="https://badge.mediaplus.ma/darkblue/mda-cunh?1337Badge=off&UM6P=off" />
+  </a>
+  <a href="https://profile.intra.42.fr/users/cdutel">
+    <img alt="Charles's 42 stats" src="https://badge.mediaplus.ma/darkblue/cdutel?1337Badge=off&UM6P=off" />
+  </a>
+  <a href="https://profile.intra.42.fr/users/gmarquis">
+    <img alt="Greg's 42 stats" src="https://badge.mediaplus.ma/darkblue/gmarquis?1337Badge=off&UM6P=off" />
+  </a>
+</p>
+
 > And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
