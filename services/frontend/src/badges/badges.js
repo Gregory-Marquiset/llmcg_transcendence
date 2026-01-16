@@ -4,70 +4,97 @@ export const badges = [
         category : 'Ranking',
         level_1 : 'Under top 10',
         nb_1 : 10,
+        path_1: './trophee/trophee_silver.png',
         level_2 : 'Under top 3',
         nb_2 : 3,
+        path_2: './trophee/trophee.png',
         level_3 : 'Top 1',
         nb_3 : 1,
-        path : './trophee.png'
+        path_3: './trophee/trophee_gold.png'
     },
     {
         name : 'Croissance',
         category : 'Productivity',
         level_1 : '10 tasks completed',
         nb_1 : 10,
+        path_1 : './croissance/croissance_silver.png',
         level_2 : '100 tasks completed',
         nb_2 : 100,
+        path_2 : './croissance/croissance.png',
         level_3 : '500 tasks completed',
         nb_3 : 500,
-        path : './croissance.png'
+        path_3 : './croissance/croissance_gold.png'
     },
     {
         name : 'Like',
         category : 'Number of friendship',
         level_1 : '1 friend',
         nb_1 : 1,
+        path_1 : './like/like_silver.png',
         level_2 : '10 friends',
         nb_2 : 10,
+        path_2 : './like/like.png',
         level_3 : '30 friends',
         nb_3 : 30,
-        path : './like.png'
+        path_3 : './like/like_gold.png'
     },
     {
         name : 'Medal',
         category : 'Number of days connected in a row',
         level_1 : '1 week',
         nb_1 : 7,
+        path_1 : './medal/medal_silver.png',
         level_2 : '1 month',
         nb_2 : 30,
+        path_2 : './medal/medal.png',
         level_3 : '3 months',
         nb_3 : 90,
-        path : './medal.png'
+        path_3 : './medal/medal_gold.png'
     },
     {
         name : 'Screen',
         category : 'LogTime recap in the month (reset every month)',
         level_1 : '1 hour',
         nb_1 : 1,
+        path : './screen/screen_silver.png',
         level_2 : '30 hours',
         nb_2 : 30,
+        path : './screen.png',
         level_3 : '100 hours',
         nb_3 : 100,
-        path : './screen.png'
+        path : './screen/screen_gold.png'
     },
     {
         name : 'Spaceship',
         category : 'Seniority on the app',
         level_1 : '1 day',
         nb_1 : 1,
-        level_2 : '1 month',
-        nb_2 : 30,
+        path_1: './spaceship/spaceship_silver.png',
+        level_2 : '3 month',
+        nb_2 : 90,
+        path_2 : './spaceship/spaceship.png',
         level_3 : '1 year',
+        path_3 : './spaceship/spaceship__gold.png',
         nb_3 : 365,
-        path : './spaceship.png'
+        
     },
     {
         name : 'Star',
         category : 'Admin',
-        path : './star.png'
+        logins: ['gmarquis', 'mda-cunh', 'cdutel', 'lzaengel', 'lobriott'],
+        path : './star/star.png'
+    },
+    {
+        name : 'Idea',
+        category : 'Number of upload',
+        level_1 : '1 file uploaded',
+        nb_1 : 1,
+        path_1 : './idea/idea_silver.png',
+        level_2 : '10 file uploaded',
+        nb_2 : 10,
+        path_2 : './idea/idea.png',
+        level_3 : '50 file uploaded',
+        nb_3 : 50,
+        path_3 : './idea/idea_gold.png'
     }
 ]
