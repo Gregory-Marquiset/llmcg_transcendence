@@ -8,6 +8,7 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 
 ## Table of Contents
 
+* [Project overview](#project-overview)
 * [Quickstart and tests](#quickstart)
 * [Architecture](#architecture)
 * [CI/CD & Project management](#cicd--project-management)
