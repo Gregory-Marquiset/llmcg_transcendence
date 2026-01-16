@@ -12,14 +12,12 @@ export default function HeaderBar() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  // const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     if (searchInput.trim() === ''){
       setResults([]);
       setShowResult(false);
       setIsLoading(false);
-      // setIsSearching(false);
       return ;
     }
     try {

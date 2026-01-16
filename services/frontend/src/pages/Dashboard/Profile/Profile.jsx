@@ -14,11 +14,7 @@ function Profile() {
       avatar_path: '',
       twofa_enabled: ''
   });
-  const { authUser,
-        setAuthUser,
-        isLoggedIn,
-        setIsLoggedIn
-            } = useAuth();
+  const {isLoggedIn, setIsLoggedIn} = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [modify, setModify] = useState(false);

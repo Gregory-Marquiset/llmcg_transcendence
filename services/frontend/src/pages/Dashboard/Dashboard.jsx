@@ -30,7 +30,7 @@ useEffect(() => {
           <div className='core-container'>
             <LeftMenu setIsLoading={setIsLoading} />
             <div className='content-container'>
-              Bonjour {authUser?.Name},
+              Bonjour,
             </div>
           </div>
         </div>
