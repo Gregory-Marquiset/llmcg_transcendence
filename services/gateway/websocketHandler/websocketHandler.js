@@ -32,6 +32,7 @@ export const websocketHandler = async function (socket, req) {
 
 		socket.on("message", (event) => {
 			try {
+				// NEED AJOUT SECU NOMBRE MSG PAR SECONDE
 				let rawText;
 
 				if (typeof event === "string")
@@ -48,17 +49,14 @@ export const websocketHandler = async function (socket, req) {
 					socket.send(JSON.stringify({ type: "error", code: "unsupported_frame_type" }));
 				}
 
-				const bytes = new TextEncoder().encode(event).length;
+				const bytes = new TextEncoder().encode(rawText).length;
 				if (bytes > maxChatPayloadSize)
 				{
-					socket.badFrames++;
-					if (socket.badFrames > 5)
-						socket.close(1008, "too_much_bad_frames");
 					socket.close(1009, "payload_too_large");
 					return;
 				}
-				event.trim();
-				if (event.length < 0)
+				rawText.trim();
+				if (rawText.length < 0)
 				{
 					socket.badFrames++;
 					if (socket.badFrames > 5)
@@ -66,10 +64,27 @@ export const websocketHandler = async function (socket, req) {
 					socket.send(JSON.stringify({ type: "error", code: "empty_message" }));
 				}
 
-				const obj = JSON.parse(event);
+				const obj = JSON.parse(rawText);
+				if (obj?.type !== "chat:send" || obj?.payload || typeof obj.payload !== "object"
+					|| obj?.requestId)
+						socket.send(JSON.stringify({ type: "error", code: "bad_request_format" }));
+				
+				if (!obj.payload.toUserId || obj.payload.toUserId === undefined)
+					socket.send(JSON.stringify({ type: "error", code: "bad_request_format" }));
+				if (connectionsIndex.get(socket).userId !== req.user.id)
+					socket.close(1008, "unauthorized");
+				const toUserId = new Number(obj.payload.toUserId)
+				if (toUserId === NaN || obj.payload.toUserId === req.user.id)
+					socket.send(JSON.stringify({ type: "error", code: "invalid_userId" }));
 
-				if (obj.msg)
-					console.log(`websocketHandler Message: ${obj.msg}\n`);
+				if (obj?.payload?.content !== "string")
+					socket.send(JSON.stringify({ type: "error", code: "invalid_content_type" }));
+				if (obj?.payload?.content.trim().length === 0)
+					socket.send(JSON.stringify({ type: "error", code: "empty_message" }));
+				if (obj?.payload?.content.length > 4 * 1024)
+					socket.send(JSON.stringify({ type: "error", code: "message_too_long" }));
+				obj.payload.content.trim();
+
 				socket.send(JSON.stringify({ message: "Message bien recu" }));
 
 			} catch (err) {
