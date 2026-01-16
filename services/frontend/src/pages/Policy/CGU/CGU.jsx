@@ -9,7 +9,7 @@ export function CGU(){
     <div className='page-wrapper'>
         <Background>
         <HeaderBar/>
-            <div className="content-wrapper">
+            <div className="content-wrapper-policy">
                 <div class="header">Nos Conditions Générales d'Utilisation</div>
                 <div className="content">
                     <div className="date"><strong>Date de mise a jour: 16/01/2026</strong></div>
