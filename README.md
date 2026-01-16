@@ -1,6 +1,6 @@
-> This project has been created as part of the 42 curriculum by [lobriott](https://profile.intra.42.fr/users/lobriott), [lzaengel](https://profile.intra.42.fr/users/lzaengel), [mda-cunh](https://profile.intra.42.fr/users/mda-cunh), [cdutel](https://profile.intra.42.fr/users/cdutel), [gmarquis](https://profile.intra.42.fr/users/gmarquis).
+> This project has been created as part of the 42 curriculum by 5 42 [students](#contributors-responsibilities).
 
-# ft_transcendence — 42 Gamification Platform
+# llmcg_transcendence — 42 Gamification Platform
 
 A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
 
@@ -8,23 +8,12 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 
 ## Table of Contents
 
-* [Project Overview](#project-overview)
-* [Key Features](#key-features)
-* [Quickstart](#quickstart)
-* [Environment Variables](#environment-variables)
+* [Quickstart and tests](#quickstart)
 * [Architecture](#architecture)
-* [Database Schema](#database-schema)
-* [Tech Stack](#tech-stack)
-* [Security](#security)
-* [Observability](#observability)
-* [CI/CD](#cicd)
-* [Project Management](#project-management)
-* [Modules & Points](#modules--points)
-* [Team & Responsibilities](#team--responsibilities)
-* [Individual Contributions](#individual-contributions)
-* [Legal](#legal)
+* [CI/CD & Project management](#cicd--project-management)
+* [Modules points](#modules-points)
+* [Contributors responsibilities](#contributors-responsibilities)
 * [Resources & AI Usage](#resources--ai-usage)
-* [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -34,9 +23,7 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 
 **Users:** 42 students (multi-user concurrency supported).
 
----
-
-## Key Features
+### Key Features
 
 * Authentication (signup/login) + user profiles
 * Challenges between students (create, join, validate, history)
@@ -46,6 +33,48 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 * Basic chat system between two users via WebScket.
 
 > Note: The app must run on **Chrome stable** with **no console errors**.
+
+### Architecture
+
+High-level components:
+
+* **Frontend** vite + nginx / (React): UI + client-side routing + API integration
+* **Backend** (Fastify / Node.js): REST API + auth + business logic
+* **Database**: Postgres + adminer
+* **Reverse proxy / WAF**: Nginx + ModSecurity (hardened rules)
+* **Security**: HashiCorp Vault
+* **Observability**: Prometheus + Grafana (metrics, dashboards, alerts)
+* **Logs gestion**: ELK (centralized logs, dashboards, retention)
+
+### Tech Stack
+
+### Frontend
+
+* React
+* Tailwind
+
+### Backend
+
+* Node.js + Fastify
+* Swagger
+
+### Database
+
+* PostgreSQL
+* Adminer
+
+### DevOps
+
+* Docker / Docker Compose
+* Prometheus + Grafana
+* ELK (Elasticsearch + Logstash + Kibana)
+* Bash unit test
+* Github workflow
+
+### Security
+
+* ModSecurity (WAF) on reverse proxy
+* HashiCorp Vault for secrets
 
 ---
 
@@ -88,11 +117,9 @@ make down
 make re
 ```
 
-## Test and demo accounts
+### 6) Test and demo accounts
 
 The project provides comprehensive unit tests covering every aspect of our work, from Docker to E2E user stories. It also includes seeded demo users to speed up evaluation and testing.
-
-### 1) Launch test
 
 ```bash
 make test
@@ -119,95 +146,7 @@ make test-nc
 
 ---
 
-## Environment Variables
-
-All secrets must stay out of git:
-
-* `.env` is **ignored**
-* `.denv` is a development environment, used for unit tests and CI
-
----
-
-## Architecture
-
-High-level components:
-
-* **Frontend** vite + nginx / (React): UI + client-side routing + API integration
-* **Backend** (Fastify / Node.js): REST API + auth + business logic
-* **Database**: Postgres + adminer
-* **Reverse proxy / WAF**: Nginx + ModSecurity (hardened rules)
-* **Security**: HashiCorp Vault
-* **Observability**: Prometheus + Grafana (metrics, dashboards, alerts)
-* **Logs gestion**: ELK (centralized logs, dashboards, retention)
-
----
-
-## Database Schema
-
-**Current DB:** Postgres
-**Schema diagram:**
-
-* `docs/db_schema.png`
-
----
-
-## Tech Stack
-
-### Frontend
-
-* React
-* Tailwind
-
-### Backend
-
-* Node.js + Fastify
-* Swagger
-
-### Database
-
-* PostgreSQL
-* Adminer
-
-### DevOps
-
-* Docker / Docker Compose
-* Prometheus + Grafana
-* ELK (Elasticsearch + Logstash + Kibana)
-* Bash unit test
-* Github workflow
-
-### Security
-
-* ModSecurity (WAF) on reverse proxy
-* HashiCorp Vault for secrets
-
----
-
-## Security
-
-### Vault (secrets management)
-
-TODO
-
-### ModSecurity (WAF)
-
-TODO
-
----
-
-## Observability
-
-### Metrics (Prometheus + Grafana)
-
-TODO
-
-### Logs gestion
-
-TODO
-
----
-
-## CI/CD
+## CI/CD & Project management
 
 ### Workflow (Branching & PR)
 - All changes are made in a branch created from `main`.
@@ -250,7 +189,7 @@ Versioning work conventions:
 
 ---
 
-## Modules & Points
+## Modules points
 
 Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
@@ -284,7 +223,7 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
 ---
 
-## Team & Responsibilities
+## Contributors responsibilities
 
 > We are a team of 5. Roles are documented and each member can explain their work.
 
@@ -296,14 +235,11 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 | cdutel   | Tech Lead Backend               | Backend architecture, Fastify codebase, JWT/session strategy, database design & migrations, user management/auth, public API (API key + rate limiting + docs) |
 | gmarquis | Product Owner + DevOps          | Global project documentation, CI/CD, unit test (Bash script), observability (Prometheus/Grafana + ELK), health/status + backups/DR |
 
+### PM + Frontend Lead
 
----
-
-## Individual Contributions
-
-Provide a clear breakdown for evaluation.
-
-### lobriott (PM + Frontend Lead)
+<a href="https://profile.intra.42.fr/users/lobriott">
+  <img alt="Lou's 42 stats" src="https://badge.mediaplus.ma/darkblue/lobriott?1337Badge=off&UM6P=off" />
+</a>
 
 * Project management: Backlogs, planning, coordination, milestone tracking
 
@@ -323,7 +259,11 @@ Provide a clear breakdown for evaluation.
 * Gamification UX:
   * reward loops, progression feedback, badges/XP presentation
 
-### lzaengel (Frontend Developer)
+### Frontend Developer
+
+<a href="https://profile.intra.42.fr/users/lazaengel">
+  <img alt="Liam's 42 stats" src="https://badge.mediaplus.ma/darkblue/lzaengel?1337Badge=off&UM6P=off" />
+</a>
 
 * Internationalization:
   * multi-language support (≥3 languages)
@@ -335,13 +275,21 @@ Provide a clear breakdown for evaluation.
   * Friend gestion
   * Dashboard data extraction
 
-### mda-cunh (Security)
+### Security
+
+<a href="https://profile.intra.42.fr/users/mda-cunh">
+  <img alt="Mda-cunh's 42 stats" src="https://badge.mediaplus.ma/darkblue/mda-cunh?1337Badge=off&UM6P=off" />
+</a>
 
 * Security:
   * HashiCorp Vault integration for secrets
   * Reverse proxy WAF with ModSecurity + hardened rules for JSON APIs
 
-### cdutel (Tech Lead Backend)
+### Tech Lead Backend
+
+<a href="https://profile.intra.42.fr/users/cdutel">
+  <img alt="Charles's 42 stats" src="https://badge.mediaplus.ma/darkblue/cdutel?1337Badge=off&UM6P=off" />
+</a>
 
 * Backend architecture and code ownership (Fastify + Node.js)
 
@@ -360,7 +308,11 @@ Provide a clear breakdown for evaluation.
 * User interactions:
   * features enabling users to interact with each other (friends/challenges/etc.)
 
-### gmarquis (PO + DevOps)
+### PO + DevOps
+
+<a href="https://profile.intra.42.fr/users/gmarquis">
+  <img alt="Gregory's 42 stats" src="https://badge.mediaplus.ma/darkblue/gmarquis?1337Badge=off&UM6P=off" />
+</a>
 
 * Feature acceptance criteria and global documentaion of the project
 
@@ -383,16 +335,7 @@ Provide a clear breakdown for evaluation.
   * Health checks + status page
   * Automated backups + tested restore procedure + DR checklist
 
----
-
-## Legal
-
-This project includes:
-
-* **Privacy Policy** (in-app): TODO: route/link (e.g. `/privacy`)
-* **Terms of Service** (in-app): TODO: route/link (e.g. `/terms`)
-
-> These pages must contain real content (no placeholder text) and must be accessible from the UI (e.g. footer).
+> And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
 
 ---
 
@@ -424,38 +367,6 @@ We did **not** copy-paste AI-generated code blindly.
 
 ---
 
-## Troubleshooting
-
-### Common issues
-
-* TODO
+> This is a 42 school project. No license is provided.
 
 ---
-
-## License
-
-This is a 42 school project. No license is provided.
-
----
-
-## Contributor
-
-<p align="center">
-  <a href="https://profile.intra.42.fr/users/lobriott">
-    <img alt="Lou's 42 stats" src="https://badge.mediaplus.ma/darkblue/lobriott?1337Badge=off&UM6P=off" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/lzaengel">
-    <img alt="Liam's 42 stats" src="https://badge.mediaplus.ma/darkblue/lzaengel?1337Badge=off&UM6P=off" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/mda-cunh">
-    <img alt="Mathieu's 42 stats" src="https://badge.mediaplus.ma/darkblue/mda-cunh?1337Badge=off&UM6P=off" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/cdutel">
-    <img alt="Charles's 42 stats" src="https://badge.mediaplus.ma/darkblue/cdutel?1337Badge=off&UM6P=off" />
-  </a>
-  <a href="https://profile.intra.42.fr/users/gmarquis">
-    <img alt="Greg's 42 stats" src="https://badge.mediaplus.ma/darkblue/gmarquis?1337Badge=off&UM6P=off" />
-  </a>
-</p>
-
-> And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
