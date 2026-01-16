@@ -14,14 +14,16 @@ function Profile() {
       avatar_path: '',
       twofa_enabled: ''
   });
+  const { authUser,
+        setAuthUser,
+        isLoggedIn,
+        setIsLoggedIn
+            } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [modify, setModify] = useState(false);
   const [onError, setOnError] = useState(false);
-    const {
-          setIsLoggedIn,
-          accessToken
-        } = useAuth();
+  const accessToken = localStorage.getItem("access_token");
   const handleOnClick = () =>  navigate("/dashboard/profile/modify");
   const handleLogOut = async () => {
     setLoading(true);
@@ -35,12 +37,15 @@ function Profile() {
       if (!responseLogOut.ok){
         alert("cant logout");
         setIsLoggedIn(false);
+        localStorage.clear();
+        navigate('/');
         return ;
       }
        setTimeout(() => {
           setIsLoggedIn(false);
           setLoading(false);
           navigate('/');
+          localStorage.clear();
         }, 1000);
     }
     catch (err){
@@ -103,8 +108,8 @@ const avatarUrl = userData.avatar_path && !onError
             </div>
               <div className='personal-infos'>
                   <h3 className='div-title'>Mes informations personnelles</h3>
-                  <h4 className='infos'> <strong>Name        :   </strong>  {userData.username}</h4>
-                  <h4 className='infos'> <strong>Email        :   </strong> {userData.email}</h4>
+                  <h4 className='infos'> <strong>Name        :   </strong> {userData.username} </h4>
+                  <h4 className='infos'> <strong>Email        :   </strong> {userData.email} </h4>
                   <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
                   <Button text="Modifier mes infos" onClick={handleOnClick}/>
               </div>

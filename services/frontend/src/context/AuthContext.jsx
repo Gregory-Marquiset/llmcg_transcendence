@@ -22,6 +22,8 @@ export function AuthProvider ({ children }) {
 
     useEffect(() => { 
     async function checkRefreshToken() {
+      if (!localStorage.getItem("access_token"))
+          return ;
       try {
         const res = await fetch("/api/v1/auth/refresh", {
           method: "POST",
@@ -44,10 +46,8 @@ export function AuthProvider ({ children }) {
         setAuthUser(null);
       }
     }
-
     checkRefreshToken();
     }, []);
-
     const value = { 
         authUser,
         setAuthUser, 
