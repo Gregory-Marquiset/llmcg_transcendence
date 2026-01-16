@@ -1,14 +1,62 @@
+import { useEffect, useState } from 'react';
 import { setting, profile, logoheader } from '../../assets'
 import './HeaderBar.css'
 import { useNavigate } from 'react-router-dom'
+import { searchPages } from './SearchConfig';
+import Loading from '../Loading/Loading';
 
-export default function () {
+export default function HeaderBar() {
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
+  const [results, setResults] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  // const [isSearching, setIsSearching] = useState(false);
 
-  return (
+  useEffect(() => {
+    if (searchInput.trim() === ''){
+      setResults([]);
+      setShowResult(false);
+      setIsLoading(false);
+      // setIsSearching(false);
+      return ;
+    }
+    try {
+      const searchResult = searchPages(searchInput);
+      setResults(searchResult || []);
+      setShowResult(true);
+      setSelectedIndex(0);
+    } catch (error) {
+      console.error('Search error:', error);
+      setResults([]);
+    }
+  }, [searchInput]);
+
+  const handleSelection = (page) => {
+    if (page.path){
+      setSearchInput('');
+      setShowResult(false);
+      navigate(page.path);
+    }
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (results.length > 0)
+        handleSelection(results[selectedIndex]);
+  }
+  const handleOnClick = (path) => {
+    setResults([]);
+    setShowResult(false);
+    setSearchInput("");
+    navigate(path);
+  }
+
+
+  return(
     <>
       <div className='header-wrapper'>
-        <button className="logo-bar" onClick={() => navigate("/dashboard")}>
+        <button className="logo-bar" onClick={() => handleOnClick("/dashboard") }>
           <img src={logoheader} />
         </button>
         <div className="header-bar">
@@ -23,19 +71,39 @@ export default function () {
           </form>
         </div>
         <div className="search-bar">
-          <form>
+          <form onSubmit={handleSubmit}>
             <label> </label>{' '}
             <input
               type="text"
               className="feild px-4 py-2 rounded-lg"
               placeholder="Rechercher"
+              onChange={(e) => setSearchInput(e.target.value)}
+              onFocus={() => searchInput && setShowResult(true)}
             />
+            {showResult && results.length > 0 &&
+            <div className='results'>
+                {results.map((page, index)=> (
+                  <div className='result-search' 
+                  key={page.id}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                  onClick={() => handleSelection(page)}
+                  >
+                    <span className='icon-notification'>{page.icon}</span>
+                    <div className='notif-text'>
+                    <div className='notif-title'><strong>{page.title}</strong></div>
+                    <div>{page.description}</div>
+                    </div>
+                    <span className="text-slate-400 text-sm font-medium uppercase tracking-wider"/>
+                  </div>
+                ))}
+            </div>
+            }
           </form>
         </div>
-        <button className="navbar-btn" onClick={() => navigate("/dashboard/profile")}>
+        <button className="navbar-btn" onClick={() => handleOnClick("/dashboard/profile")}>
           <img src={profile} />
         </button>
-        <button className="navbar-btn" onClick={() => navigate("/dashboard/settings")}>
+        <button className="navbar-btn" onClick={() => handleOnClick("/dashboard/settings")}>
           <img src={setting} />
         </button>
       </div>
