@@ -1,4 +1,4 @@
-This project has been created as part of the 42 curriculum by [lobriott](https://profile.intra.42.fr/users/lobriott), [lzaengel](https://profile.intra.42.fr/users/lzaengel), [cdutel](https://profile.intra.42.fr/users/cdutel), [gmarquis](https://profile.intra.42.fr/users/gmarquis), [mda-cunh](https://profile.intra.42.fr/users/mda-cunh).
+> This project has been created as part of the 42 curriculum by [lobriott](https://profile.intra.42.fr/users/lobriott), [lzaengel](https://profile.intra.42.fr/users/lzaengel), [mda-cunh](https://profile.intra.42.fr/users/mda-cunh), [cdutel](https://profile.intra.42.fr/users/cdutel), [gmarquis](https://profile.intra.42.fr/users/gmarquis).
 
 # ft_transcendence — 42 Gamification Platform
 
@@ -42,10 +42,8 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 * Challenges between students (create, join, validate, history)
 * XP, levels, badges, streaks (gamification loop)
 * Leaderboards (global + per challenge/category)
-* Real-time updates (optional): WebSocket events for live challenge updates, notifications, and online presence
+* Real-time updates : WebSocket events for live challenge updates, notifications, and online presence
 * Basic chat system between two users via WebScket.
-* Admin tools (optional): minimal admin panel for user management, moderation actions, and system health overview
-
 
 > Note: The app must run on **Chrome stable** with **no console errors**.
 
@@ -84,18 +82,38 @@ make up
 make down
 ```
 
-### 5) Reset database (dev only)
+### 5) Restart from scratch (clean db)
 
 ```bash
-make nuke
+make re
 ```
 
-### Test accounts (demo)
+## Test and demo accounts
 
-The project provides seeded demo users to speed up evaluation.
+The project provides comprehensive unit tests covering every aspect of our work, from Docker to E2E user stories. It also includes seeded demo users to speed up evaluation and testing.
+
+### 1) Launch test
+
+```bash
+make test
+# build + up to E2E user story
+```
+- If the project already run:
+```bash
+make test-light
+# Do not rebuild only backend to E2E user story
+```
+- For a from scratch complete tests
+```bash
+make test-nc
+# Clean evrything from prvious project run and start tests from scratch
+```
+**After test completion the project is up and completely usable**
 
 **User accounts**
 * `testuser1` / `test1@transcendence.local` / `1234`
+* `testuser2` / `test2@transcendence.local` / `abcd`
+* `testuser3` / `test3@transcendence.local` / `4321`
 
 > Seeds are applied automatically on every Make rule that builds the project (not implemented yet).
 
@@ -191,38 +209,41 @@ TODO
 
 ## CI/CD
 
-### CI (on Main)
+### Workflow (Branching & PR)
+- All changes are made in a branch created from `main`.
+- Direct pushes to `main` are forbidden.
+- Merges require:
+  - CI checks to pass
+  - 2 approving reviews
 
-* Docker tests
-* Networks tests
-* Unit tests
-* DB tests
-* Back tests
-* Front tests
-* User story tests
+### CI
+CI runs on every pull request and includes:
 
----
+- **Build & sanity**
+  - Docker build + up
+  - Service-to-service integration tests
 
-## Project Management
+- **Backend**
+  - Unit tests
+  - Integration tests (DB)
 
-Workflow:
+- **Frontend**
+  - Unit tests / build
 
-* One feature 
-* PRs are reviewed (at least 2 reviewer)
-* CI must pass before merge
-* Merge strategy: **squash merge** to keep main readable
+- **End-to-end**
+  - Acceptance tests (user stories)
 
-Conventions:
+Versioning work conventions:
 
 * Branch naming:
-
   * `feat/<topic>`
   * `fix/<topic>`
   * `chore/<topic>`
   * `docs/<topic>`
-* Commit messages (Conventional Commits):
 
+* Commit messages (Conventional Commits):
   * `feat(auth): add JWT login`
+  * `update(search bar): add slide option to seach bar`
   * `fix(api): validate payload`
   * `ci: add docker build job`
   * `docs(README.md): basic README.md added`
@@ -235,30 +256,29 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
 ### Selected modules
 
-| Module                                                         |  Type | Points | Status      | Notes    |                                                   |
-| -------------------------------------------------------------- | ----: | -----: | ----------- | -------- | ------------------------------------------------- |
-| Module                                                         |  Type | Points | Status      | Owner    | Notes                                             |
-| ---                                                            |  ---: |   ---: | ---         | ---      | ---                                               |
-| Use a frontend framework (React)                               | Minor |      1 | Planned     | lobriott | React                                   |
-| Use a backend framework (Fastify)                              | Minor |      1 | Planned     | cdutel   | Node.js + Fastify                                 |
-| Standard user management and authentication                    | Major |      2 | Planned     | cdutel   | Core auth flows + user lifecycle                  |
-| Implement a complete 2FA system                                | Minor |      1 | Planned     | cdutel   | TOTP/app-based (details in Wiki)                  |
-| Allow users to interact with other users                       | Major |      2 | Planned     | cdutel   | Friends, challenges between users, etc.           |
-| Public API (API key + rate limiting + docs + ≥5 endpoints)     | Major |      2 | Planned     | cdutel   | Dedicated API key + docs + throttling             |
-| Prometheus + Grafana                                           | Major |      2 | Planned     | gmarquis | Metrics + dashboards + alerting                   |
-| ELK                                                            | Major |      2 | Planned     | gmarquis | Centralized logs + retention + dashboards         |
-| Cybersecurity (WAF + Vault)                                    | Major |      2 | Planned     | gmarquis | ModSecurity hardened + HashiCorp Vault            |
-| Health check + status page + automated backups + DR procedures | Minor |      1 | Planned     | gmarquis | Status endpoint/page + backup/restore runbook     |
-| Notification system for CRUD actions                           | Minor |      1 | Planned     | lobriott | In-app notifications (and optional email/webhook) |
-| Custom-made design system (≥10 reusable components)            | Minor |      1 | Planned     | lobriott | Palette, typography, icons, components            |
-| OAuth 2.0 remote auth (Google/GitHub/42/etc.)                  | Minor |      1 | Planned     | lobriott | OAuth2 login + account linking                    |
-| User activity analytics & insights dashboard                   | Minor |      1 | Planned     | lobriott | Basic analytics & insights                        |
-| Gamification system to reward users                            | Minor |      1 | Planned     | lobriott | XP/badges UX + reward loops                       |
-| Advanced analytics dashboard with data visualization           | Major |      2 | Planned     | lobriott | Charts + aggregates                               |
-| GDPR compliance features                                       | Minor |      1 | Planned     | lobriott | Export/delete data, consent, etc.                 |
-| Multiple languages (≥3 languages)                              | Minor |      1 | Planned     | lzaengel | i18n + locale switching                           |
+| Module                                                         |  Type | Points | Status  | Owner              | Notes                                             |
+| -------------------------------------------------------------- | ----: | -----: | ------- | ------------------ | ------------------------------------------------- |
+| Use a frontend framework (React)                               | Minor |      1 | Planned | lobriott / lzaengel | React                                              |
+| Use a backend framework (Fastify)                              | Minor |      1 | Planned | cdutel             | Node.js + Fastify                                  |
+| Standard user management and authentication                    | Major |      2 | Planned | cdutel             | Core auth flows + user lifecycle                   |
+| Implement a complete 2FA system                                | Minor |      1 | Planned | cdutel             | TOTP/app-based (details in Wiki)                   |
+| Allow users to interact with other users                       | Major |      2 | Planned | lzaengel           | Friends, challenges between users, etc.            |
+| Public API (API key + rate limiting + docs + ≥5 endpoints)     | Major |      2 | Planned | cdutel             | Dedicated API key + docs + throttling              |
+| Prometheus + Grafana                                           | Major |      2 | Planned | gmarquis           | Metrics + dashboards + alerting                    |
+| ELK                                                            | Major |      2 | Planned | gmarquis           | Centralized logs + retention + dashboards          |
+| Cybersecurity (WAF + Vault)                                    | Major |      2 | Planned | mda_cunh           | ModSecurity hardened + HashiCorp Vault             |
+| Health check + status page + automated backups + DR procedures | Minor |      1 | Planned | gmarquis           | Status endpoint/page + backup/restore runbook      |
+| Notification system for CRUD actions                           | Minor |      1 | Planned | lobriott           | In-app notifications (and optional email/webhook)  |
+| Custom-made design system (≥10 reusable components)            | Minor |      1 | Planned | lobriott           | Palette, typography, icons, components             |
+| OAuth 2.0 remote auth (Google/GitHub/42/etc.)                  | Minor |      1 | Planned | lzaengel           | OAuth2 login + account linking                     |
+| User activity analytics & insights dashboard                   | Minor |      1 | Planned | lobriott           | Basic analytics & insights                         |
+| Gamification system to reward users                            | Minor |      1 | Planned | lobriott           | XP/badges UX + reward loops                        |
+| Advanced analytics dashboard with data visualization           | Major |      2 | Planned | lobriott           | Charts + aggregates                                |
+| GDPR compliance features                                       | Minor |      1 | Planned | lobriott           | Export/delete data, consent, etc.                  |
+| Data export & import functionality                             | Minor |      1 | Planned | lzaengel           | Export JSON/CSV/XML; import validation; bulk ops   |
+| Multiple languages (≥3 languages)                              | Minor |      1 | Planned | lzaengel           | i18n + locale switching                            |
 
-**Planned total:** 25 / 14
+**Planned total:** 26 / 14
 
 > We may adjust scope/modules during development, but the goal is to stay **>= 19 points** with solid, demonstrable deliverables.
 
@@ -266,14 +286,15 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
 ## Team & Responsibilities
 
-> We are a team of 4. Roles are documented and each member can explain their work.
+> We are a team of 5. Roles are documented and each member can explain their work.
 
 | Member   | Role(s)                         | Responsibilities |
 | -------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| lobriott | Project Manager + Frontend Lead | Planning/coordination, UI/UX & mockups, React frontend, design system (reusable components), notifications, OAuth2, analytics dashboards, GDPR features, gamification UX |
-| lzaengel | Frontend Developer              | i18n (≥3 languages), UI integration, frontend features support, testing & polish |
+| lobriott | Project Manager + Frontend Lead | Backlog / Planning / Coordination, UI/UX & mockups, React frontend, design system (reusable components), notifications, analytics dashboards, GDPR features, gamification UX |
+| lzaengel | Frontend Developer              | i18n (≥3 languages), UI integration, OAuth2, Friends gestion, dashboard data extraction |
+| mda_cunh | Security                        | WAF (ModSecurity), Vault secrets |
 | cdutel   | Tech Lead Backend               | Backend architecture, Fastify codebase, JWT/session strategy, database design & migrations, user management/auth, public API (API key + rate limiting + docs) |
-| gmarquis | Product Owner + DevOps/Security | Backlog priority & acceptance, CI/CD, observability (Prometheus/Grafana + ELK), WAF (ModSecurity), Vault secrets, health/status + backups/DR |
+| gmarquis | Product Owner + DevOps          | Global project documentation, CI/CD, unit test (Bash script), observability (Prometheus/Grafana + ELK), health/status + backups/DR |
 
 
 ---
@@ -284,74 +305,81 @@ Provide a clear breakdown for evaluation.
 
 ### lobriott (PM + Frontend Lead)
 
-* Project management: planning, coordination, milestone tracking
-* UI/UX:
+* Project management: Backlogs, planning, coordination, milestone tracking
 
+* UI/UX:
   * mockups/wireframes and navigation flows
   * design system (palette, typography, icons) + ≥10 reusable components
-* Frontend implementation:
 
+* Frontend implementation:
   * React app structure, routing, state/data fetching
   * notification system for CRUD actions
-  * OAuth2 remote auth (provider(s) TBD)
-* Analytics + compliance:
 
+* Analytics + compliance:
   * activity analytics & insights dashboard
   * advanced analytics dashboard with data visualization
   * GDPR compliance features
-* Gamification UX:
 
+* Gamification UX:
   * reward loops, progression feedback, badges/XP presentation
 
 ### lzaengel (Frontend Developer)
 
 * Internationalization:
-
   * multi-language support (≥3 languages)
   * locale switcher + translation workflow
-* Frontend support:
 
+* Frontend developer:
   * integration of features/components
-  * bug fixes, polishing, and test support
+  * OAuth2 remote auth (provider(s) TBD)
+  * Friend gestion
+  * Dashboard data extraction
+
+### mda-cunh (Security)
+
+* Security:
+  * HashiCorp Vault integration for secrets
+  * Reverse proxy WAF with ModSecurity + hardened rules for JSON APIs
 
 ### cdutel (Tech Lead Backend)
 
 * Backend architecture and code ownership (Fastify + Node.js)
-* Auth and sessions:
 
+* Auth and sessions:
   * JWT issuance/refresh strategy
   * Standard user management (signup/login/password reset/account lifecycle)
   * 2FA (TOTP) end-to-end
-* Database:
 
+* Database:
   * schema design, migrations, seed strategy
   * query layer conventions and performance guardrails
+
 * Public API:
-
   * secured API key, rate limiting, documentation, and ≥5 endpoints
-* User interactions:
 
+* User interactions:
   * features enabling users to interact with each other (friends/challenges/etc.)
 
-### gmarquis (PO + DevOps/Security)
+### gmarquis (PO + DevOps)
 
-* Owns backlog priorities and feature acceptance criteria
-* CI/CD: PR checks (lint/test/build/smoke), main branch protections, release workflow
+* Feature acceptance criteria and global documentaion of the project
+
+* Unit test system in bash script
+
+* CI/CD
+  * Main branch protections
+  * Release workflow
+
 * Observability:
-
   * Prometheus scrape + `/metrics` conventions
   * Grafana dashboards (RPS, 4xx/5xx, p95/p99, container resources)
   * Alerting rules (service down, high error rate, latency)
-* Logs:
 
+* Logs:
   * Structured JSON logging conventions + request correlation (`request_id`)
   * ELK pipeline (Logstash → Elasticsearch) + Kibana dashboards/retention
-* Security:
 
-  * HashiCorp Vault integration for secrets
-  * Reverse proxy WAF with ModSecurity + hardened rules for JSON APIs
 * Resilience:
-
   * Health checks + status page
   * Automated backups + tested restore procedure + DR checklist
 
@@ -371,7 +399,6 @@ This project includes:
 ## Resources & AI Usage
 ### Documentation / References
 
-* [Tilt (docs)](https://docs.tilt.dev/)
 * [Fastify documentation](https://fastify.io/docs/latest/)
 * [React documentation](https://react.dev/learn/)
 * [Dockerfile reference](https://docs.docker.com/reference/dockerfile/)
@@ -408,3 +435,7 @@ We did **not** copy-paste AI-generated code blindly.
 ## License
 
 This is a 42 school project. No license is provided.
+
+---
+
+> And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
