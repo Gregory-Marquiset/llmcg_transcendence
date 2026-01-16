@@ -30,7 +30,7 @@ export const searchablePages = [
         description: 'Consulter mes activités',
         path: '/dashboard/activity',
         icon: '📊',
-        keywords: [ 'activity' , 'agenda' ]
+        keywords: [ 'activity' , 'agenda', 'activite' ]
     },
     {
         id: 'achievement',
@@ -38,7 +38,7 @@ export const searchablePages = [
         description: 'Consulter mes achievments',
         path: '/dashboard/achievement',
         icon: '🏆',
-        keywords: [ 'goals' , 'achievement' , 'badges', 'reussites']
+        keywords: [ 'goals' , 'achievement' , 'badges', 'reussites' ]
     },
     {
         id: 'conversations',
@@ -54,7 +54,7 @@ export const searchablePages = [
         description: 'Consulter ma documentation',
         path: "/dashboard/ressources",
         icon: '📚',
-        keywords: [ 'docs', 'informations', 'documentations' ]
+        keywords: [ 'docs', 'informations', 'documentations', 'documents' ]
     },
     {
         id: 'export',
@@ -85,5 +85,7 @@ export const searchablePages = [
 export function searchPages(search){
     if (!search)
         return (searchablePages.slice(0, 10));
-    return (searchablePages.slice(0, 10));
+    const smallSearch = search.trim().toLowerCase();
+    const results = searchablePages.filter(page => page.keywords.some(k => k.includes(smallSearch)));
+    return (results.slice(0, 10));
 }

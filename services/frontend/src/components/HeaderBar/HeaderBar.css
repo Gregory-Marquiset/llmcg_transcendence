@@ -118,6 +118,7 @@
     overflow-y: scroll;
     width : 300px;
     margin-top: 20px;
+    z-index: 100000;
 }
 
 .result-search {
