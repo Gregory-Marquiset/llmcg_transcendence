@@ -20,8 +20,7 @@ export function AuthProvider ({ children }) {
     const [authUser, setAuthUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    useEffect(() => { 
-    async function checkRefreshToken() {
+    const checkRefreshToken = async () => {
       if (!localStorage.getItem("access_token"))
           return ;
       try {
@@ -33,9 +32,9 @@ export function AuthProvider ({ children }) {
         if (!res.ok) {
           setIsLoggedIn(false);
           setAuthUser(null);
-          return;
+          localStorage.removeItem("access_token");
+          return ;
         }
-
         const data = await res.json();
         setAuthUser(data.user);
         setIsLoggedIn(true);
@@ -46,8 +45,18 @@ export function AuthProvider ({ children }) {
         setAuthUser(null);
       }
     }
-    checkRefreshToken();
+    useEffect(() => {
+      checkRefreshToken();
     }, []);
+    useEffect(() => {
+      if (!localStorage.getItem("access_token"))
+          return ;
+      const interval = setInterval(() => {
+        checkRefreshToken();
+      }, 4 * 60 * 1000);
+      return () => clearInterval(interval);
+    }, [isLoggedIn]);
+    
     const value = { 
         authUser,
         setAuthUser, 
