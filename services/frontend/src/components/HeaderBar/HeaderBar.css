@@ -37,11 +37,17 @@
 }
 
 .search-bar {
+    position: relative;
     display: flex;
     margin: 0 20px;
     opacity: 1;
     visibility: visible;
     transition: opacity 0.2s ease, visibility 0.3s ease;
+}
+
+.search-bar form {
+    position: relative;
+    width: 100%;
 }
 
 .group-search-bar {

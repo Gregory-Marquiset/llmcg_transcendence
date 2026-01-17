@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { searchPages } from './SearchConfig';
 
-export function SearchBar () {
+export function SearchBar ({ searchInput, setSearchInput, 
+                            results, setResults, showResult, 
+                            setShowResult }) {
       const navigate = useNavigate();
-      const [searchInput, setSearchInput] = useState("");
-      const [results, setResults] = useState([]);
       const [selectedIndex, setSelectedIndex] = useState(0);
       const [isLoading, setIsLoading] = useState(false);
-      const [showResult, setShowResult] = useState(false);
     
       useEffect(() => {
         if (searchInput.trim() === ''){
@@ -39,12 +38,6 @@ export function SearchBar () {
         e.preventDefault();
         if (results.length > 0)
             handleSelection(results[selectedIndex]);
-      }
-      const handleOnClick = (path) => {
-        setResults([]);
-        setShowResult(false);
-        setSearchInput("");
-        navigate(path);
       }
     return <>
         <div className="search-bar">

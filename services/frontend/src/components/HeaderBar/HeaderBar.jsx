@@ -7,8 +7,17 @@ import Loading from '../Loading/Loading';
 import SearchBar from './SearchBar';
 
 export default function HeaderBar() {
+  const [showResult, setShowResult] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
   const navigate = useNavigate();
+        const [results, setResults] = useState([]);
 
+    const handleOnClick = (path) => {
+    setResults([]);
+    setShowResult(false);
+    setSearchInput("");
+    navigate(path);
+  }
   return(
     <>
       <div className='header-wrapper'>
@@ -26,7 +35,13 @@ export default function HeaderBar() {
             />
           </form>
         </div>
-        <SearchBar/>
+        <SearchBar searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          results={results}
+          setResults={setResults}
+          showResult={showResult}
+          setShowResult={setShowResult}
+        />
         <button className="navbar-btn" onClick={() => handleOnClick("/dashboard/profile")}>
           <img src={profile} />
         </button>
