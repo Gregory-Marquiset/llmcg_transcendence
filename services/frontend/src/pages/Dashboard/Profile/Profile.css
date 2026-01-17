@@ -88,7 +88,7 @@
     margin-left: 5px;
     margin-right: 5px;
     width : 120px;
-    border: solid #eab2bb 3px ;
+    border: solid 3px ;
     border-radius: 5px;
 }
 .badge {
@@ -101,4 +101,20 @@
 
 .badge:hover{
     scale: 1.15;
+}
+
+
+.badge-progress-container {
+    width: 120px;
+    height: 18px;
+    border: 3px solid #eab2bb;
+    border-radius: 5px;
+    background: #f0f0f0;
+    overflow: hidden;
+}
+
+.badge-progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    /* backgroundColor vient du style inline */
 }

@@ -5,10 +5,11 @@ import { ideaSilver, ideaGold, ideaRegular } from './idea/index'
 import { likeSilver, likeGold, likeRegular } from './like/index'
 import { medalSilver, medalGold, medalRegular } from './medal/index'
 import { screenSilver, screenGold, screenRegular } from './screen/index'
-
+import star  from './star/star.png'
 export const badges = [ {
         name : 'Trophee',
         category : 'Ranking',
+        color : '#e3574c',
         levels : [{
                     level : 1,
                     description: 'Under top 10',
@@ -31,6 +32,7 @@ export const badges = [ {
     }, {
         name : 'Croissance',
         category : 'Productivity',
+        color : '#72b242',
         levels : [{
                     level : 1,
                     description: '10 tasks completed',
@@ -52,6 +54,7 @@ export const badges = [ {
     }, {
         name : 'Like',
         category : 'Number of friendship',
+        color: '#3ea5d0',
         levels : [{
                     level : 1,
                     description: '1 friend',
@@ -73,6 +76,7 @@ export const badges = [ {
     }, {
         name : 'Medal',
         category : 'Number of days connected in a row',
+        color : '#f69725',
         levels : [{
                 level : 1,
                 description: '1 week',
@@ -94,6 +98,7 @@ export const badges = [ {
     }, {
         name : 'Screen',
         category : 'LogTime recap in the month (reset every month)',
+        color: '#6bc7bd',
         levels : [{
                 level : 1,
                 description: '1 hour',
@@ -115,6 +120,7 @@ export const badges = [ {
     }, {
         name : 'Spaceship',
         category : 'Seniority on the app',
+        color : '#7b689b',
         levels : [{
                 level : 1,
                 description: '1 day',
@@ -137,6 +143,7 @@ export const badges = [ {
     {
         name : 'Idea',
         category : 'Number of upload',
+        color : '#e6c437',
         levels : [{
                 level : 1,
                 description: '1 file uploaded',
@@ -157,11 +164,10 @@ export const badges = [ {
         }]
     },
 ]
-export const starBadge = [
-    {
-        name : 'Star',
-        category : 'Admin',
-        logins: ['gmarquis', 'mda-cunh', 'cdutel', 'lzaengel', 'lobriott'],
-        path : '/star/star.png'
-    }
-]
+export const starBadge = {
+    name: 'Star',
+    category: 'Admin',
+    color: '#FFD700',
+    logins: ['gmarquis', 'mda-cunh', 'cdutel', 'lzaengel', 'lobriott'],
+    path: star
+}
