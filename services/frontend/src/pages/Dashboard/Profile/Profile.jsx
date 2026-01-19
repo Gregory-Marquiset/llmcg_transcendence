@@ -59,6 +59,7 @@ function Profile() {
         }
       });
       if (!responseMe.ok) {
+        localStorage.clear();
         console.error("Error while fetching info");
         setIsLoggedIn(false);
         return;

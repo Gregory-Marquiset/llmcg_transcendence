@@ -23,3 +23,10 @@
     height: 100%;
     margin: 1%; 
 }
+
+.weekly-graph{
+    height: 280px;
+    width: 600px;
+    border: red solid;
+    margin-left: 20px;
+}
