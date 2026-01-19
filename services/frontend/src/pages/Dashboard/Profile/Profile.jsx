@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { profilepicture } from '../../../assets'
 import { useAuth } from '../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import BadgeWindow from './BadgeWindow'
 
 function Profile() {
   const [userData, setUserData] = useState ({
@@ -103,16 +104,14 @@ const avatarUrl = userData.avatar_path && !onError
                 </>
               )}
             </div>
-              <div className='personal-infos'>
+              <div className='personal-infos-profile'>
                   <h3 className='div-title'>Mes informations personnelles</h3>
                   <h4 className='infos'> <strong>Name        :   </strong> {userData.username} </h4>
                   <h4 className='infos'> <strong>Email        :   </strong> {userData.email} </h4>
                   <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
                   <Button text="Modifier mes infos" onClick={handleOnClick}/>
               </div>
-              <div className='personal-infos'>
-                  <h3 className='div-title'>Mes badges</h3>
-              </div>
+              <BadgeWindow name={userData.username}/>
               <Button text="Se déconnecter" onClick={handleLogOut}/>
               <br/>
           </div>
