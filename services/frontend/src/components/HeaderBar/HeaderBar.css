@@ -1,78 +1,20 @@
-@media (max-width: 500px){
-    .header-bar{
-        overflow-y: hidden;
-    }
-    .group-search-bar{
-        overflow-y: hidden;
-    }
-    .navbar-btn{
-        overflow-y: hidden;
-    }
-}
-
-.header-bar{
-    position:relative;
-    flex-wrap: nowrap;
+.header-bar {
+    position: relative;
     background-color: #545454;
+    display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-items: center;
     gap: 20px;
-    -ms-flex-item-align: auto;
     top: 0;
     height: 60px;
     z-index: 2;
-    display:flex;
     padding: 12px;
     border-bottom: solid 10px #858585;
-    transition: all 350ms;
+    transition: all 300ms;
 }
 
-.search-bar{
-    /* position: relative;*/
-    display: flex;
-    top : 10px;
-    margin: 0px 20px;
-    flex-shrink: 1;
-    min-width: 0;
-    transition: all 350ms;
-}
-
-.navbar-btn{
-    background-color: transparent;
-    outline: none;
-    height: 45px;
-    width: 45px; 
-    z-index: 3;
-    padding: 0;
-    transition: all 350ms;
-}
-
-.header-bar:hover{
-    border-bottom: solid 10px #eab2bb;
-    filter: drop-shadow(0 0 10px #eab2bb);
-}
-
-.search-bar:hover{
-    filter:drop-shadow(0 0 10px #eab2bb);
-}
-
-.group-search-bar{
-    display: flex;
-    top: 10px;
-    margin: 0 20px;
-    transition: all 350ms;
-}
-
-.group-search-bar:hover{
-    filter:drop-shadow(0 0 10px #eab2bb);
-}
-
-.navbar-btn:hover{
-    filter: drop-shadow(0 0 10px #545454);
-    transform: scale(1.1);
-}
-
-.logo-bar{
+.logo-bar {
     position: absolute;
     top: 10px;
     left: 90px;
@@ -85,12 +27,7 @@
     padding: 0;
     cursor: pointer;
     filter: drop-shadow(0 0 15px white);
-    transition: all  330ms ;
-}
-
-.logo-bar:hover{
-    filter: drop-shadow(0 0 10px #eab2bb);
-    transform: scale(1.1) ;
+    transition: all 20ms;
 }
 
 .logo-bar img {
@@ -99,25 +36,86 @@
     object-fit: contain;
 }
 
-.header-wrapper {
-    position:relative;
-    flex-wrap: nowrap;
+.search-bar {
+    position: relative;
+    display: flex;
+    margin: 0 20px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0.3s ease;
+}
+
+.search-bar form {
+    position: relative;
     width: 100%;
+}
+
+.group-search-bar {
+    display: flex;
+    margin: 0 20px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease, visibility 0.3s ease;
+}
+
+.navbar-btn {
+    background-color: transparent;
+    outline: none;
+    height: 45px;
+    width: 45px; 
+    flex-shrink: 0;
+    z-index: 3;
+    padding: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.header-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.logo-bar {
+    display: block !important;
+}
+
+.header-bar:hover {
+    border-bottom: solid 10px #eab2bb;
+    filter: drop-shadow(0 0 10px #eab2bb);
+}
+
+.search-bar:hover {
+    filter: drop-shadow(0 0 10px #eab2bb);
+}
+
+.group-search-bar:hover {
+    filter: drop-shadow(0 0 10px #eab2bb);
+}
+
+.navbar-btn:hover {
+    filter: drop-shadow(0 0 10px #545454);
+    transform: scale(1.1);
+}
+
+.logo-bar:hover {
+    filter: drop-shadow(0 0 10px #eab2bb);
+    transform: scale(1.1);
 }
 
 .results {
     position: absolute;
     display: block;
     top: 100%;
+    left: 0;
     margin-top: 8px;
     background-color: #dfd9d9;
     border: 2px solid #858585;
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(133, 133, 133, 0.3);
-    height: 600px;
-    overflow-y: scroll;
-    width : 300px;
-    margin-top: 20px;
+    max-height: 600px;
+    overflow-y: auto;
+    width: 300px;
     z-index: 100000;
 }
 
@@ -131,7 +129,7 @@
     transition: all 0.3s;
 }
 
-.result-search:hover{
+.result-search:hover {
     box-shadow: 8px 8px 16px #eab2bb;
 }
 
@@ -171,7 +169,6 @@
 
 .results::-webkit-scrollbar {
     width: 6px;
-    color: #eab2bb;
 }
 
 .results::-webkit-scrollbar-track {
@@ -185,4 +182,20 @@
 
 .results::-webkit-scrollbar-thumb:hover {
     background: #666;
+}
+
+@media (max-width: 900px) {
+    .group-search-bar {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .search-bar {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
 }

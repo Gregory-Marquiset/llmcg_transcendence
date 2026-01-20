@@ -70,27 +70,25 @@
     width: 1000px;
     height: 700px;
     display: flex;
+    justify-content: space-around;
     overflow-y: scroll;
     scrollbar-width: auto;
     background-color: rgba(255, 255, 255, 0.482);
 }
 
 .badge-container img{
-    /* height : 200px;
-    width : 180px; */
     object-fit: contain;
     object-position: center;
-    /* width: 300px;
-    height: 300px; */
 }
 
 .badge-progress{
     margin-left: 5px;
     margin-right: 5px;
-    width : 120px;
+    width : 115px;
     border: solid 3px ;
     border-radius: 5px;
 }
+
 .badge {
     transition: all 300ms;
 }
@@ -102,7 +100,6 @@
 .badge:hover{
     scale: 1.15;
 }
-
 
 .badge-progress-container {
     width: 120px;
@@ -116,5 +113,4 @@
 .badge-progress-fill {
     height: 100%;
     transition: width 0.3s ease;
-    /* backgroundColor vient du style inline */
 }
