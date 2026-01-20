@@ -77,12 +77,8 @@
 }
 
 .badge-container img{
-    /* height : 200px;
-    width : 180px; */
     object-fit: contain;
     object-position: center;
-    /* width: 300px;
-    height: 300px; */
 }
 
 .badge-progress{
@@ -117,5 +113,4 @@
 .badge-progress-fill {
     height: 100%;
     transition: width 0.3s ease;
-    /* backgroundColor vient du style inline */
 }

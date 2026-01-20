@@ -19,30 +19,33 @@
     border: solid 7px #858585;
     border-radius: 5%;
     background-color: white;
-    font-family: Helvetica, sans-serif;
+    /* font-family: Helvetica, sans-serif; */
     color: black;
     justify-content: center;
     white-space: pre;
 }
-.weekly-graph{
+.weekly-graph {
     height: 400px;
-    /* border: red solid; */
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin: 20px;
     flex: 1;
     display: flex;
-    align-items: stretch;
-
+    flex-direction: column;
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    padding: 15px;
+    background: white;
 }
 
-.streaks{
-    height: 280px;
-    width: 300px;
-    border: red solid;
-    margin-right: 20px;
-    /* flex: 1; */
+.weekly-graph h3 {
+    font-size: 30px;
+    font-weight: 250;
+    margin: 0 0 10px 0;
+    flex-shrink: 0;
+}
+
+.chart-wrapper {
+    flex: 1;
+    min-height: 0;
 }
 
 .module-container{
@@ -60,23 +63,40 @@
     border-radius: 10px;
     width: 400px;
     margin-left: 20px;
-     min-height: calc(100vh - 300px);
-     margin-bottom: 20px;
-     text-align: center;
-     padding-top: 20px;
+    min-height: calc(100vh - 300px);
+    margin-bottom: 20px;
+    text-align: left;
+    padding-top: 10px;
+    white-space: pre;
+}
+.todo-summary h3{
+    font-size: 25px;
+    font-weight: 250;
 }
 
 .topxp-summary{
     flex: 1;
-    border: red solid;
+    border: 2px solid #eab2bb;
     margin-left: 20px;
     margin-right: 20px;
     margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: #cacaca48;
+    transition: all 300ms;
+   
+    padding-top: 10px;
+    /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
+}
+
+.topxp-summary h3 {
+    font-size: 25px;
+    font-weight: 250;
+    white-space: pre;
 }
 
 .streaks {
-    margin-right: 20px;
-    margin-top: 70px;
+    margin : 20px;
+    margin-left: 10px;
     border: 2px solid #eab2bb;
     border-radius: 10px;
     flex: 0 0 280px;
@@ -84,19 +104,26 @@
     background-color: white;
     position: relative;
     text-align: center;
+    height: 400px;
+    width : 280px;
+    display: flex;
+    flex-direction: column;
 }
 
 .streaks h3 {
-    margin: 0 0 10px 0;
-    color: #333;
-    font-size: 16px;
-    text-align: center;
+    font-size: 25px;
+    font-weight: 250;
+    white-space: pre;
+        margin: 0 0 10px 0;
+    flex-shrink: 0;
 }
 
 .streak-container {
     position: relative;
     width: 100%;
     height: calc(100% - 30px);
+    flex: 1;
+    min-height: 0;
 }
 
 .streak-center {
@@ -167,7 +194,6 @@
     border: 2px solid #eab2bb;
     margin: 10px;
     border-radius: 10px;
-    background-color: whitesmoke;
     transition: all 300ms;
     .checkbox-wrapper-5{
         text-align: right;
@@ -177,6 +203,7 @@
 
 .todo:hover {
     background-color: white;
+    box-shadow: 0 8px 10px #eab2bb;
 }
 
 .todo-description {
@@ -284,4 +311,52 @@ top: calc(.55 * var(--size));
 left: calc(1.6 * var(--size));
 font-size: calc(.6 * var(--size));
 line-height: 0;
+}
+
+.friend-ranked{
+    margin: 10px;
+    border: #858585 solid 2px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    background-color: whitesmoke;
+    transition: all 300ms;
+}
+
+.friend-ranked:hover{
+    background-color: white;
+    box-shadow: 0 8px 10px #eab2bb;
+    .rank-badge{
+        scale : 1.15;
+    }
+    .avatar-xp {
+        scale : 1.15;
+    }
+}
+.avatar-xp{
+    border-radius: 50px;
+    width: 80px;
+    height: 80px;
+    border: #eab2bb solid 4px;
+    border-radius: 50px;
+    margin: 10px;
+    transition: all 300ms;
+}
+.friend-name{
+    font-size: 30px;
+    margin-top: 8px;
+}
+
+.xp-ranked{
+    font-size: 20px;
+}
+.text-xp-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.rank-badge{
+    width: 60px;
+    transition: all 300ms;
+    right : 50px;
 }

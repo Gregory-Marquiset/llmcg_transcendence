@@ -3,7 +3,7 @@ import '../Dashboard.css'
 import { Pie, Cell, PieChart, ResponsiveContainer } from 'recharts'
 
 export default function Streaks() {
-    const [nbStreaks, setNbStreaks] = useState(10);
+    const [nbStreaks, setNbStreaks] = useState(0);
     const [displayStreak, setDisplayStreak] = useState(nbStreaks % 7);
     const [pieColor, setPieColor] = useState("");
     useEffect(() => {
@@ -23,10 +23,10 @@ export default function Streaks() {
     
     return (
         <div className="streaks">
-            {nbStreaks !== 0 && <h3>Streaks 🔥</h3>}
+            <h3>{nbStreaks === 0 ? 'Streaks 💀' : 'Streaks 🔥'}</h3>
             <div className="streak-container">
-                <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                <ResponsiveContainer width="100%" height={300}>
+                    {nbStreaks !== 0 && <PieChart>
                         <Pie
                             data={data}
                             cx="50%"
@@ -46,6 +46,7 @@ export default function Streaks() {
                             ))}
                         </Pie>
                     </PieChart>
+                }
                 </ResponsiveContainer>
                 <div className="streak-center">
                     {nbStreaks !== 0 &&
@@ -59,7 +60,8 @@ export default function Streaks() {
                     </>
                     }
                     {nbStreaks === 0 &&
-                        <> You<br/>have<br/>no<br/>streaks...</>
+                        <h3>You<br/>have<br/>no<br/>streaks...<br/></h3>
+
                     }
                 </div>
                 

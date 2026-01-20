@@ -68,7 +68,7 @@ useEffect(() => {
             <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
             <div className='content-container'>
               <br/>
-              <>           Bonjour {userData.username},</>
+              <>      Bonjour {userData.username},</>
               <br/>
               <div className='module-container'>
                 <WeeklyGraph/>
