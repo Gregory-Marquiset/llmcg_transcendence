@@ -1,0 +1,31 @@
+{
+    "home":{
+        "login": "Connexion",
+        "register": "Inscription",
+        "login42": "Connexion avec 42",
+        "language": "Changez de langue"
+    },
+    "signup":{
+        "username":"Nom d'utilisateur :",
+        "email": "Adresse email :",
+        "password": "Mot de passe :",
+        "confirm": "Confirmer le mot de passe :",
+        "submit": "Creer un compte :",
+        "errors": {
+            "password_mismatch": "Les mots de passe sont differents",
+            "registration_failed": "L'inscription a echoue",
+            "network": "Erreur reseau"
+        },
+        "success": "Compte cree avec succes"
+    },
+    "signin":{
+        "email": "Adresse email :",
+        "password": "Mot de passe :",
+        "password_reset":"Mot de passe oublié ?",
+        "submit": "Se connecter",
+        "errors": {
+            "login_failed": "La connexion a echoue",
+            "network": "Erreur reseau"
+        }
+    }
+}

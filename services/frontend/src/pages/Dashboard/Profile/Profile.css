@@ -1,44 +1,116 @@
 .profile-wrapper{
     display: flex;
-    flex-wrap: nowrap;
+    /* flex-wrap: nowrap; */
     flex-direction: column ;
     /* border : solid red 10px; */
     margin : 2%;
-    height: 1000px;
-    align-items: row;
+    height: 1050px;
+    align-items: center;
     gap: 30px;
 }
 
 .profile-picture{
-    border: solid white 10px;
+    /* border: solid white 10px; */
     display: flex;
     border-radius: 150px;
     height: 250px;
     width: 250px;
     transition: all 300ms;
 }
-
-.profile-picture:hover{
+.profilepic{
+    /* display: flex; */
+    border-radius: 150px;
+    height: 250px;
+    width: 250px;
+    transition: all 300ms;
+}
+.profilepic:hover{
     border: solid #eab2bb 10px;
     box-shadow: 0 8px 16px #eab2bb;
-
 }
-.personal-infos{
+.profile-picture:hover{
+    /* border: solid #eab2bb 10px; */
+    box-shadow: 0 8px 16px #eab2bb;
+}
+
+.personal-infos-profile{
+    /* display: flex; */
+    border: solid #858585 10px;
+    border-radius: 40px;
+    height: 300px;
+    background-color: whitesmoke;
+    /* justify-content: center; */
+    transition: all 300ms;
+    width: 1000px;
+}
+
+.div-title{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
     font-weight: bold ;
     color: #eab2bb;
-    display: flex;
-    border: solid #858585 10px;
-    border-radius: 40px;
-    height: 250px;
-    background-color: whitesmoke;
-    justify-content: center;
-    transition: all 300ms;
 }
-
 .personal-infos:hover{
   box-shadow: 0 8px 16px #eab2bb;
   border: #eab2bb solid 10px;
   background-color: white;
+}
+
+.infos{
+    font-size: 20px;
+    text-align: start;
+    font-weight: 500;
+    margin: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    white-space: pre;
+}
+.badge-wrapper{
+    border: #eab2bb solid 7px;
+    border-radius: 30px;
+    width: 1000px;
+    height: 700px;
+    display: flex;
+    justify-content: space-around;
+    overflow-y: scroll;
+    scrollbar-width: auto;
+    background-color: rgba(255, 255, 255, 0.482);
+}
+
+.badge-container img{
+    object-fit: contain;
+    object-position: center;
+}
+
+.badge-progress{
+    margin-left: 5px;
+    margin-right: 5px;
+    width : 115px;
+    border: solid 3px ;
+    border-radius: 5px;
+}
+
+.badge {
+    transition: all 300ms;
+}
+
+.badge-name{
+    font-size: 19px;
+}
+
+.badge:hover{
+    scale: 1.15;
+}
+
+.badge-progress-container {
+    width: 120px;
+    height: 18px;
+    border: 3px solid #eab2bb;
+    border-radius: 5px;
+    background: #f0f0f0;
+    overflow: hidden;
+}
+
+.badge-progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
 }

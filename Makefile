@@ -36,12 +36,17 @@ help:
 	@echo ""
 	@echo "Tests :"
 	@echo "  make test                  - down puis lance tests/run_all.sh"
-	@echo "  make test-re               - lance tests/run_light.sh"
+	@echo "  make test-light            - lance tests/run_light.sh (test sans re build)"
 	@echo "  make test-nc               - nuke puis lance tests/run_all.sh"
 	@echo ""
 	@echo "Nettoyage :"
-	@echo "  make clean                 - Down + supprime les volumes (DB incluse)"
-	@echo "  make nuke                  - Purge globale (dangereux si d’autres projets tournent)"
+	@echo "  make clean                 - Down"
+	@echo "  make nuke                  - Purge complete du projet"
+	@echo "  make total-nuke            - ⚠️  Stop nginx + purge Docker globale (prune images/cache/réseaux + volumes non utilisés)"
+	@echo ""
+	@echo "Utils dev :"
+	@echo "  make dev                   - Build puis démarre les services avec le vite en dev serveur"
+	@echo "  make dev-logs              - Donne les logs du front en mode dev"
 	@echo ""
 	@echo "Utils CI :"
 	@echo "  make logs-ci               - Dump logs (utils CI)"
@@ -128,7 +133,7 @@ test: down
 	@echo "		http://localhost:5173/"
 	@echo ""
 
-test-re:
+test-light:
 	clear
 	@sh tests/run_light.sh
 	@echo "		http://localhost:5173/"
@@ -143,13 +148,36 @@ test-nc: nuke
 ## <----------------- Nettoyage ----------------->
 
 clean:
-	$(COMPOSE) down -v
+	$(COMPOSE) --profile dev down --remove-orphans
+	@if [ -L services/frontend/node_modules ]; then rm -f services/frontend/node_modules; fi
 
 nuke:
-	@$(COMPOSE) down -v --remove-orphans
-	@docker image prune -af
-	docker system prune -af
-	docker network prune -f || true
+	@$(COMPOSE) --profile dev down -v --remove-orphans --rmi local
+	@if [ -L services/frontend/node_modules ]; then rm -f services/frontend/node_modules; fi
+
+total-nuke: nuke
+	@set -e; \
+	echo "Stopping nginx…"; \
+	sudo systemctl stop nginx; \
+	echo "Pruning docker…"; \
+	docker image prune -af; \
+	docker system prune -af; \
+	docker network prune -f; \
+	docker volume prune -f
+
+## <----------------- Utils dev --------------->
+
+dev: clean up
+	@echo "→ Remove frontend (prod) pour éviter le conflit de port 5173…"
+	- $(COMPOSE) stop frontend
+	- $(COMPOSE) rm -f frontend
+	@echo "→ Lancement frontend-dev (Vite + HMR)…"
+	$(COMPOSE) --profile dev up -d --build frontend-dev
+	@echo "		http://localhost:5173/"
+	@echo ""
+
+logs-dev:
+	- $(COMPOSE) --profile dev logs -f frontend-dev
 
 ## <----------------- Utils CI ----------------->
 

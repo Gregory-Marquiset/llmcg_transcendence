@@ -1,5 +1,4 @@
-import { createContext, useState, useContext } from "react";
-
+import { createContext, useState, useContext, useEffect } from "react";
 /**
  * Authentification Context
  * Povides user authentification state acress the entire app
@@ -21,11 +20,48 @@ export function AuthProvider ({ children }) {
     const [authUser, setAuthUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    const checkRefreshToken = async () => {
+      if (!localStorage.getItem("access_token"))
+          return ;
+      try {
+        const res = await fetch("/api/v1/auth/refresh", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          setIsLoggedIn(false);
+          setAuthUser(null);
+          localStorage.removeItem("access_token");
+          return ;
+        }
+        const data = await res.json();
+        setAuthUser(data.user);
+        setIsLoggedIn(true);
+        localStorage.setItem("access_token", data.access_token);
+      } catch (err) {
+        console.error("Erreur refresh token :", err);
+        setIsLoggedIn(false);
+        setAuthUser(null);
+      }
+    }
+    useEffect(() => {
+      checkRefreshToken();
+    }, []);
+    useEffect(() => {
+      if (!localStorage.getItem("access_token"))
+          return ;
+      const interval = setInterval(() => {
+        checkRefreshToken();
+      }, 4 * 60 * 1000);
+      return () => clearInterval(interval);
+    }, [isLoggedIn]);
+    
     const value = { 
         authUser,
         setAuthUser, 
         isLoggedIn,
-        setIsLoggedIn
+        setIsLoggedIn,
     };
     return (
         <AuthContext.Provider value={value}>

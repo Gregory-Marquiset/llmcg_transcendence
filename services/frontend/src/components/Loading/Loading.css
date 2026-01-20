@@ -1,0 +1,88 @@
+.spinner > div {
+    
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    border: 2px solid #eab2bb;
+}
+
+.spinner{
+    transform-style: preserve-3d;
+    transform : rotate(45deg) rotateX(-25deg) rotateY(25deg);
+}
+
+.spinner > div:nth-child(1){
+    transform: translateZ(-42px) rotateY(180deg);
+}
+
+.spinner > div:nth-child(2){
+    transform: rotateY(-270deg) translateX(50%);
+    transform-origin: top right;
+}
+
+.spinner > div:nth-child(3){
+    transform: rotateY(270deg) translateX(-50%);
+    transform-origin: center left;
+}
+
+.spinner > div:nth-child(4){
+    transform: rotateX(90deg) translateY(-50%);
+    transform-origin: top center;
+
+}
+
+.spinner > div:nth-child(5){
+    transform: rotateX(-90deg) translateY(50%);
+    transform-origin: bottom center;
+    
+}
+
+.spinner > div:nth-child(6){
+    transform: translateZ(42px);
+}
+
+@keyframes spin {
+    50%{
+        transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+    }
+    100%{
+        transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
+    }
+}
+
+.spinner{
+    animation: spin 2s infinite ease;
+    width: 80px;
+    height: 80px;
+    margin: 40px auto;
+    margin-top: 280px;
+}
+
+.progress-bar {
+  width: 300px;
+  height: 30px;
+  border-radius: 15px;
+  overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin : 50px;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: #1a1a2e;
+  border-radius: 15px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar::-webkit-progress-value {
+  background: linear-gradient(90deg, #c5a2a8, #eab2bb);
+  border-radius: 15px;
+  box-shadow: 0 0 10px #eab2bb;
+}
+
+.progress-bar::-moz-progress-bar {
+  background: linear-gradient(90deg, #eab2bb, #eab2bb);
+  border-radius: 15px;
+  box-shadow: 0 0 10px #eab2bb;
+}

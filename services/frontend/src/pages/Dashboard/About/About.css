@@ -1,0 +1,9 @@
+badges-mates{
+    display: contents;
+    /* grid-template-columns: auto; */
+    display: block;
+    align-items: flex-start;
+    padding: 10px;
+    margin: 10px;
+    align-items: center;
+}

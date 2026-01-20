@@ -116,10 +116,10 @@ local_init()
 
 user_info()
 {
-    UI_USERNAME=testos
-    UI_MAIL=test@test.com
+    UI_USERNAME=testuser
+    UI_MAIL=test1@transcendence.local
     UI_PASSWORD=1234
-    UI_TOKEN=0
+    UI_TOKEN=TestToken
 }
 
 local_resume()

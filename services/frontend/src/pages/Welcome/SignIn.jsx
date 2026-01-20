@@ -1,4 +1,4 @@
-import { Button, Footer, LogTitle, Background} from '../../components'
+import { Button, Footer, LogTitle, Background, Loading} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { useAuth } from '../../context/AuthContext'
@@ -6,25 +6,24 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
 import { useState } from 'react'
 import { useEffect } from 'react'
-
+import { useTranslation } from 'react-i18next'
 
 function SignIn(){
+    const { t } = useTranslation()
     const { authUser,
         setAuthUser,
         isLoggedIn,
-        setIsLoggedIn} = useAuth();
+        setIsLoggedIn
+            } = useAuth();
         const navigate = useNavigate();
-        const [email, setEmail] = useState("")
-        const [password, setPassword] = useState("")
-        const [access_token, setAccess_Token] = useState("")
-    const handleOnClick = () => {
-        navigate('/');
-    }
-
+        const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+        const [isLoading, setIsLoading] = useState(false);
+    const handleOnClick = () => navigate('/');
 
     const manageLogIn = async (event) => {
         event.preventDefault();
-        
+        setIsLoading(true);
         // send email password to back
         const payload = { email, password };
         try {
@@ -36,14 +35,12 @@ function SignIn(){
         });
         if(!response.ok)
         {
-          alert("Login failed")
+          alert(t('signin.errors.login_failed'))
+          setIsLoading(false);
           return;
         }
-
-
         // request info from db from back
         const data = await response.json();
-        setAccess_Token(data.access_token);
         const responseMe = await fetch('/api/v1/auth/me', {
             method: 'GET',
             headers: {
@@ -52,18 +49,19 @@ function SignIn(){
         });
         if (!responseMe.ok) {
             console.error("Error fetching info ");
+            setIsLoading(false);
             return ;
         }
-
         const userData = await responseMe.json();
         console.log(userData);
         //process information and navigateto dashboard
-        setAuthUser({Name: userData.username})
-        navigate('/dashboard');
+        setAuthUser({Name: userData.username});
         setIsLoggedIn(true);
-
+        navigate('/dashboard');
+        setIsLoading(false);
+        localStorage.setItem("access_token", data.access_token);
         } catch (err) {
-        alert("Network error: " + err.message);
+            alert(`${t('signin.errors.network')}: ${err.message}`)
         }
 
     }
@@ -73,7 +71,7 @@ function SignIn(){
             navigate('/dashboard');
         }
     }, [isLoggedIn]);
-
+    if (isLoading) return <Loading showHeader={false} showButton={false}/>
     return (
         <Background>
                 <div className="header-container">
@@ -89,7 +87,7 @@ function SignIn(){
                     <form onSubmit={manageLogIn} className="space-y-6">
                         <div className="flex items-center gap-4">
                             <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] font-semibold text-lg w-40 text-right">
-                                Adresse mail :
+                                {t('signin.email')}
                             </label>
                             <input 
                                 type="email" 
@@ -101,7 +99,7 @@ function SignIn(){
                         
                         <div className="flex items-center gap-4">
                             <label htmlFor="pass" className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] font-semibold text-lg w-40 text-right">
-                                Mot de passe :
+                               {t('signin.password')}
                             </label>
                             <input 
                                 className="feild px-4 py-2 rounded-lg w-80" 
@@ -116,7 +114,7 @@ function SignIn(){
                         
                         <div className="text-center">
                             <a href="/" className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#545454] to-[#eab2bb]">
-                                Mot de passe oublié ?
+                                {t('signin.password_reset')}
                             </a>
                         </div>
                         
@@ -126,7 +124,7 @@ function SignIn(){
                             <input
                                 type="submit" 
                                 className="submit cursor-pointer" 
-                                value="Se connecter"
+                                value={t('signin.submit')}
                             />
                         </div>
                     </form>

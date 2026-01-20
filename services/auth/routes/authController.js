@@ -9,7 +9,7 @@ export const authRegister = async function (req, reply) {
 		const hashedPWD = await app.bcrypt.hash(req.body.password);
 
 		await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
-			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "default.jpg"]);
+			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "avatar/default.jpg"]);
 		
 		return (reply.code(201).send({message: "New entry in database"}));
 	} catch (err) {
@@ -25,6 +25,29 @@ export const authRegister = async function (req, reply) {
 	}
 }
 
+
+export const authRegister42 = async function (req, reply) {
+	console.log(`\n${JSON.stringify(req.body)}\n`);
+
+	try {
+		const hashedPWD = await app.bcrypt.hash(req.body.password);
+
+		await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
+			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "default.jpg"]);
+		
+		return (reply.code(201).send("New entry in database"));
+	} catch (err) {
+		console.error(`\nERROR authRegister: ${err.message}\n`);
+		if (err.code === '23505')
+		{
+			err.statusCode = 409;
+			err.message = "Conflict";
+		}
+		else
+			err.statusCode = 500;
+		throw err;
+	}
+}
 
 
 export const authLogin = async function (req, reply) {

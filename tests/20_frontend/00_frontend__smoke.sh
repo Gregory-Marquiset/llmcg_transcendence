@@ -11,6 +11,11 @@ LOG_LIB_FILE="$ROOT/lib/lib.sh"
 
 local_init
 
+UI_USERNAME=testuser
+UI_MAIL=test1@transcendence.local
+UI_PASSWORD=1234
+UI_TOKEN=TestToken
+
 https_get "http://localhost:5173" 200
 
 https_get "http://localhost:5173/signUp" 200
