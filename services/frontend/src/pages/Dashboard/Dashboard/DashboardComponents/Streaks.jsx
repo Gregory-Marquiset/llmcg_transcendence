@@ -61,7 +61,6 @@ export default function Streaks() {
                     }
                     {nbStreaks === 0 &&
                         <h3>You<br/>have<br/>no<br/>streaks...<br/></h3>
-
                     }
                 </div>
                 
