@@ -18,12 +18,24 @@ import * as health from './routes/health.js'
 import * as wsHandler from './websocketHandler/websocketHandler.js'
 //import { runDatabase } from '../users/usersServer.js'
 import authPlugin from '../shared/authPlugin.js'
+//Metrics for Prometheus
+import metricsPlugin from 'fastify-metrics'
 
 
 
 export const app = Fastify({
 	logger: true
 });
+
+// metrics HTTP node
+await app.register(metricsPlugin, {
+  endpoint: '/metrics',
+  routeMetrics: {
+    customLabels: { service: 'gateway' },
+    routeBlacklist: ['/metrics']
+  }
+});
+
 
 //const rootDir = dirname(fileURLToPath(import.meta.url));
 //###### AVATAR UPLOADS DIRECTORY
