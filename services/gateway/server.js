@@ -22,7 +22,8 @@ import authPlugin from '../shared/authPlugin.js'
 
 
 export const app = Fastify({
-	logger: true
+	logger: true,
+  	pluginTimeout: 30000
 });
 
 //const rootDir = dirname(fileURLToPath(import.meta.url));

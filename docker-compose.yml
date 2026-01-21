@@ -3,7 +3,7 @@
 services:
 
   vault:
-    image: hashicorp/vault:latest
+    image: hashicorp/vault:1.15.5
     container_name: vault
     ports:
       - "8200:8200"
@@ -24,6 +24,8 @@ services:
           - ./services/vault/config:/vault/config
           - ./services/vault/data:/vault/data
           - ./services/vault/init-vault.sh:/init-vault.sh
+          - ./services/vault/policies:/vault/policies:ro
+          - vault_secrets:/vault/secrets
     depends_on:
       postgres:
         condition: service_healthy
@@ -99,7 +101,6 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
-      JWT_SECRET: "${JWT_SECRET}"
     expose:
       - "5000"
     # ports:
@@ -109,6 +110,8 @@ services:
     networks:
       - net_backend
       - net_gateway
+    volumes:
+      - vault_secrets:/vault/secrets
     depends_on:
       postgres:
         condition: service_healthy
@@ -130,12 +133,12 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
-      JWT_SECRET: "${JWT_SECRET}"
-      DATABASE_URL: "${DATABASE_URL}"
     expose: 
       - "5000"
     networks:
       - net_backend
+    volumes:
+      - vault_secrets:/vault/secrets
     depends_on:
       gateway:
         condition: service_healthy
@@ -159,12 +162,12 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
-      JWT_SECRET: "${JWT_SECRET}"
-      DATABASE_URL: "${DATABASE_URL}"
     expose:
       - "5000"
     networks:
       - net_backend
+    volumes:
+      - vault_secrets:/vault/secrets
     depends_on:
       - gateway
     restart: unless-stopped
@@ -271,4 +274,5 @@ networks:
 volumes:
   postgresql_data:
   frontend_node_modules:
+  vault_secrets:
   # users_avatar_data:
