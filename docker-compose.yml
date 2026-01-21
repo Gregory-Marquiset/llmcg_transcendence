@@ -128,7 +128,10 @@ services:
     networks:
       - net_backend
     depends_on:
-      - gateway
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     # volume: users_avatar_data:/app/users/uploads/avatar
     healthcheck:
@@ -213,11 +216,25 @@ services:
       - prometheus_data:/prometheus
     networks:
       - net_monitoring
+      - net_grafana
     depends_on:
       postgres:
         condition: service_healthy
       gateway:
         condition: service_healthy
+    restart: unless-stopped
+
+  grafana:
+    build:
+      context: ./services/metrics/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - net_grafana
+    depends_on:
+      - prometheus
     restart: unless-stopped
 
 ### Dev
@@ -263,9 +280,12 @@ networks:
     name: net_metrics_frontend
   net_monitoring:
     name: net_monitoring
+  net_grafana:
+    name: net_grafana
 
 volumes:
   postgresql_data:
   frontend_node_modules:
   prometheus_data:
+  grafana_data:
   # users_avatar_data:
