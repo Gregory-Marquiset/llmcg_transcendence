@@ -101,11 +101,12 @@ make up
 
 ### 3) Open the app
 
-* Frontend: [http://localhost](http://localhost):5173
-* Backend API: [http://localhost](http://localhost):5000
-* API docs: [http://localhost](http://localhost):5000/docs
-* Grafana: [http://localhost](http://localhost):<GRAFANA_PORT>
-* Kibana: [http://localhost](http://localhost):<KIBANA_PORT>
+* Frontend: http://localhost:5173
+* Backend API: http://localhost:5000
+* Fastify docs: http://localhost:5000/docs
+* Prometheus: http://localhost:9090
+* Grafana: http://localhost:3000
+* Kibana: http://localhost:<KIBANA_PORT>
 
 ### 4) Stop everything
 
