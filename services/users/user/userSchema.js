@@ -49,7 +49,9 @@ export const userProfilOpts = {
 				properties: {
 					id: { type: "integer" },
 					username: { type: "string" },
-					avatar_path: { type: "string" }
+					avatar_path: { type: "string" },
+					friendshipsStatus: { type: "string" },
+					blockedBy: { type: "integer" }
 				}
 			}
 		}
