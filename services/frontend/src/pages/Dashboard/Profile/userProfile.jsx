@@ -40,7 +40,6 @@ function userProfile() {
       const responseAddFriend = await fetch(`/api/v1/users/friends/${userData.id}/block`, {
         method : 'POST',
         headers : {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
         }
       });
