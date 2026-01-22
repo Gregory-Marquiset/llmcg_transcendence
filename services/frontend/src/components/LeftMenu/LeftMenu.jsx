@@ -24,6 +24,7 @@ export default function LeftMenu({setIsLoading}){
             <Button onClick={() => handleOnClick("/dashboard/ressources")} text="Mes ressources" />
             <Button onClick={() => handleOnClick("/dashboard/exportdata")} text="Exporter mes data" />
             <Button onClick={() => handleOnClick("/dashboard/about")} text="A propos" />
+            <Button onClick={() => handleOnClick("/users/liam/profile")} text="Test" />
           </div>
     )
 }
