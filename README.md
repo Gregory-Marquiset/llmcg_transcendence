@@ -104,6 +104,7 @@ make up
 * Frontend: http://localhost:5173
 * Backend API: http://localhost:5000
 * Fastify docs: http://localhost:5000/docs
+* Adminer: http://localhost:8080
 * Prometheus: http://localhost:9090
 * Grafana: http://localhost:3000
 * Kibana: http://localhost:<KIBANA_PORT>

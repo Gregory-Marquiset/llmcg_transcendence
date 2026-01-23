@@ -6,7 +6,7 @@ COMPOSE := docker compose --env-file .env -f docker-compose.yml
 SERVICE ?= project_health
 
 .DEFAULT_GOAL := help
-.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci
+.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci info
 
 ## <----------------- Helper ----------------->
 
@@ -24,6 +24,7 @@ help:
 	@echo "  make re                    - Redémarre en nettoyant tout (nuke puis up-nc)"
 	@echo ""
 	@echo "Inspection :"
+	@echo "  make info					- Donne les adresse utiliser par le projet"
 	@echo "  make show                  - Liste l’état des services, images, volumes, networks"
 	@echo "  make show-config           - Affiche la config compose résolue"
 	@echo "  make health                - Affiche l’état + healthcheck de chaque conteneur"
@@ -62,22 +63,34 @@ build:
 
 up: build
 	$(COMPOSE) up -d
-	@echo "		http://localhost:5173/"
+	@$(MAKE) --no-print-directory info
 
 up-nc:
 	$(COMPOSE) build --no-cache
 	$(COMPOSE) up -d --force-recreate
-	@echo "		http://localhost:5173/"
-	@echo ""
+	@$(MAKE) --no-print-directory info
 
 down:
 	$(COMPOSE) down
 
-restart: down up
+restart:
+	@$(MAKE) --no-print-directory down
+	@$(MAKE) --no-print-directory up
 
-re:	nuke up-nc
+re:
+	@$(MAKE) --no-print-directory nuke
+	@$(MAKE) --no-print-directory up-nc
 
 ## <----------------- Inspection ----------------->
+
+info:
+	@echo ""
+	@echo "Frontend:	http://localhost:5173"
+	@echo "Fastify docs:	http://localhost:5000/docs"
+	@echo "Adminer:	http://localhost:8080"
+	@echo "Prometheus:	http://localhost:9090"
+	@echo "Grafana:	http://localhost:3000"
+	@echo ""
 
 show:
 	@echo ""
@@ -130,20 +143,17 @@ logs-tail:
 test: down
 	clear
 	@sh tests/run_all.sh
-	@echo "		http://localhost:5173/"
-	@echo ""
+	@$(MAKE) --no-print-directory info
 
 test-light:
 	clear
 	@sh tests/run_light.sh
-	@echo "		http://localhost:5173/"
-	@echo ""
 
-test-nc: nuke
+test-nc:
+	@$(MAKE) --no-print-directory nuke
 	clear
 	@sh tests/run_all.sh
-	@echo "		http://localhost:5173/"
-	@echo ""
+	@$(MAKE) --no-print-directory info
 
 ## <----------------- Nettoyage ----------------->
 
@@ -173,8 +183,7 @@ dev: clean up
 	- $(COMPOSE) rm -f frontend
 	@echo "→ Lancement frontend-dev (Vite + HMR)…"
 	$(COMPOSE) --profile dev up -d --build frontend-dev
-	@echo "		http://localhost:5173/"
-	@echo ""
+	@$(MAKE) --no-print-directory info
 
 logs-dev:
 	- $(COMPOSE) --profile dev logs -f frontend-dev
