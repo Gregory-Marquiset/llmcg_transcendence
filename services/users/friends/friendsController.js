@@ -170,7 +170,7 @@ export const unblockUser = async function (req, reply) {
 		const searchForTarget = await getRowFromDB(app.pg, 'SELECT id FROM users WHERE id = $1', [targetId]);
 		if (!searchForTarget)
 			throw httpError(404, "User not found");
-		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT ALL FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
+		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship)
 			throw httpError(400, "Bad request");

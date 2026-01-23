@@ -68,6 +68,7 @@ export const websocketHandler = async function (socket, req) {
 
 				let response = await wsChatHandler.chatServiceCreateMessage(chatObj, req.headers.authorization);
 				console.log(`\nwebsocketHandler chat service response: ${JSON.stringify(response)}\n`);
+				
 
 				
 				socket.send(JSON.stringify({ message: "Message bien recu" }));
@@ -82,7 +83,34 @@ export const websocketHandler = async function (socket, req) {
 					socket.send(JSON.stringify({ type: "error", code: "invalid_json" }));
 					return;
 				}
-				socket.send(JSON.stringify({ type: "error", code: "internal_error" }));
+				if (err.statusCode === 401)
+				{
+					socket.close(1008, "unhauthorized");
+					return;
+				}
+				else if (err.statusCode === 403)
+				{
+					socket.badFrames++;
+					if (socket.badFrames > 5)
+						socket.close(1008, "too_much_bad_frames");
+					socket.send(JSON.stringify({ type: "error", code: "invalid_friendships" }));
+				}
+				else if (err.statusCode === 404)
+				{
+					socket.badFrames++;
+					if (socket.badFrames > 5)
+						socket.close(1008, "too_much_bad_frames");
+					socket.send(JSON.stringify({ type: "error", code: "users_not_found" }));
+				}
+				else if (err.statusCode === 409)
+				{
+					socket.badFrames++;
+					if (socket.badFrames > 5)
+						socket.close(1008, "too_much_bad_frames");
+					socket.send(JSON.stringify({ type: "error", code: "request_id_already_used" }));
+				}
+				else
+					socket.send(JSON.stringify({ type: "error", code: "internal_error" }));
 			}
 		});
 

@@ -1,5 +1,6 @@
 //import { connectionsIndex } from "./connexionRegistry.js";
 
+
 const maxChatPayloadSize = 16 * 1024;
 
 export const checkEventType = (event, socket) => {
@@ -107,5 +108,12 @@ export const chatServiceCreateMessage = async function (chatObj, token) {
         },
         body: JSON.stringify(chatObj)
     });
+    console.log(`\nchatserviceCreateMessage response.status: ${response.status}\n
+        response.statusText: ${response.statusText}\n`);
+    if (!response.ok) {
+         let err = new Error(response.statusText);
+         err.statusCode = response.status;
+         throw err;
+    }
     return (response.json());
 }
