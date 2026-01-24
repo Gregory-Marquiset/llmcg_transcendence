@@ -46,7 +46,9 @@ export const onSocketConnected = function (userId, socket, date) {
                 activeSince: currentUserPresence.activeSince
             }
         });
+        return (true);
     }
+    return (false);
 }
 
 

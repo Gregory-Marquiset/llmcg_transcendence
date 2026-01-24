@@ -17,15 +17,62 @@ export const createMessagesOpts = {
 			201: {
 				type: "object",
 				properties: {
-					id: { type: "integer" },
+					messageId: { type: "integer" },
 					fromUserId: { type: "integer" },
 					toUserId: { type: "integer" },
 					content: { type: "string" },
-					createdDate: { type: "string" },
+					createdAt: { type: "string" },
 					requestId: { type: "string" }
 				}
 			}
 		}
 	},
 	handler: chatController.createMessage
+}
+
+
+export const markAsDeliveredOpts = {
+	schema: {
+		body: {
+			type: "object",
+			properties: {
+				messageId: { type: "integer" },
+			},
+			required: ["messageId"]
+		},
+		response: {
+			200: {
+				type: "object",
+				properties: {
+					status: { type: "string" }
+				}
+			}
+		}
+	},
+	handler: chatController.markAsDelivered
+}
+
+
+export const getUndeliveredMessagesOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "array",
+				properties: {
+					undeliveredMessages : {
+						type: "object",
+						properties: {
+							messageId: { type: "integer" },
+							fromUserId: { type: "integer" },
+							toUserId: { type: "integer" },
+							content: { type: "string" },
+							createdAt: { type: "string" },
+							requestId: { type: "string" }
+						}
+					}
+				}
+			}
+		}
+	},
+	handler: chatController.getUndeliveredMessages
 }

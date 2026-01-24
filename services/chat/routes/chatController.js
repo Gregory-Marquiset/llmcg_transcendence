@@ -21,13 +21,13 @@ export const createMessage = async function (req, reply) {
         let isMessageAlreadyInDB = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE request_id = $1`, [chatObj.requestId]);
         if (!isMessageAlreadyInDB)
         {
-            const res = await runSql(app.pg, `INSERT INTO chat_history (from_user_id, to_user_id, content, request_id, client_sent_at)
-                VALUES ($1, $2, $3, $4, $5)`, [chatObj.fromUserId, chatObj.toUserId, chatObj.content, chatObj.requestId, chatObj.clientSentAt]);
-            if (res !== 1)
-                throw httpError(500, "Internal Server Error");
+            const rowCount = await runSql(app.pg, `INSERT INTO chat_history (from_user_id, to_user_id, content, request_id, client_sent_at, delivered_at)
+                VALUES ($1, $2, $3, $4, $5, $6)`, [chatObj.fromUserId, chatObj.toUserId, chatObj.content, chatObj.requestId, chatObj.clientSentAt, null]);
+            if (rowCount !== 1)
+                throw httpError(500, "Database inserting error");
             isMessageAlreadyInDB = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE request_id = $1`, [chatObj.requestId]);
             if (!isMessageAlreadyInDB)
-                throw httpError(500, "Internal Server Error");
+                throw httpError(500, "Database select error");
         }
         else
         {
@@ -46,7 +46,7 @@ export const createMessage = async function (req, reply) {
             fromUserId: isMessageAlreadyInDB.from_user_id,
             toUserId: isMessageAlreadyInDB.to_user_id,
             content: isMessageAlreadyInDB.content,
-            createdDate: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
             requestId: isMessageAlreadyInDB.request_id 
         };
         // responseObj.messageId = isMessageAlreadyInDB.id;
@@ -55,11 +55,68 @@ export const createMessage = async function (req, reply) {
         // responseObj.content = isMessageAlreadyInDB.content;
         // responseObj.createMessage = new Date().toISOString();
         // responseObj.requestId = isMessageAlreadyInDB.request_id;
+        console.log(`\ncreateMessage responseObj: ${JSON.stringify(responseObj)}\n`);
         
         return (reply.code(201).send(responseObj));
     
     } catch (err) {
-        console.error(`\ncreateMessage error: ${err.message}\n`);
+        console.error(`\nERROR createMessage: ${err.message}\n`);
+        if (err.statusCode)
+            throw err;
+        err.statusCode = 500;
+        throw err;
+    }
+}
+
+
+export const markAsDelivered = async function (req, reply) {
+    try {
+        const checkUser = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE id = $1`,
+            [req.body.messageId]);
+        if (!checkUser)
+            throw httpError(403, "Bad messageId");
+        
+        const date = new Date().toISOString();
+        const rowCount = await runSql(app.pg, `UPDATE chat_history SET delivered_at = $1 WHERE id = $2`,
+            [date, req.body.messageId]);
+        if (rowCount !== 1)
+            throw httpError(500, "Database update error");
+
+        reply.code(200).send({ status: "marked as delivered" });
+    } catch (err) {
+        console.error(`\nERROR markAsDelivered: ${err.message}\n`);
+        if (err.statusCode)
+            throw err;
+        err.statusCode = 500;
+        throw err;
+    }
+}
+
+
+export const getUndeliveredMessages = async function (req, reply) {
+    try {
+        const undeliveredMessages = await getAllRowsFromDb(app.pg, `SELECT * FROM chat_history WHERE to_user_id = $1 AND
+            delivered_at IS NULL`, [req.user.id]);
+
+        let undeliveredMessagesRewrite = [];
+        if (!undeliveredMessages)
+            return (undeliveredMessagesRewrite);
+
+        undeliveredMessages.forEach(undeliveredMessage => {
+            console.log(`\ngetUndeliveredMessage foreach: ${JSON.stringify(undeliveredMessage)}\n`);
+            undeliveredMessagesRewrite.push({
+                messageId: undeliveredMessage.id,
+                fromUserId: undeliveredMessage.from_user_id,
+                toUserId: undeliveredMessage.to_user_id,
+                content: undeliveredMessage.content,
+                requestId: undeliveredMessage.request_id 
+            });
+        });
+
+
+        reply.code(200).send(undeliveredMessagesRewrite);
+    } catch (err) {
+        console.error(`\nERROR getUndeliveredMessages: ${err.message}\n`);
         if (err.statusCode)
             throw err;
         err.statusCode = 500;

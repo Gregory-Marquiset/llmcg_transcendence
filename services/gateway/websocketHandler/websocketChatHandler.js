@@ -120,24 +120,65 @@ export const chatServiceCreateMessage = async function (chatObj, token) {
 }
 
 
-export const deliverMessage = (chatServiceResponse) => {
+export const deliverMessage = async function (chatServiceResponse, token) {
     let isUserOnline = getPresenceForUsers([chatServiceResponse.toUserId]);
 
     if (isUserOnline.get(chatServiceResponse.toUserId).status === "online")
     {
         console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is online\n`);
         let event = {
-            type: "chat.message",
+            type: "chat:message",
             payload: chatServiceResponse
         }
 
         sessionsByUser.get(chatServiceResponse.toUserId).socketSet.forEach((socket) => {
             socket.send(JSON.stringify(event));
         });
+
+        let response = await fetch("http://chat-service:5000/api/v1/chat/messages/delivered", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            body: JSON.stringify({ messageId: chatServiceResponse.messageId })
+        });
+        console.log(`\nchatservice markAsDelivered response.status: ${response.status}\n
+        response.statusText: ${response.statusText}\n`);
+        if (!response.ok) {
+            let err = new Error(response.statusText);
+            err.statusCode = response.status;
+            throw err;
+    }
     }
     else
     {
         console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
     }
+}
 
+
+export const pushUndeliveredMessages = async function (token) {
+    let response = await fetch("http://chat-service:5000/api/v1/chat/messages/undelivered", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": token
+        }
+    });
+    if (!response.ok) {
+        let err = new Error(response.statusText);
+        err.statusCode = response.status;
+        throw err;
+    }
+    let undeliveredMessages = await response.json();
+    console.log(`\npushUndeliveredMessages typeof undeliveredMessages: ${typeof undeliveredMessages}\n
+        undeliveredMessages: ${JSON.stringify(undeliveredMessages)}\n`);
+    if (!undeliveredMessages)
+        return;
+    undeliveredMessages.forEach((undeliveredMessage) => {
+        console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessage}
+            undeliveredMessage: ${JSON.stringify(undeliveredMessage)}\n`);
+        deliverMessage(undeliveredMessage, token);
+    });
 }

@@ -29,7 +29,9 @@ export const websocketHandler = async function (socket, req) {
 			socket.isAlive = true;
 		});
 
-		presence.onSocketConnected(req.user.id, socket, date);
+		let becameOnline = presence.onSocketConnected(req.user.id, socket, date);
+		if (becameOnline === true)
+			await wsChatHandler.pushUndeliveredMessages(req.headers.authorization);
 
 		socket.on("message", async (event) => {
 			try {
@@ -69,9 +71,16 @@ export const websocketHandler = async function (socket, req) {
 				let chatServiceResponse = await wsChatHandler.chatServiceCreateMessage(chatObj, req.headers.authorization);
 				console.log(`\nwebsocketHandler chat service response: ${JSON.stringify(chatServiceResponse)}\n`);
 				
-				wsChatHandler.deliverMessage(chatServiceResponse);
+				let acknowledgement = {
+					type: "chat:sent",
+					requestId: obj.requestId,
+					messageId: chatServiceResponse.messageId,
+					createdAt: chatServiceResponse.createdAt
+				};
+				//console.log(`\nwebsocketHandler acknowledgment: ${JSON.stringify(acknowledgement)}\n`);
+				socket.send(JSON.stringify(acknowledgement));
 				
-				socket.send(JSON.stringify({ message: "Message bien recu" }));
+				await wsChatHandler.deliverMessage(chatServiceResponse, req.headers.authorization);
 
 			} catch (err) {
 				console.error(`\nERROR websocketHandler on message: error stack: ${err.stack},\nmessage: ${err.message}, name: ${err.name}\n`);

@@ -48,7 +48,8 @@ export const initDb = async function (app) {
                 to_user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 content text NOT NULL,
                 request_id text UNIQUE NOT NULL,
-                client_sent_at text)`);
+                client_sent_at text,
+                delivered_at text)`);
         });
     } catch (err) {
         console.error(`\nERROR initDb: ${err.message}\n`);
