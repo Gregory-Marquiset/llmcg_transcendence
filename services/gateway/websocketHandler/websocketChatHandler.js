@@ -3,7 +3,7 @@ import { getPresenceForUsers } from "../presence/presenceService.js";
 import { sessionsByUser } from "../presence/presenceStore.js";
 
 
-export const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) => {
+const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) => {
     if (obj?.type !== "chat:send" || !obj?.requestId || !obj?.payload
         || typeof obj.payload !== "object")
     {
@@ -52,7 +52,7 @@ export const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) =
 }
 
 
-export const chatServiceCreateMessage = async function (chatObj, token) {
+const chatServiceCreateMessage = async function (chatObj, token) {
     const response = await fetch("http://chat-service:5000/messages", {
         method: "POST",
         headers: {
@@ -72,7 +72,7 @@ export const chatServiceCreateMessage = async function (chatObj, token) {
 }
 
 
-export const deliverMessage = async function (chatServiceResponse, token) {
+const deliverMessage = async function (chatServiceResponse, token) {
     let isUserOnline = getPresenceForUsers([chatServiceResponse.toUserId]);
 
     if (isUserOnline.get(chatServiceResponse.toUserId).status === "online")

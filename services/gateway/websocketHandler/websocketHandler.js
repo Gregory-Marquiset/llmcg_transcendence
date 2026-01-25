@@ -118,8 +118,10 @@ export const websocketHandler = async function (socket, req) {
 		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}\n`);
 		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED")
 			socket.close(1008, "token_expired");
-		else
+		else if (err.code.startWith("FST_JWT_") || err.code.startsWith("FAST_JWT_"))
 			socket.close(1008, "unauthorized");
+		else
+			socket.close();
 	}
 }
 
