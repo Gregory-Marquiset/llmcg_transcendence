@@ -73,6 +73,12 @@ await app.register(fastifyHttpProxy, {
 });
 
 await app.register(fastifyHttpProxy, {
+	upstream: 'http://statistics-service:5000',
+	prefix: '/_docs/statistics',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
 	upstream: 'http://users-service:5000',
 	prefix: '/_docs/users',
 	rewritePrefix: '/docs'
