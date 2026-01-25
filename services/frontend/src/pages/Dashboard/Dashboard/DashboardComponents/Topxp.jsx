@@ -19,7 +19,7 @@ const data = [
     {
         id : 3,
         name : 'Lou',
-        xp_gained : 122,
+        xp_gained : 111111,
         avatar_path : ''
     },
     {
