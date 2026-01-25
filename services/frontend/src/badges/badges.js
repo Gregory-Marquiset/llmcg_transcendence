@@ -10,6 +10,7 @@ export const badges = [ {
         name : 'Trophee',
         category : 'Ranking',
         color : '#e3574c',
+        key : "rank_position",
         levels : [{
                     level : 1,
                     description: 'Under top 10',
@@ -33,6 +34,7 @@ export const badges = [ {
         name : 'Croissance',
         category : 'Productivity',
         color : '#72b242',
+        key : "task_completed",
         levels : [{
                     level : 1,
                     description: '10 tasks completed',
@@ -55,6 +57,7 @@ export const badges = [ {
         name : 'Like',
         category : 'Number of friendship',
         color: '#3ea5d0',
+        key: "friends_count",
         levels : [{
                     level : 1,
                     description: '1 friend',
@@ -77,6 +80,7 @@ export const badges = [ {
         name : 'Medal',
         category : 'Number of days connected in a row',
         color : '#f69725',
+        key : "streaks_history",
         levels : [{
                 level : 1,
                 description: '1 week',
@@ -121,6 +125,7 @@ export const badges = [ {
         name : 'Spaceship',
         category : 'Seniority on the app',
         color : '#7b689b',
+        key : "app_seniority",
         levels : [{
                 level : 1,
                 description: '1 day',
@@ -144,6 +149,7 @@ export const badges = [ {
         name : 'Idea',
         category : 'Number of upload',
         color : '#e6c437',
+        key : "upload_count",
         levels : [{
                 level : 1,
                 description: '1 file uploaded',

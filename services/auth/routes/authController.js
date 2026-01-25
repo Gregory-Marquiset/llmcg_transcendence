@@ -1,6 +1,6 @@
 import { app, httpError } from '../authServer.js';
 import { authenticator } from 'otplib';
-import { getRowFromDB, runSql } from '../../shared/postgresFunction.js'
+import { getRowFromDB, runSql, getAllRowsFromDb } from '../../shared/postgresFunction.js'
 
 export const authRegister = async function (req, reply) {
 	console.log(`\n${JSON.stringify(req.body)}\n`);

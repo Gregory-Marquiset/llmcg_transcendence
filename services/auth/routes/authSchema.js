@@ -20,9 +20,6 @@ export const authRegisterOpts = {
 	handler: authController.authRegister
 }
 
-
-
-
 export const authLoginOpts = {
 	schema: {
 		body: {
