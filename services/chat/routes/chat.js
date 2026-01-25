@@ -7,6 +7,8 @@ async function chatRoutes (app, options) {
 	app.post('/messages/delivered', { onRequest: [app.authenticate], ...chatOpts.markAsDeliveredOpts });
 
 	app.get('/messages/undelivered', { onRequest: [app.authenticate], ...chatOpts.getUndeliveredMessagesOpts });
+
+	app.get('/messages/with/:userId', { onRequest: [app.authenticate], ...chatOpts.getMessagesHistoryOpts });
 }
 
 export { chatRoutes };
