@@ -21,6 +21,7 @@ export const createMessagesOpts = {
 					fromUserId: { type: "integer" },
 					toUserId: { type: "integer" },
 					content: { type: "string" },
+					clientSentAt: { type: "string" },
 					createdAt: { type: "string" },
 					requestId: { type: "string" }
 				}
@@ -66,7 +67,7 @@ export const getUndeliveredMessagesOpts = {
 							fromUserId: { type: "integer" },
 							toUserId: { type: "integer" },
 							content: { type: "string" },
-							createdAt: { type: "string" },
+							clientSentAt: { type: "string" },
 							requestId: { type: "string" }
 						}
 					}

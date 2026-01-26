@@ -3,26 +3,27 @@ import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFun
 
 export const createMessage = async function (req, reply) {
 	try {
+        let date = new Date().toISOString();
         console.log(`\ncreateMessage: typeof req.body: ${typeof req.body}\nreq.body: ${JSON.stringify(req.body)}\n`);
         let chatObj = req.body;
 
         if (typeof chatObj?.content !== "string")
             throw httpError(400, "Bad request");
 
-        const areUsersInDB = await getAllRowsFromDb(app.pg, 'SELECT id FROM users WHERE id = $1 OR id = $2', [chatObj.fromUserId, chatObj.toUserId]);
+        const areUsersInDB = await getAllRowsFromDb(app.pg, 'SELECT id FROM users WHERE id = $1 OR id = $2', [req.user.id, chatObj.toUserId]);
         if (!areUsersInDB || areUsersInDB.length !== 2)
             throw httpError(404, "User not found");
 
         const areUsersFriends = await getRowFromDB(app.pg, `SELECT status FROM friendships WHERE (sender_id = $1 AND receiver_id = $2)
-            OR (sender_id = $2 AND receiver_id = $1)`, [chatObj.fromUserId, chatObj.toUserId]);
+            OR (sender_id = $2 AND receiver_id = $1)`, [req.user.id, chatObj.toUserId]);
         if (!areUsersFriends || areUsersFriends.status !== "accepted")
             throw httpError(403, "Users are not friends");
 
         let isMessageAlreadyInDB = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE request_id = $1`, [chatObj.requestId]);
         if (!isMessageAlreadyInDB)
         {
-            const rowCount = await runSql(app.pg, `INSERT INTO chat_history (from_user_id, to_user_id, content, request_id, client_sent_at, delivered_at)
-                VALUES ($1, $2, $3, $4, $5, $6)`, [chatObj.fromUserId, chatObj.toUserId, chatObj.content, chatObj.requestId, chatObj.clientSentAt, null]);
+            const rowCount = await runSql(app.pg, `INSERT INTO chat_history (from_user_id, to_user_id, content, request_id, client_sent_at, created_at, delivered_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)`, [req.user.id, chatObj.toUserId, chatObj.content, chatObj.requestId, chatObj.clientSentAt, date, null]);
             if (rowCount !== 1)
                 throw httpError(500, "Database inserting error");
             isMessageAlreadyInDB = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE request_id = $1`, [chatObj.requestId]);
@@ -46,7 +47,8 @@ export const createMessage = async function (req, reply) {
             fromUserId: isMessageAlreadyInDB.from_user_id,
             toUserId: isMessageAlreadyInDB.to_user_id,
             content: isMessageAlreadyInDB.content,
-            createdAt: new Date().toISOString(),
+            clientSentAt: isMessageAlreadyInDB.client_sent_at,
+            createdAt: isMessageAlreadyInDB.created_at,
             requestId: isMessageAlreadyInDB.request_id 
         };
         // responseObj.messageId = isMessageAlreadyInDB.id;
@@ -109,6 +111,7 @@ export const getUndeliveredMessages = async function (req, reply) {
                 fromUserId: undeliveredMessage.from_user_id,
                 toUserId: undeliveredMessage.to_user_id,
                 content: undeliveredMessage.content,
+                clientSentAt: undeliveredMessage.client_sent_at,
                 requestId: undeliveredMessage.request_id 
             });
         });

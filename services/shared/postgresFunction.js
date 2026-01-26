@@ -49,6 +49,7 @@ export const initDb = async function (app) {
                 content text NOT NULL,
                 request_id text UNIQUE NOT NULL,
                 client_sent_at text,
+                created_at text,
                 delivered_at text)`);
         });
     } catch (err) {
