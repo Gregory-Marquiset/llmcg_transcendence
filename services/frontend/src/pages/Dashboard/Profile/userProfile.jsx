@@ -12,6 +12,8 @@ function userProfile() {
       id: '',
       username: '',
       avatar_path: '',
+	  friendshipsStatus: '',
+	  blockedBy: null,
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -100,8 +102,8 @@ const avatarUrl = userData.avatar_path && !onError
                   <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
               </div>
               <BadgeWindow name={userData.username}/>
-              <Button text="Ajouter en ami" onClick={handleAddFriend}/>
-              <Button text="Bloquer" onClick={handleBlock}/>
+              {userData.friendshipsStatus !== "pending" && userData.friendshipsStatus !== "accepted" && (<Button text="Ajouter en ami" onClick={handleAddFriend}/>)}
+              {userData.blockedBy === 0 && (<Button text="Bloquer" onClick={handleBlock}/>)}
               <br/>
           </div>
           </div>
