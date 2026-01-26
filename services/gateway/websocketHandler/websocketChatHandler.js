@@ -28,8 +28,8 @@ const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) => {
         return (null);
     }
 
-    const toUserId = new Number(obj.payload.toUserId)
-    if (Number.isNaN(toUserId) || obj.payload.toUserId === actualUserId)
+    const toUserId = Number(obj.payload.toUserId)
+    if (!Number.isFinite(toUserId) || !Number.isInteger(toUserId) || toUserId <= 0 || toUserId === actualUserId)
     {
         socket.send(JSON.stringify({ type: "error", code: "invalid_userId" }));
         return (null);
@@ -80,7 +80,10 @@ const chatServiceCreateMessage = async function (chatObj, token) {
 const deliverMessage = async function (chatServiceResponse, token) {
     let isUserOnline = getPresenceForUsers([chatServiceResponse.toUserId]);
 
-    if (isUserOnline.get(chatServiceResponse.toUserId).status === "online")
+    let status = isUserOnline?.get(chatServiceResponse.toUserId)?.status;
+    if (!status)
+        status = "offline";
+    if (status === "online")
     {
         console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is online\n`);
         let event = {
@@ -88,7 +91,13 @@ const deliverMessage = async function (chatServiceResponse, token) {
             payload: chatServiceResponse
         }
 
-        sessionsByUser.get(chatServiceResponse.toUserId).socketSet.forEach((socket) => {
+        let sockSet = sessionsByUser?.get(chatServiceResponse.toUserId)?.socketSet;
+        if (!sockSet || sockSet.size === 0)
+        {
+            console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
+            return;
+        }
+        sockSet.forEach((socket) => {
             socket.send(JSON.stringify(event));
         });
 
@@ -131,15 +140,33 @@ export const pushUndeliveredMessages = async function (token) {
         throw err;
     }
     let undeliveredMessages = await response.json();
-    console.log(`\npushUndeliveredMessages typeof undeliveredMessages: ${typeof undeliveredMessages}\n
-        undeliveredMessages: ${JSON.stringify(undeliveredMessages)}\n`);
     if (!undeliveredMessages)
         return;
-    undeliveredMessages.forEach(async (undeliveredMessage) => {
-        console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessage}
-            undeliveredMessage: ${JSON.stringify(undeliveredMessage)}\n`);
-        await deliverMessage(undeliveredMessage, token);
-    });
+    console.log(`\npushUndeliveredMessages typeof undeliveredMessages: ${typeof undeliveredMessages}\n
+        undeliveredMessages: ${JSON.stringify(undeliveredMessages)}\n`);
+
+        for (let i = 0; i < undeliveredMessages.length; i++)
+        {
+            console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessages[i]}
+            undeliveredMessage: ${JSON.stringify(undeliveredMessages[i])}\n`);
+
+            try {
+                await deliverMessage(undeliveredMessages[i], token);
+            } catch (err) {
+                if (err?.statusCode === 401)
+                {
+                    console.error(`ERROR pushUndeliveredMessage auth error, stopping push\n`);
+                    break;
+                }
+                console.error(`ERROR pushUndeliveredMessage error with message id: ${undeliveredMessages[i].messageId}\n`);
+                continue;
+            }
+        }
+    // undeliveredMessages.forEach(async (undeliveredMessage) => {
+    //     console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessage}
+    //         undeliveredMessage: ${JSON.stringify(undeliveredMessage)}\n`);
+    //     await deliverMessage(undeliveredMessage, token);
+    // });
 }
 
 
@@ -151,7 +178,7 @@ export const handleChatSendEvent = async function (socket, obj, connectionsIndex
 
     let chatObj = {
         fromUserId: socket.userId,
-        toUserId: obj.payload.toUserId,
+        toUserId: Number(obj.payload.toUserId),
         content: obj.payload.content,
         requestId: obj.requestId,
         clientSentAt: new Date().toISOString()
