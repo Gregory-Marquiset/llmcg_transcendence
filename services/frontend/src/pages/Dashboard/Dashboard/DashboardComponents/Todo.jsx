@@ -1,35 +1,40 @@
+import { Button } from '../../../../components';
 import '../Dashboard.css'
-import { useState } from 'react';
-const data = [
-    {
-        id: 1,
-        title : "Readme",
-        done : 0,
-        description : 'faire le readme pour Minishell',
-        deadline : '01/02/2026'
-    },
-    {
-        id: 2,
-        title : "Correction",
-        done : 0,
-        description : 'Corriger philo',
-        deadline : '30/01/2026'
-    },
-    {
-        id: 3,
-        title : "Révisions",
-        done : 0,
-        description : "réviser l'exam",
-        deadline : '01/02/2026'
-    }
-]
+import { useEffect, useState } from 'react';
+import {useNavigate } from 'react-router-dom'
 
 export default function Todo (){
-    const [nbTask, setNbTask] = useState(0);
+    const navigate = useNavigate();
+    const [todo, setTodo] = useState([]);
+    const accessToken = localStorage.getItem('access_token');
+    const fetchTodo = async () => {
+        try{
+            const response = await fetch('/api/v1/statistics/todo', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            if (!response.ok){
+                console.log("error while fetchin todo");
+                return ;
+            }
+            const hey = await response.json();
+            setTodo(hey);
+        }
+        catch (err){
+            console.error(err);
+        }
+    };
+    useEffect(() => {
+        if (accessToken)
+            fetchTodo();
+    }, []);
     return <>
     <div className='todo-summary'>
-        <h3>   You have {data.length} tasks</h3>
-        {data.map((element) => (
+        <h3>   You have {todo.length} tasks</h3>
+        { todo.length === 0 && <Button text="Add some" onClick={() => navigate('/dashboard/activity')}/>}
+        {todo.map((element) => (
            <div className='todo' key={element.id}>
                 <div className='todo-title' >{element.title}</div>
                 <p className='todo-description'>Description : {element.description} </p>

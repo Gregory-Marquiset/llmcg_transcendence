@@ -1,4 +1,4 @@
-import { app, uploadsDir, httpError } from "../usersServer.js";
+import { app, httpError } from "../statisticsServer.js";
 import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js'
 
 export const updateSeniority = async function (req, reply){
@@ -21,5 +21,18 @@ export const updateSeniority = async function (req, reply){
     }
     catch (err){
         console.error("ERROR updating seniority : ", err);
+    }
+}
+
+export const getAllTodo = async function (req, reply) {
+    try {
+        const list = await getAllRowsFromDb(
+            app.pg, `SELECT * FROM todo_list WHERE user_id = $1`, [req.user.id]);
+        console.log(`Todo list for user ${req.user.id}:`, list);
+        return reply.code(200).send(list);
+    }
+    catch (err) {
+        console.error("Error getting todo list:", err);
+        return reply.code(500).send({ error: 'Failed to fetch todos' });
     }
 }

@@ -10,8 +10,8 @@ import authPlugin from '../shared/authPlugin.js';
 import postgresPlugin from '../shared/postgresPlugin.js';
 
 // Import des routes
-import { statsRoutes } from './routes/stats.js';
-import { eventsRoutes } from './routes/events.js';
+import { statsRoutes } from './routes/statistic.js';
+// import { eventsRoutes } from './routes/events.js';
 
 export const app = Fastify({
     logger: true
@@ -64,7 +64,7 @@ await app.register(postgresPlugin);
 
 // ===== ROUTES =====
 await app.register(statsRoutes);
-await app.register(eventsRoutes);
+// await app.register(eventsRoutes);
 
 // ===== HEALTH CHECK =====
 app.get('/health', async (req, reply) => {
@@ -95,3 +95,9 @@ const start = async () => {
 };
 
 start();
+
+export const httpError = (code, message) => {
+	const err = new Error(message);
+	err.statusCode = code;
+	return err;
+}

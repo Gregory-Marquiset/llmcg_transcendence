@@ -59,7 +59,16 @@ export const initDb = async function (app) {
                 updated_at timestamp,
                 last_login timestamp)
                 `);
-                await client.query(`SELECT pg_advisory_unlock(424242);`);
+            await client.query(`CREATE TABLE IF NOT EXISTS todo_list (
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                user_id integer UNIQUE NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                title text UNIQUE NOT NULL,
+                description text,
+                done boolean DEFAULT false,
+                deadline timestamp,
+                created_at timestamp DEFAULT NOW(),
+                UNIQUE(user_id, title) )`);
+            await client.query(`SELECT pg_advisory_unlock(424242);`);
         });
     } catch (err) {
         console.error(`\nERROR initDb: ${err.message}\n`);

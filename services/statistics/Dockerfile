@@ -12,4 +12,4 @@ COPY services/statistics/ ./statistics/
 COPY services/shared/ ./shared/
 
 EXPOSE 5000
-CMD ["node", "statisticsServer.js"]
+CMD ["node", "statistics/statisticsServer.js"]
