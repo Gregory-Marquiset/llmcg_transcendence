@@ -268,6 +268,118 @@ services:
     restart: unless-stopped
     profiles: ["dev"]
 
+  gateway-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app/services/gateway
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./services:/app/services
+      - gateway_node_modules:/app/services/gateway/node_modules
+    command: >
+      sh -lc "if [ ! -d node_modules ]; then npm ci; fi
+      && node --watch server.js"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      NODE_ENV: "development"
+    networks:
+      net_backend:
+        aliases: ["gateway"]
+      net_gateway:
+        aliases: ["gateway"]
+      net_monitoring:
+        aliases: ["gateway"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev-back"]
+
+  auth-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app/services/auth
+    volumes:
+      - ./services:/app/services
+      - auth_node_modules:/app/services/auth/node_modules
+    command: >
+      sh -lc "if [ ! -d node_modules ]; then npm ci; fi
+      && node --watch authServer.js"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+    networks:
+      net_backend:
+        aliases: ["auth-service"]
+      net_monitoring:
+        aliases: ["auth-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev-back"]
+
+  users-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app/services/users
+    volumes:
+      - ./services:/app/services
+      - users_node_modules:/app/services/users/node_modules
+    command: >
+      sh -lc "if [ ! -d node_modules ]; then npm ci; fi
+      && node --watch usersServer.js"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+    networks:
+      net_backend:
+        aliases: ["users-service"]
+      net_monitoring:
+        aliases: ["users-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev-back"]
+
 ### Config
 
 networks:
@@ -291,4 +403,6 @@ volumes:
   frontend_node_modules:
   prometheus_data:
   grafana_data:
-  # users_avatar_data:
+  gateway_node_modules:
+  auth_node_modules:
+  users_node_modules:
