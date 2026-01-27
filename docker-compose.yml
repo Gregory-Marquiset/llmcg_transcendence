@@ -170,7 +170,7 @@ services:
   frontend-exporter:
     image: nginx/nginx-prometheus-exporter:latest
     command:
-      - "-nginx.scrape-uri=http://frontend:8080/stub_status"
+      - "-nginx.scrape-uri=http://frontend:80/stub_status"
     depends_on:
       - frontend
     networks:

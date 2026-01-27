@@ -33,7 +33,6 @@ help:
 	@echo "  make logs                  - Suit les logs du service (SERVICE=..., défaut: project_health)"
 	@echo "  make logs-tail             - Suit les logs du service (SERVICE=..., 200 dernières lignes)"
 	@echo "  make logs-all              - Suit les logs de tous les services"
-	@echo "  make logs-dump             - Dump logs (utils CI)"
 	@echo ""
 	@echo "Tests :"
 	@echo "  make test                  - down puis lance tests/run_all.sh"
