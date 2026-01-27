@@ -19,16 +19,13 @@ import * as wsHandler from './websocketHandler/websocketHandler.js'
 //import { runDatabase } from '../users/usersServer.js'
 import authPlugin from '../shared/authPlugin.js'
 //Metrics for Prometheus
-
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const sharedMetricsPlugin = require("../shared/metricsPlugin.js");
+import metricsPlugin from "../shared/metricsPlugin.js";	//	metrics
 
 export const app = Fastify({
 	logger: true
 });
 
-await app.register(sharedMetricsPlugin, { serviceName: "gateway" });
+await app.register(metricsPlugin, { serviceName: "gateway", enableBizMetrics: false });	//	metrics
 
 // // metrics HTTP node
 // await app.register(metricsPlugin, {

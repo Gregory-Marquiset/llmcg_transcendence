@@ -17,9 +17,7 @@ export const app = Fastify({
     logger: true
 });
 
-await app.register(metricsPlugin, {
-    serviceName: "auth"
-});
+await app.register(metricsPlugin, { serviceName: "auth", enableBizMetrics: true }); //  metrics
 
 export const httpError = (code, message) => {
 	const err = new Error(message);
