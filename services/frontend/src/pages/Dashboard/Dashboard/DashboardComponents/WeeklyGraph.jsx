@@ -2,7 +2,7 @@ import '../Dashboard.css'
 import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, YAxis, Tooltip, ReferenceLine} from 'recharts'
 
 const data = [
-    { date: "01/01/2026", logtime: 0 },
+    { date: "01/01/2026", logtime: 15 },
     { date: "02/01/2026", logtime: 5.5 },
     { date: "03/01/2026", logtime: 7 },
     { date: "04/01/2026", logtime: 3.5 },

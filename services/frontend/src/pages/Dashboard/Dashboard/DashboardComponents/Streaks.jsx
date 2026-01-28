@@ -3,7 +3,7 @@ import '../Dashboard.css'
 import { Pie, Cell, PieChart, ResponsiveContainer } from 'recharts'
 
 export default function Streaks() {
-    const [nbStreaks, setNbStreaks] = useState(0);
+    const [nbStreaks, setNbStreaks] = useState(9);
     const [displayStreak, setDisplayStreak] = useState(nbStreaks % 7);
     const [pieColor, setPieColor] = useState("");
     useEffect(() => {

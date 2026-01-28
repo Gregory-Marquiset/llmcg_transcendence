@@ -11,9 +11,13 @@ import authPlugin from '../shared/authPlugin.js';
 import postgresPlugin from '../shared/postgresPlugin.js';
 import { initDb } from '../shared/postgresFunction.js';
 
+import metricsPlugin from '../shared/metricsPlugin.js';
+
 export const app = Fastify({
     logger: true
 });
+
+await app.register(metricsPlugin, { serviceName: "auth", enableBizMetrics: true }); //  metrics
 
 export const httpError = (code, message) => {
 	const err = new Error(message);
