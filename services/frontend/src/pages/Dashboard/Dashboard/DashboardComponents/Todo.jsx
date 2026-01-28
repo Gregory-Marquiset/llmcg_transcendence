@@ -44,7 +44,7 @@ export default function Todo (){
                 console.error("While marking as done task");
                 return ;
             }
-            console.log("coucou");
+            console.log("Task marked as done succesfully");
         }
         catch (err){
             console.error("ERROR : ", err);
@@ -63,8 +63,8 @@ export default function Todo (){
                 <div className='todo-title' >{element.title}</div>
                 <p className='todo-description'>Description : {element.description} </p>
                 {element.done !== 1 && <div className="checkbox-wrapper-5">
-                    <div className="check" onClick={() => {markAsDone(element)}}>
-                        <input id={element.id} type="checkbox" checked={element.done}/>
+                    <div className="check" >
+                        <input id={element.id} type="checkbox" checked={element.done} onChange={() => {markAsDone(element)}}/>
                         <label htmlFor={element.id} />
                     </div>
                 </div>}

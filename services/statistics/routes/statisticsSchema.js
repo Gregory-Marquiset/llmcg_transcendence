@@ -136,6 +136,7 @@ export const getHistoryOpts = {
                 items : {
                     type : 'object',
                     properties : {
+                        user_id : {type : "integer"},
                         id : {type : "integer"},
                         title : {type : "string"},
                         description : { type : "string" },
@@ -143,7 +144,13 @@ export const getHistoryOpts = {
                     },
                 },
             },
+            500: {
+                type: 'object',
+                properties: {
+                    error: { type: 'string' }
+                }
+            }
         },
     },
-    handler: statisticsController.getHistoryOpts
+    handler: statisticsController.getHistory
 }

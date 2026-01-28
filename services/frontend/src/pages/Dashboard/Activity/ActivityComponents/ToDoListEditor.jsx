@@ -83,11 +83,14 @@ export default function ToDoListEditor(){
             <div className='todolist-editor-container'>
                 <h3>   To do list editor</h3>
                 <div className='todo' key='0'>
-                    <h3>    Add a new task :</h3>
-                    <h4> Titre</h4>
-                    <input onChange={(e) => setTitle(e.target.value)} className='input-new-todo'></input>
-                    <h4> Description</h4>
-                    <input onChange={(e) => setDescription(e.target.value)} className='input-new-todo'></input>                    <Button onClick={newTask} text="Add"/>
+                    <form className='todo' onSubmit={newTask}>
+                        <h3>    Add a new task :</h3>
+                        <h4> Titre</h4>
+                        <input onChange={(e) => setTitle(e.target.value)} className='input-new-todo'/>
+                        <h4> Description</h4>
+                        <input onChange={(e) => setDescription(e.target.value)} className='input-new-todo'/>
+                    <Button onClick={newTask} text="Add"/>
+                   </form>
                 </div>
                     {todo.map((element) => (
             <div className='todo-tile-editor' key={element.id}>

@@ -71,7 +71,7 @@ export const initDb = async function (app) {
             await client.query(`CREATE TABLE IF NOT EXISTS history (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                title text UNIQUE NOT NULL,
+                title text NOT NULL,
                 description text NOT NULL,
                 created_at timestamp DEFAULT NOW())`);
             await client.query(`SELECT pg_advisory_unlock(424242);`);

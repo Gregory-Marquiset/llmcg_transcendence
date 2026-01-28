@@ -139,20 +139,28 @@
     height: 440px;
 }
 
+.historic-container::-webkit-scrollbar,
+.lastuploads-container::-webkit-scrollbar,
 .todolist-editor-container::-webkit-scrollbar {
     width: 8px;
 }
 
+.historic-container::-webkit-scrollbar-track,
+.lastuploads-container::-webkit-scrollbar-track,
 .todolist-editor-container::-webkit-scrollbar-track {
     background: #f6f4f4;
     border-radius: 10px;
 }
 
+.historic-container::-webkit-scrollbar-thumb,
+.lastuploads-container::-webkit-scrollbar-thumb,
 .todolist-editor-container::-webkit-scrollbar-thumb {
     background-color: #eab2bb;
     border-radius: 10px;
 }
 
+.historic-container::-webkit-scrollbar-thumb:hover,
+.lastuploads-container::-webkit-scrollbar-thumb:hover,
 .todolist-editor-container::-webkit-scrollbar-thumb:hover {
     background-color: #d89aa4;
 }
@@ -209,6 +217,8 @@
     border-radius: 10px;
     margin: 10px;
     flex: 1;
+    height: 400px;
+    overflow-y: scroll;
 }
 .historic-container h3 {
     font-size: 25px;
@@ -223,6 +233,8 @@
     margin: 10px;
     flex: 1;
     white-space: pre;
+    height: 400px;
+    overflow-y: scroll;
 }
 
 .lastuploads-container h3 {
