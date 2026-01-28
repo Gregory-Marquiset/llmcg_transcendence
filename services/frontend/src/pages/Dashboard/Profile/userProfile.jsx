@@ -2,13 +2,22 @@ import '../../../styles/App.css'
 import { Footer, Background, HeaderBar, Button, Loading } from '../../../components'
 import './Profile.css' 
 import { useState, useEffect } from 'react'
-import { profilepicture } from '../../../assets'
+import { profile, profilepicture } from '../../../assets'
 import { useAuth } from '../../../context/AuthContext'
+import { addFriend, deleteFriend, blockUser, unblockUser, getUserProfile, getCurrUserProfile} from '../../../functions/user'
 import { useNavigate, useParams } from 'react-router-dom'
 import BadgeWindow from './BadgeWindow'
 
+
 function userProfile() {
   const [userData, setUserData] = useState ({
+      id: '',
+      username: '',
+      avatar_path: '',
+	  friendshipsStatus: '',
+	  blockedBy: null,
+  });
+  const [CurrUserData, setCurrUserData] = useState ({
       id: '',
       username: '',
       avatar_path: '',
@@ -21,65 +30,65 @@ function userProfile() {
   const accessToken = localStorage.getItem("access_token");
   const { username } = useParams();
 
-  const handleAddFriend = async () => {
-    try {
-      const responseAddFriend = await fetch(`/api/v1/users/friends/${userData.id}/request`, {
-        method : 'POST',
-        headers : {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      const data = await response.json();
-      console.log(data);
-    }
-    catch (err){
-      alert(err);
-    }
-  }
 
-  const handleBlock = async () => {
+    const handleAddFriend = async () => {
     try {
-      const responseAddFriend = await fetch(`/api/v1/users/friends/${userData.id}/block`, {
-        method : 'POST',
-        headers : {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      const data = await response.json();
-      console.log(data);
+      await addFriend(userData.id, accessToken);
+      setUserData(prev => ({ ...prev, friendshipsStatus: 'pending' }));
+    } catch (err) {
+      console.error('Failed to add friend:', err);
     }
-    catch (err){
-      alert(err);
+  };
+
+  const handleDeleteFriend = async () => {
+    try {
+      await deleteFriend(userData.id, accessToken);
+      setUserData(prev => ({ ...prev, friendshipsStatus: '' }));
+    } catch (err) {
+      console.error('Failed to delete friend:', err);
     }
-  }
+  };
+
+  const handleBlockUser = async () => {
+    try {
+      await blockUser(userData.id, accessToken);
+      setUserData(prev => ({ ...prev, blockedBy: CurrUserData.id, friendshipsStatus: 'blocked' }));
+    } catch (err) {
+      console.error('Failed to block user:', err);
+    }
+  };
+
+  const handleUnblockUser = async () => {
+    try {
+      await unblockUser(userData.id, accessToken);
+      setUserData(prev => ({ ...prev, blockedBy: 0,  friendshipsStatus: '' }));
+    } catch (err) {
+      console.error('Failed to unblock user:', err);
+    }
+  };
+
 
   useEffect(() => {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const responseMe = await fetch(`/api/v1/users/user/${username}/profil`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      if (!responseMe.ok) {
-        console.error("Error while fetching info");
-        return;
-      }
-      const fetchedUserData = await responseMe.json();
-      console.log(fetchedUserData);
+      const fetchedCurrUserData = await getCurrUserProfile(accessToken);
+      const fetchedUserData = await getUserProfile(username, accessToken);
       setUserData(fetchedUserData);
+      setCurrUserData(fetchedCurrUserData);
       setLoading(false);
-      
+
+      if (fetchedCurrUserData.id === fetchedUserData.id) {
+        navigate("/dashboard/profile");
+      }
     } catch (err) {
       console.error("Fetch error:", err);
+      setLoading(false);
     }
-  }
-    if (accessToken) {
-      fetchProfile();
-    }
-  }, [accessToken]);
+  };
+
+  if (accessToken) fetchProfile();
+}, [username, accessToken]);
 
 
 const avatarUrl = userData.avatar_path && !onError
@@ -102,8 +111,18 @@ const avatarUrl = userData.avatar_path && !onError
                   <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
               </div>
               <BadgeWindow name={userData.username}/>
-              {userData.friendshipsStatus !== "pending" && userData.friendshipsStatus !== "accepted" && (<Button text="Ajouter en ami" onClick={handleAddFriend}/>)}
-              {userData.blockedBy === 0 && (<Button text="Bloquer" onClick={handleBlock}/>)}
+              {userData.friendshipsStatus !== "pending" && userData.friendshipsStatus !== "accepted" && userData.friendshipsStatus !== "blocked" && (
+                <Button text="Ajouter en ami" onClick={handleAddFriend}/>
+              )}
+              {(userData.friendshipsStatus === "pending" || userData.friendshipsStatus === "accepted") && (
+                <Button text="Supprimer un ami" onClick={handleDeleteFriend}/>
+              )}
+              {userData.blockedBy === 0 && (
+                <Button text="Bloquer" onClick={handleBlockUser}/>
+              )}
+              {userData.blockedBy !== 0 && userData.blockedBy !== userData.id && (
+                <Button text="De-Bloquer" onClick={handleUnblockUser}/>
+              )}
               <br/>
           </div>
           </div>
