@@ -1,6 +1,5 @@
 import * as statisticsController from './statisticController.js'
 
-
 export const getAllTodoOpts = {
     schema: {
         headers: {
@@ -22,7 +21,7 @@ export const getAllTodoOpts = {
                         done : {type : "boolean"},
                         deadline : {type : "string"}
                     },
-                }
+                },
             },
         },
     },
@@ -120,4 +119,31 @@ export const markAsDoneOpts = {
         }
     },
     handler : statisticsController.markAsDone
+}
+
+export const getHistoryOpts = {
+    schema : {
+        headers :{
+            type : "object",
+            properties : {
+                authorization : { type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response : {
+            200 : {
+                type : 'array',
+                items : {
+                    type : 'object',
+                    properties : {
+                        id : {type : "integer"},
+                        title : {type : "string"},
+                        description : { type : "string" },
+                        created_at : { type : "string" }
+                    },
+                },
+            },
+        },
+    },
+    handler: statisticsController.getHistoryOpts
 }
