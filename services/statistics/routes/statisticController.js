@@ -54,10 +54,14 @@ export const markAsDone = async function (req, reply) {
             if (req.body.done){
                 await runSql(app.pg, `INSERT INTO history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Has finished :", title.title]);
+                await runSql(app.pg, `UPDATE user_stats SET task_completed = task_completed + 1 WHERE user_id = $1`,
+                    [req.user.id]);
             }
             else {
                 await runSql(app.pg, `INSERT INTO history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Has unset marked as done for :", title.title]);
+                await runSql(app.pg, `UPDATE user_stats SET task_completed = task_completed - 1 WHERE user_id = $1`,
+                    [req.user.id]);
             }
         return reply.code(204).send();
     }

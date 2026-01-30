@@ -11,7 +11,14 @@ export const badges = [ {
         category : 'Ranking',
         color : '#e3574c',
         key : "rank_position",
-        levels : [{
+        levels : [
+                {
+                    level: 0,
+                    description: 'No rank yet',
+                    threshold: 0,
+                    path: tropheeSilver,
+                },
+                {
                     level : 1,
                     description: 'Under top 10',
                     threshold : 10,
@@ -35,7 +42,14 @@ export const badges = [ {
         category : 'Productivity',
         color : '#72b242',
         key : "task_completed",
-        levels : [{
+        levels : [
+                {
+                    level : 0,
+                    description: 'No task completed yet',
+                    threshold : 0,
+                    path: croissanceSilver
+                },
+                {
                     level : 1,
                     description: '10 tasks completed',
                     threshold : 10,
@@ -59,6 +73,12 @@ export const badges = [ {
         color: '#3ea5d0',
         key: "friends_count",
         levels : [{
+                    level : 0,
+                    description: '0 friend yet',
+                    threshold : 0,
+                    path: likeSilver
+                },
+                {
                     level : 1,
                     description: '1 friend',
                     threshold : 1,
@@ -81,7 +101,14 @@ export const badges = [ {
         category : 'Number of days connected in a row',
         color : '#f69725',
         key : "streaks_history",
-        levels : [{
+        levels : [
+        {
+                    level : 0,
+                    description: '0 Streak yet',
+                    threshold : 0,
+                    path: medalSilver
+        },
+        {
                 level : 1,
                 description: '1 week',
                 threshold : 7,
@@ -103,7 +130,14 @@ export const badges = [ {
         name : 'Screen',
         category : 'LogTime recap in the month (reset every month)',
         color: '#6bc7bd',
-        levels : [{
+        levels : [
+        {
+                    level : 0,
+                    description: 'No hour yet',
+                    threshold : 0,
+                    path: screenSilver
+        },
+        {
                 level : 1,
                 description: '1 hour',
                 threshold : 1,
@@ -126,7 +160,14 @@ export const badges = [ {
         category : 'Seniority on the app',
         color : '#7b689b',
         key : "app_seniority",
-        levels : [{
+        levels : [
+        {
+                level : 0,
+                description: 'No day yet',
+                threshold : 0,
+                path: spaceshipSilver
+        },
+        {
                 level : 1,
                 description: '1 day',
                 threshold : 1,
@@ -150,7 +191,14 @@ export const badges = [ {
         category : 'Number of upload',
         color : '#e6c437',
         key : "upload_count",
-        levels : [{
+        levels : [
+        {
+                level : 0,
+                description: 'No upload yet',
+                threshold : 0,
+                path: ideaSilver
+        },
+        {
                 level : 1,
                 description: '1 file uploaded',
                 threshold : 1,

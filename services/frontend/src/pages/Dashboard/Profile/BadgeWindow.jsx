@@ -2,24 +2,34 @@ import { useState, useEffect } from 'react'
 import { badges, starBadge } from '../../../badges/badges'
 
 function computeBadgeProgress(badge, statValue) {
-    let currentLevel = 0;
-    let progress = 0;
-    if (statValue == 0)
-        return {level : currentLevel, progress}
-    for (let i = 1; i <= 3; i++){
-        if (statValue >= badge.levels[i].threshold)
-            currentLevel = badge.levels[i].level;
-        else if (i){
-            const prevThreshold = badge.levels[i - 1].threshold;
-            const range = badge.levels[i].threshold - prevThreshold;
-            const valueInRange = statValue - prevThreshold;
-            progress = Math.max(0, Math.min(100, (valueInRange / range) * 100));
-            break ;
-        }
+  const levels = badge.levels;
+
+  let currentLevel = 0;
+
+  for (let i = 1; i < levels.length; i++) {
+    if (statValue >= levels[i].threshold) {
+      currentLevel = i;
+    } else {
+      break;
     }
-    if (currentLevel === 3)
-        progress = 100;
-    return {level : currentLevel, progress};
+  }
+
+  if (currentLevel === levels.length - 1) {
+    return { level: currentLevel, progress: 100 };
+  }
+
+  const prevThreshold = levels[currentLevel].threshold;
+  const nextThreshold = levels[currentLevel + 1].threshold;
+
+  const progress =
+    ((statValue - prevThreshold) /
+      (nextThreshold - prevThreshold)) *
+    100;
+
+  return {
+    level: currentLevel,
+    progress: Math.max(0, Math.min(100, progress)),
+  };
 }
 
 export default function BadgeWindow({isLoading}){
@@ -81,7 +91,7 @@ export default function BadgeWindow({isLoading}){
                             <div 
                                 className="badge-progress-fill"
                                 style={{ 
-                                    width: type.progress,
+                                    width: `${type.progress}%`,
                                     backgroundColor: type.color 
                                 }}
                             />
