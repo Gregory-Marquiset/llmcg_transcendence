@@ -83,7 +83,13 @@ export const authLogin = async function (req, reply) {
 			ON CONFLICT (user_id, day) DO NOTHING`, [userInfo.id]);
 		const nowMonth = new Date().toISOString().slice(0, 7);
 		const statMonth = await getRowFromDB(app.pg, `SELECT monthly_logtime_month FROM user_stats WHERE user_id = $1`, [userInfo.id]);
-		if (statMonth.monthly_logtime_month !== nowMonth){
+		if (!statMonth) {
+			await runSql(app.pg,`INSERT INTO user_stats (user_id, monthly_logtime, monthly_logtime_month)
+				VALUES ($1, 0, $2)`,
+				[userInfo.id, nowMonth]
+			);
+		}
+		else if(statMonth.monthly_logtime_month !== nowMonth){
 			await runSql(app.pg, `UPDATE user_stats SET  monthly_logtime = 0, monthly_logtime_month = $1 WHERE user_id = $2`,
   			[nowMonth, userInfo.id]);
 		}
