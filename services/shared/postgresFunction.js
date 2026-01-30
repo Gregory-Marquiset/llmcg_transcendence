@@ -67,6 +67,13 @@ export const initDb = async function (app) {
                 deadline timestamp,
                 created_at timestamp DEFAULT NOW(),
                 UNIQUE(user_id, title) )`);
+            await client.query(`CREATE TABLE IF NOT EXISTS daily_logtime (
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                day date NOT NULL DEFAULT CURRENT_DATE,
+                logtime_second integer DEFAULT 0,
+                UNIQUE (user_id, day))`)
+
             await client.query(`CREATE TABLE IF NOT EXISTS history (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,

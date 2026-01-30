@@ -78,7 +78,16 @@ export const authLogin = async function (req, reply) {
 		}
 		const userInfo = await getRowFromDB(app.pg, 'SELECT id, username FROM users WHERE email = $1', [req.body.email]);
 		console.log(`\nauthLogin userInfo: ${JSON.stringify(userInfo)}\n`);
-
+		// stats - logtime
+		await runSql(app.pg, `INSERT INTO daily_logtime (user_id, day, logtime_second) VALUES ($1, CURRENT_DATE, 0)
+			ON CONFLICT (user_id, day) DO NOTHING`, [userInfo.id]);
+		const nowMonth = new Date().toISOString().slice(0, 7);
+		const statMonth = await getRowFromDB(app.pg, `SELECT monthly_logtime_month FROM user_stats WHERE user_id = $1`, [userInfo.id]);
+		if (statMonth.monthly_logtime_month !== nowMonth){
+			await runSql(app.pg, `UPDATE user_stats SET  monthly_logtime = 0, monthly_logtime_month = $1 WHERE user_id = $2`,
+  			[nowMonth, userInfo.id]);
+		}
+		//
 		const access_tok = app.jwt.sign(userInfo, { expiresIn: '5m' });
 		const refresh_tok = app.jwt.sign(userInfo, { expiresIn: '1d' });
 		console.log(`\nauthLogin access_token: ${access_tok}\nauthLogin refresh_token: ${refresh_tok}\n`);
@@ -100,8 +109,6 @@ export const authLogin = async function (req, reply) {
 		throw err;
 	}
 }
-
-
 
 export const authLogin2fa = async function (req, reply) {
 	try {
@@ -160,10 +167,7 @@ export const authMe = async function (req, reply) {
 			[req.user.id]);
 		}
 		let userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
-		// if (!userTodo){
-		// 	await runSql(app.pg, 'INSERT INTO todo_list (user_id, title) VALUES ($1, $2)', [req.user.id, "Add your first to do ! ✅"]);
-		// 	userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
-		// }
+		
 		const created_at = new Date(userStats.created_at);
         const now = new Date();
         const newSeniority = Math.floor((now - created_at) / (1000 * 60 * 60 * 24)) + 1;
@@ -198,7 +202,16 @@ export const authRefresh = async function (req, reply) {
 		const new_access_token = app.jwt.sign({ id: decoded.id, username: decoded.username } , { expiresIn: '5m' });
 		const new_refresh_token = app.jwt.sign({ id: decoded.id, username: decoded.username }, { expiresIn: '1d' });
 		console.log(`authRefresh new refresh token not in db: ${new_refresh_token}\n`);
+		await runSql(app.pg, `INSERT INTO daily_logtime (user_id, day, logtime_second)
+						VALUES ($1, CURRENT_DATE, 240)
+						ON CONFLICT (user_id, day)
+						DO UPDATE SET logtime_second =
+						daily_logtime.logtime_second + EXCLUDED.logtime_second`, [decoded.id]);
 
+		await runSql(app.pg, `SELECT logtime_second FROM daily_logtime WHERE user_id = $1 AND day = CURRENT_DATE`, 
+			[decoded.id]);
+		await runSql(app.pg, `UPDATE user_stats SET monthly_logtime = monthly_logtime + 4
+			WHERE user_id = $1`, [decoded.id])
 		await runSql(app.pg, `UPDATE refreshed_tokens SET token = $1 WHERE token = $2 AND user_id = $3`, [new_refresh_token, req.cookies.refreshToken, decoded.id]);
 		return (reply
 			.clearCookie('refreshToken', { path: '/' })

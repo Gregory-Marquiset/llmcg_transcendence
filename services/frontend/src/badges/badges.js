@@ -130,6 +130,7 @@ export const badges = [ {
         name : 'Screen',
         category : 'LogTime recap in the month (reset every month)',
         color: '#6bc7bd',
+        key : "monthly_logtime",
         levels : [
         {
                     level : 0,
@@ -140,19 +141,19 @@ export const badges = [ {
         {
                 level : 1,
                 description: '1 hour',
-                threshold : 1,
+                threshold : 60,
                 path: screenSilver
         },
         {
                 level : 2,
                 description: '30 hours',
-                threshold : 30,
+                threshold : 1800,
                 path: screenRegular
         },
         {
                 level : 3,
                 description: '100 hours',
-                threshold : 100,
+                threshold : 6000,
                 path: screenGold
         }]
     }, {
