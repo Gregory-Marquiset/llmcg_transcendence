@@ -89,7 +89,7 @@ const avatarUrl = userData.avatar_path && !onError
     ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
     : profilepicture;
 
-  if (loading) return <Loading duration={400}  showButton={false}/>
+  // if (loading) return <Loading duration={400}  showButton={false}/>
   return (
     <>
       <Background>
@@ -111,7 +111,7 @@ const avatarUrl = userData.avatar_path && !onError
                   <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
                   <Button text="Modifier mes infos" onClick={handleOnClick}/>
               </div>
-              <BadgeWindow name={userData.username}/>
+              <BadgeWindow name={userData.username} isLoading={setLoading}/>
               <Button text="Se déconnecter" onClick={handleLogOut}/>
               <br/>
           </div>

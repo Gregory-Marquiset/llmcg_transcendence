@@ -8,7 +8,6 @@ import { WeeklyGraph, Streaks, Topxp, Todo } from './DashboardComponents'
 
 
 function Dashboard() {
-  const [quote, setQuote] = useState();
   const navigate = useNavigate();
         const {
           isLoggedIn,
@@ -21,8 +20,12 @@ function Dashboard() {
       username: '',
       email: '',
       avatar_path: '',
-      twofa_enabled: ''
+      twofa_enabled: '',
+      current_streak_count: 0
   });
+  const [stats, setStats] = useState({
+      current_streak_count: 0
+    });
   useEffect(() => {
   const fetchProfile = async ()  => {
     try {
@@ -42,6 +45,7 @@ function Dashboard() {
       const fetchedUserData = await response.json();
       console.log(fetchedUserData);
       setUserData(fetchedUserData);
+      setStats(fetchedUserData.stats);
       setIsLoading(false);
     }
     catch (err){
@@ -72,7 +76,7 @@ useEffect(() => {
               <br/>
               <div className='module-container'>
                 <WeeklyGraph/>
-                <Streaks/>
+                <Streaks count={stats.current_streak_count}/>
               </div>
               <div className='module-container'>
                 <Todo/>

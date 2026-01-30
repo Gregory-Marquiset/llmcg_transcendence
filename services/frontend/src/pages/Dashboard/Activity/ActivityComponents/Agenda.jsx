@@ -10,7 +10,7 @@ const toDo = [
         title : "Readme",
         done : 0,
         description : 'faire le readme pour Minishell',
-        deadline : '01/02/2026'
+        deadline : '20/01/2026'
     },
     {
         id: 2,

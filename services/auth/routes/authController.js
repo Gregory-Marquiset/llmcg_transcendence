@@ -1,6 +1,6 @@
 import { app, httpError } from '../authServer.js';
 import { authenticator } from 'otplib';
-import { getRowFromDB, runSql } from '../../shared/postgresFunction.js'
+import { getRowFromDB, runSql, getAllRowsFromDb } from '../../shared/postgresFunction.js'
 
 export const authRegister = async function (req, reply) {
 	console.log(`\n${JSON.stringify(req.body)}\n`);
@@ -25,7 +25,6 @@ export const authRegister = async function (req, reply) {
 		throw err;
 	}
 }
-
 
 export const authRegister42 = async function (req, reply) {
 	console.log(`\n${JSON.stringify(req.body)}\n`);
@@ -153,7 +152,27 @@ export const authMe = async function (req, reply) {
 	try {
 		const userInfos = await getRowFromDB(app.pg, 'SELECT id, username, email, avatar_path, twofa_enabled, createdAt FROM users WHERE id = $1', [req.user.id]);
 		console.log(`\nauthMe userInfos: ${JSON.stringify(userInfos)}\n`);
-		return (reply.code(200).send(userInfos));
+		let userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+			[req.user.id]);
+		if (!userStats){
+			await runSql(app.pg, 'INSERT INTO user_stats (user_id) VALUES ($1)', [req.user.id]);
+			userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+			[req.user.id]);
+		}
+		let userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
+		// if (!userTodo){
+		// 	await runSql(app.pg, 'INSERT INTO todo_list (user_id, title) VALUES ($1, $2)', [req.user.id, "Add your first to do ! ✅"]);
+		// 	userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
+		// }
+		const created_at = new Date(userStats.created_at);
+        const now = new Date();
+        const newSeniority = Math.floor((now - created_at) / (1000 * 60 * 60 * 24)) + 1;
+        await runSql(app.pg, `UPDATE user_stats SET app_seniority = $1,
+                                last_login = $2,
+                                updated_at = NOW()
+                                WHERE user_id = $3`,
+                            [newSeniority, now, req.user.id]);
+		return (reply.code(200).send({...userInfos, stats : userStats}));
 	} catch (err) {
 		console.error(`\nERROR authMe: ${err.message}\n`);
 		err.message = "Error with Database";
