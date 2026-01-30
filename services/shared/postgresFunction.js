@@ -17,7 +17,6 @@ export const runSql = async (db, sql, params) => {
 export const initDb = async function (app) {
     try {
         await app.pg.transact(async (client) => {
-            await client.query(`SELECT pg_advisory_lock(424242);`);
             await client.query(`CREATE TABLE IF NOT EXISTS users (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 username text UNIQUE NOT NULL,
@@ -74,7 +73,6 @@ export const initDb = async function (app) {
                 title text NOT NULL,
                 description text NOT NULL,
                 created_at timestamp DEFAULT NOW())`);
-            await client.query(`SELECT pg_advisory_unlock(424242);`);
         });
     } catch (err) {
         console.error(`\nERROR initDb: ${err.message}\n`);
