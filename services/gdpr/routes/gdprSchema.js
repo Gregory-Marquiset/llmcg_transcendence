@@ -101,3 +101,21 @@ export const deleteMeOpts = {
     },
     handler : gdprController.deleteMe
 }
+
+export const deleteDataOpts = {
+    schema : {
+        headers : {
+            type : "object",
+            properties : {
+                authorization : {type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response :{
+            204 : {
+
+            }
+        }
+    },
+    handler : gdprController.deleteData
+}

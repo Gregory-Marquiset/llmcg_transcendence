@@ -42,3 +42,19 @@ export const deleteMe = async function (req, reply) {
         return reply.code(500).send();
     }
 }
+
+export const deleteData = async function (req, reply) {
+    try {
+        await runSql(app.pg, `DELETE FROM todo_list WHERE user_id = $1`, [req.user.id]);
+        await runSql(app.pg, `DELETE FROM history WHERE user_id = $1`, [req.user.id]);
+        await runSql(app.pg, `DELETE FROM user_stats WHERE user_id = $1`, [req.user.id]);
+        await runSql(app.pg, `DELETE FROM daily_logtime WHERE user_id = $1`, [req.user.id]);
+        await runSql(app.pg, `DELETE FROM friendships WHERE sender_id = $1 OR receiver_id = $1`, [req.user.id]);
+        await runSql(app.pg, `UPDATE users SET avatar_path = 'avatar/default.jpg' WHERE id = $1`, [req.user.id]);
+        return reply.code(204).send();
+    }
+    catch (err) {
+        console.log(err);
+        return reply.code(500).send();
+    }
+}
