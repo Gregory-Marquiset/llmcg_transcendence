@@ -7,7 +7,7 @@ export const getMeOpts = {
             properties : {
                 authorization : {type : "string"},
             },
-            required : "authorization",
+            required : ["authorization"],
         },
         response : {
             200 : {
