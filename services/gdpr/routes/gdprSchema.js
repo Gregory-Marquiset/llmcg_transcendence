@@ -84,3 +84,20 @@ export const getMeOpts = {
     },
     handler : gdprController.getMe
 }
+
+export const deleteMeOpts = {
+    schema : {
+        headers : {
+            type : "object",
+            properties : {
+                authorization : {type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response : {
+            204 : {
+            }
+        }
+    },
+    handler : gdprController.deleteMe
+}

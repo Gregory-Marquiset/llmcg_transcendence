@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { LogTitle } from '../../../../components'
 import { useState, useEffect } from 'react'
 
-export function Confidentiality (){
+export default function Confidentiality (){
     const [openSection, setOpenSection] = useState(null)
     const [gdprUserData, setGdprUserData] = useState({});
     const accessToken = localStorage.getItem("access_token");
@@ -88,5 +88,3 @@ export function Confidentiality (){
         </section>
     )
 }
-
-export default Confidentiality

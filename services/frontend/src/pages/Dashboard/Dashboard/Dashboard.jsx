@@ -50,7 +50,6 @@ function Dashboard() {
           return ;
         }
         const fetchedUserData = await response.json();
-        console.log(fetchedUserData);
         setUserData(fetchedUserData);
         setStats(fetchedUserData.stats);
         setIsLoading(false);
@@ -68,9 +67,6 @@ function Dashboard() {
             navigate('/signIn');
           }
         }, [isLoggedIn, navigate]);
-        useEffect(() => {
-          console.log("stats mis à jour :", stats);
-        }, [stats]);
 
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (

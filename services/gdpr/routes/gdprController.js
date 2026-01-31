@@ -31,3 +31,14 @@ export const getMe = async function (req, reply){
         return reply.code(500).send({message : "server error"});
     }
 }
+
+export const deleteMe = async function (req, reply) {
+    try {
+        await runSql(app.pg, `DELETE FROM users WHERE id = $1`, [req.user.id]);
+        return reply.code(204).send();
+    }
+    catch(err) {
+        console.error(err);
+        return reply.code(500).send();
+    }
+}
