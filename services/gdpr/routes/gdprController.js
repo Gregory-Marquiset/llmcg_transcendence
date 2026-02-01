@@ -1,5 +1,7 @@
 import { app, httpError } from "../gdprServer.js";
 import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js'
+import crypto from 'crypto'
+import nodemailer from "nodemailer"
 
 export const getMe = async function (req, reply){
     try {
@@ -70,6 +72,25 @@ export const getHistory = async function (req, reply) {
     try{
         const response = await getAllRowsFromDb(app.pg, `SELECT * FROM gdpr_history WHERE user_id = $1`, [req.user.id]);
         return (reply.code(200).send(response));
+    }
+    catch (err){
+        console.log(err);
+        return reply.code(500).send();
+    }
+}
+
+export const requestAccountDeletion = async function (req, reply){
+    try {
+        const token = crypto.randomBytes(32).toString('hex');
+        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
+            VALUES ($1, 'delete_account', 'requested', $2)`, [req.user.id, token]);
+        const confirmUrl = `localhost:5173/gdpr/confirm?token=${token}`;
+        await sendConfirmationMail({
+            to: req.user.email,
+            link: confirmUrl,
+            action: 'delete_account'
+        });
+        return reply.code(202).send({ message: 'Confirmation email sent'});
     }
     catch (err){
         console.log(err);

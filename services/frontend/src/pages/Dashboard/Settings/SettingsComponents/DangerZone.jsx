@@ -63,6 +63,7 @@ export default function DangerZone () {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
                 >
+                <button className="btn-setting" onClick={() => navigate('/gdpr/confirm/datadeletion')}>access</button>
                 <button className="btn-setting" onClick={handleAccountDeletion}>Supprimer mon compte</button>
                 <button className="btn-setting" onClick={handleDataDeletion}>Effacer mes données</button>
                 </motion.div>

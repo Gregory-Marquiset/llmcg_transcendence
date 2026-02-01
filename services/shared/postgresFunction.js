@@ -86,7 +86,8 @@ export const initDb = async function (app) {
                 action text NOT NULL,
                 status text NOT NULL,
                 created_at timestamp DEFAULT NOW(),
-                executed_at timestamp)`)
+                executed_at timestamp,
+                token text UNIQUE)`)
         });
     } catch (err) {
         console.error(`\nERROR initDb: ${err.message}\n`);

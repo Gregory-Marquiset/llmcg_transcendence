@@ -157,3 +157,21 @@ export const getHistoryOpts = {
     },
     handler : gdprController.getHistory
 }
+
+export const requestDeleteMeOpts = {
+    schema : {
+        headers : {
+            type : "object",
+            properties : {
+                authorization : { type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response : {
+            200 : {
+
+            }
+        }
+    },
+    handler : gdprController.requestAccountDeletion
+}
