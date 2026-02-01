@@ -11,7 +11,7 @@ export default function DangerZone () {
     const handleAccountDeletion = async () => {
         try {
             const response = await fetch ('/api/v1/gdpr/me', {
-                method : "DELETE",
+                method : "POST",
                 headers : {
                     "Authorization" : `Bearer ${accessToken}`,
                 }
@@ -20,29 +20,7 @@ export default function DangerZone () {
                 console.log("while delete account");
                 return ;
             }
-            alert("Your account is successfully deleted !");
-            setIsLoggedIn(false);
-            localStorage.clear();
-            navigate('/');
-        }
-        catch (err){
-            console.log(err);
-        }
-    }
-    const handleDataDeletion = async () => {
-        try {
-            const response = await fetch ('/api/v1/gdpr/data', {
-                method : "DELETE",
-                headers : {
-                    "Authorization" : `Bearer ${accessToken}`,
-                }
-            });
-            if (!response.ok){
-                console.log("while deleting data");
-                return ;
-            }
-            alert("You data are successfully deleted !");
-            navigate('/dashboard');
+            alert("A confirmation mail has been sent !");
         }
         catch (err){
             console.log(err);
@@ -63,7 +41,7 @@ export default function DangerZone () {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
                 >
-                <button className="btn-setting" onClick={() => navigate('/gdpr/confirm/datadeletion')}>access</button>
+                {/* <button className="btn-setting" onClick={() => navigate('/gdpr/confirm/datadeletion')}>access</button> */}
                 <button className="btn-setting" onClick={handleAccountDeletion}>Supprimer mon compte</button>
                 <button className="btn-setting" onClick={handleDataDeletion}>Effacer mes données</button>
                 </motion.div>

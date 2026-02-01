@@ -184,6 +184,11 @@ services:
       PORT: "5000"
       JWT_SECRET: "${JWT_SECRET}" 
       DATABASE_URL: "${DATABASE_URL}"
+      SMTP_HOST: "smtp.gmail.com"
+      SMTP_PORT: "587"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASS: "${SMTP_PASS}"
+      FRONTEND_URL: "http://localhost:5173"
     expose:
       - 5000
     networks:

@@ -142,15 +142,17 @@ export const getHistoryOpts = {
             required : ["authorization"],
         },
         response : {
-            type : "array",
-            items : {
-                type : "object",
-                properties : {
-                    id : { type : "integer"},
-                    user_id : { type : "integer"},
-                    action : { type : "string"},
-                    created_at : { type : "string"},
-                    executed_at : { type : "string"},
+            200: {
+                type : "array",
+                items : {
+                    type : "object",
+                    properties : {
+                        id : { type : "integer"},
+                        user_id : { type : "integer"},
+                        action : { type : "string"},
+                        created_at : { type : "string"},
+                        executed_at : { type : "string"},
+                    }
                 }
             }
         }
@@ -168,10 +170,40 @@ export const requestDeleteMeOpts = {
             required : ["authorization"],
         },
         response : {
-            200 : {
-
+            202 : {
             }
         }
     },
     handler : gdprController.requestAccountDeletion
+}
+export const requestDeleteDataOpts = {
+    schema : {
+        headers : {
+            type : "object",
+            properties : {
+                authorization : { type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response : {
+            202 : {
+            }
+        }
+    },
+    handler : gdprController.requestDataDeletion
+}
+export const confirmDeletionOpts = {
+    schema : {
+        headers : {
+            type : "object",
+            properties : {
+                token : {type : "string"},
+            }
+        },
+        response : {
+            202 : {
+            }
+        }
+    },
+    handler : gdprController.confirmDeletion
 }

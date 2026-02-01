@@ -79,14 +79,42 @@ export const getHistory = async function (req, reply) {
     }
 }
 
+// Crée un compte de test Ethereal automatiquement
+const testAccount = await nodemailer.createTestAccount();
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false,
+  auth: {
+    user: testAccount.user,
+    pass: testAccount.pass
+  }
+});
+
+async function sendConfirmationMail({ to, link, action }) {
+  const info = await transporter.sendMail({
+    from: '"Transcendence App" <noreply@transcendence.app>',
+    to: to,
+    subject: 'Confirmation de suppression de compte',
+    html: `
+      <h2>Confirmation requise</h2>
+      <p>Cliquez sur le lien pour confirmer :</p>
+      <a href="${link}">${link}</a>
+    `
+  });
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+}
+
 export const requestAccountDeletion = async function (req, reply){
     try {
         const token = crypto.randomBytes(32).toString('hex');
         await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
             VALUES ($1, 'delete_account', 'requested', $2)`, [req.user.id, token]);
-        const confirmUrl = `localhost:5173/gdpr/confirm?token=${token}`;
+        const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
+        const mail = await getRowFromDB(app.pg, `SELECT FROM users WHERE id = $1 RETURNING *`, [req.user.id]);
         await sendConfirmationMail({
-            to: req.user.email,
+            to: mail.email,
             link: confirmUrl,
             action: 'delete_account'
         });
@@ -96,4 +124,28 @@ export const requestAccountDeletion = async function (req, reply){
         console.log(err);
         return reply.code(500).send();
     }
+}
+
+export const requestDataDeletion = async function (req, reply){
+    try {
+        const token = crypto.randomBytes(32).toString('hex');
+        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
+            VALUES ($1, 'delete_data', 'requested', $2)`, [req.user.id, token]);
+        const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
+        const mail = await getRowFromDB(app.pg, `SELECT FROM users WHERE id = $1 RETURNING *`, [req.user.id]);
+        await sendConfirmationMail({
+            to: mail.email,
+            link: confirmUrl,
+            action: 'delete_account'
+        });
+        return reply.code(202).send({ message: 'Confirmation email sent'});
+    }
+    catch (err){
+        console.log(err);
+        return reply.code(500).send();
+    }
+}
+
+export const confirmDeletion = async function (req, reply){
+    
 }
