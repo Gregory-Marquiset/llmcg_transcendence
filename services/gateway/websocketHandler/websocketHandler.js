@@ -57,13 +57,15 @@ export const websocketHandler = async function (socket, req) {
 					return;
 
 				let obj = JSON.parse(rawText);
-				if (!obj.type || (obj.type !== "chat:send" && obj.type !== "auth:refresh"))
+				if (!obj.type || (obj.type !== "chat:send" && obj.type !== "chat:delivered" && obj.type !== "auth:refresh"))
 				{
 					socket.send(JSON.stringify({ type: "error", code: "bad_request_format" }));
 					return;
 				}
 				if (obj.type === "chat:send")
 					await wsChatHandler.handleChatSendEvent(socket, obj, connectionsIndex);
+				else if (obj.type === "chat:delivered")
+					await wsChatHandler.markAsDeliveredInDb(socket, obj, connectionsIndex);
 				else if (obj.type === "auth:refresh")
 					await wsAuthHandler.handleAuthRefreshEvent(socket, obj, connectionsIndex);
 

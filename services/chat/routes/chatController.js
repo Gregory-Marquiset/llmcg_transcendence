@@ -73,10 +73,16 @@ export const createMessage = async function (req, reply) {
 
 export const markAsDelivered = async function (req, reply) {
     try {
-        const checkUser = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE id = $1`,
-            [req.body.messageId]);
+        const checkUser = await getRowFromDB(app.pg, `SELECT * FROM chat_history WHERE id = $1 AND to_user_id = $2`,
+            [req.body.messageId, req.user.id]);
         if (!checkUser)
             throw httpError(403, "Bad messageId");
+
+        if (checkUser.delivered_at !== null)
+        {
+            reply.code(200).send({ status: "marked as delivered" });
+            return;
+        }
         
         const date = new Date().toISOString();
         const rowCount = await runSql(app.pg, `UPDATE chat_history SET delivered_at = $1 WHERE id = $2`,

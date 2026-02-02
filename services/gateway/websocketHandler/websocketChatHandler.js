@@ -77,7 +77,8 @@ const chatServiceCreateMessage = async function (chatObj, token) {
 }
 
 
-const deliverMessage = async function (chatServiceResponse, token) {
+const deliverMessage = async function (chatServiceResponse) {
+    console.log(`\ndeliverMessages\n`);
     let isUserOnline = getPresenceForUsers([chatServiceResponse.toUserId]);
 
     let status = isUserOnline?.get(chatServiceResponse.toUserId)?.status;
@@ -100,22 +101,6 @@ const deliverMessage = async function (chatServiceResponse, token) {
         sockSet.forEach((socket) => {
             socket.send(JSON.stringify(event));
         });
-
-        let response = await fetch("http://chat-service:5000/messages/delivered", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
-            },
-            body: JSON.stringify({ messageId: chatServiceResponse.messageId })
-        });
-        console.log(`\nchatservice markAsDelivered response.status: ${response.status}\n
-        response.statusText: ${response.statusText}\n`);
-        if (!response.ok) {
-            let err = new Error(response.statusText);
-            err.statusCode = response.status;
-            throw err;
-    }
     }
     else
     {
@@ -151,7 +136,7 @@ export const pushUndeliveredMessages = async function (token) {
             undeliveredMessage: ${JSON.stringify(undeliveredMessages[i])}\n`);
 
             try {
-                await deliverMessage(undeliveredMessages[i], token);
+                await deliverMessage(undeliveredMessages[i]);
             } catch (err) {
                 if (err?.statusCode === 401)
                 {
@@ -167,6 +152,56 @@ export const pushUndeliveredMessages = async function (token) {
     //         undeliveredMessage: ${JSON.stringify(undeliveredMessage)}\n`);
     //     await deliverMessage(undeliveredMessage, token);
     // });
+}
+
+
+export const markAsDeliveredInDb = async function (socket, obj, connectionsIndex) {
+    console.log(`\nmarkAsDeliveredInDb\n`);
+    if (obj.type !== "chat:delivered" || !obj.payload || typeof obj.payload !== "object" ||
+        !obj.payload.messageId)
+    {
+        console.log(`\nmarkAsDeliveredInDb obj.type: ${obj.type}
+            obj.payload: ${obj.payload}
+            typeof obj.payload: ${typeof obj.payload}
+            obj.payload.messageId: ${obj.payload.messageId}\n`);
+        socket.send(JSON.stringify({ type: "error", code: "bad_request_format" }));
+        return;
+    }
+
+    let messageId = Number(obj.payload.messageId);
+    if (!Number.isFinite(messageId) || !Number.isInteger(messageId) || messageId <= 0)
+    {
+        socket.send(JSON.stringify({ type: "error", code: "invalid_messageId" }));
+        return;
+    }
+
+    let userId = connectionsIndex.get(socket).userId;
+	if (!userId)
+	{
+		socket.send(JSON.stringify({ type: "error", code: "internal_server_error" }));
+		return;
+	}
+    if (userId !== socket.userId)
+    {
+        socket.close(1008, "unauthorized");
+        return;
+    }
+
+    let response = await fetch("http://chat-service:5000/messages/delivered", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": socket.currentToken
+        },
+        body: JSON.stringify({ messageId })
+    });
+    console.log(`\nchatservice markAsDelivered response.status: ${response.status}\n
+    response.statusText: ${response.statusText}\n`);
+    if (!response.ok) {
+        let err = new Error(response.statusText);
+        err.statusCode = response.status;
+        throw err;
+    }
 }
 
 
@@ -196,5 +231,5 @@ export const handleChatSendEvent = async function (socket, obj, connectionsIndex
     //console.log(`\nwebsocketHandler acknowledgment: ${JSON.stringify(acknowledgement)}\n`);
     socket.send(JSON.stringify(acknowledgement));
     
-    await deliverMessage(chatServiceResponse, socket.currentToken);
+    await deliverMessage(chatServiceResponse);
 }

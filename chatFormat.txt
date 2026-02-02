@@ -1,0 +1,27 @@
+Le chat doit etre sous format JSON
+    -Envoi d'un message:
+{
+"type": "chat:send",
+"requestId": "tergsrg",
+"payload": {
+    "toUserId": 4,
+    "content": "Test"
+    }
+}
+
+    -Envoi d'un accusé de réception:
+{
+    "type": "chat:delivered",
+    "payload": {
+        "messageId": 1
+    }
+}
+
+    -Envoi changement d'acces_token:
+{
+    "type": "auth:refresh",
+    "requestId": "tergsrg",
+    "payload": {
+        "token": "token"
+    }
+}
