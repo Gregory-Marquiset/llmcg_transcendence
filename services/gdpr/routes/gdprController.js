@@ -148,4 +148,4 @@ export const requestDataDeletion = async function (req, reply){
 
 export const confirmDeletion = async function (req, reply){
     
-}
+} 

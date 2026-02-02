@@ -3,8 +3,8 @@ import { Background, Footer, LogTitle, Button } from "../../../../components";
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 export default function GdprConfirm (){
-    const searchParam = useSearchParams();
-    const token = searchParam("token");
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
     const navigate = useNavigate();
     const confirmDeletion = async () => {
         if (!token){
@@ -32,8 +32,6 @@ export default function GdprConfirm (){
             console.log(err);
         }
     }
-}
-    
  return (<>
     <Background>
         <img src={logoheader} className="logoheader" alt="42 Tracker" />
@@ -41,7 +39,7 @@ export default function GdprConfirm (){
         <br/>
         <p>It concerns your todo list, logtime, history. success badges progression</p>
         <br/><br/>
-        <Button text="Yes"/> <Button text="No"/>
+        <Button text="Yes" onClick={confirmDeletion}/> <Button text="No" onClick={()=> navigate('/')}/>
     </Background>
     <Footer/>
     </>
