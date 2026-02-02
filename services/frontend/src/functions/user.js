@@ -12,9 +12,29 @@ export async function addFriend(userId, token) {
   return res.json()
 }
 
+export async function respondToFriendRequest(senderId, action, token) {
+  const res = await fetch(`${BASE_URL}/${senderId}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      action
+    })
+  })
+
+  if (!res.ok) {
+    throw new Error('Friend request response failed')
+  }
+
+  return res.json()
+}
+
+
 export async function deleteFriend(userId, token) {
   const res = await fetch(`${BASE_URL}/${userId}/delete`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -75,3 +95,18 @@ export async function getCurrUserProfile(token)
     }
     return res.json()
 }
+
+export async function getFriendList(token)
+{
+     const res = await fetch(`${BASE_URL}/list`, {
+        method : 'GET',
+        headers : {
+          'Authorization' : `Bearer ${token}`
+        }
+      })
+    if (!res.ok) {
+        throw new Error('Failed to fetch friend list')
+    }
+    return res.json()
+}
+
