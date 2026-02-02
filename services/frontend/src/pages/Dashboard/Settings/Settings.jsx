@@ -34,7 +34,6 @@ function Settings() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <button className="btn-setting">Changer mon mot de passe</button>
                     <button className="btn-setting">
                       Activer l'authentification a deux facteurs
                     </button>

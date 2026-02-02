@@ -87,6 +87,7 @@ export const initDb = async function (app) {
                 status text NOT NULL,
                 created_at timestamp DEFAULT NOW(),
                 executed_at timestamp,
+                expires_at timestamp DEFAULT NOW(),
                 token text UNIQUE)`)
         });
     } catch (err) {

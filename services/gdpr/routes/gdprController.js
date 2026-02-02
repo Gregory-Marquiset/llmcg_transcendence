@@ -60,8 +60,9 @@ async function sendConfirmationMailData({ to, link, action }) {
 export const requestAccountDeletion = async function (req, reply){
     try {
         const token = crypto.randomBytes(32).toString('hex');
-        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
-            VALUES ($1, 'delete_account', 'requested', $2)`, [req.user.id, token]);
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
+            VALUES ($1, 'delete_account', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
         const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailAccount({
@@ -80,8 +81,9 @@ export const requestAccountDeletion = async function (req, reply){
 export const requestDataDeletion = async function (req, reply){
     try {
         const token = crypto.randomBytes(32).toString('hex');
-        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
-            VALUES ($1, 'delete_data', 'requested', $2)`, [req.user.id, token]);
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
+            VALUES ($1, 'delete_data', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
         const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailData({
@@ -100,8 +102,9 @@ export const requestDataDeletion = async function (req, reply){
 export const requestDataDisplay = async function (req, reply) {
     try {
         const token = crypto.randomBytes(32).toString('hex');
-        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token)
-            VALUES ($1, 'request_data', 'requested', $2)`, [req.user.id, token]);
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
+            VALUES ($1, 'request_data', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
         const confirmUrl = `http://localhost:5173/gdpr/me?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailDisplay({
@@ -151,7 +154,8 @@ export const confirmDeletion = async function (req, reply){
         const token = req.query.token;
         if (!token)
                 return reply.code(400).send({message : 'token missing'});
-        const action = await getRowFromDB(app.pg, `SELECT action, user_id FROM gdpr_history WHERE token = $1 AND status = 'requested'`, [token]);
+        const action = await getRowFromDB(app.pg, `SELECT action, user_id FROM gdpr_history WHERE token = $1 AND status = 'requested'
+            AND (expires_at IS NULL OR expires_at > NOW())`, [token]);
         if (!action)
             return reply.code(404).send({message : 'invalid or expired token'});
         req.user = { id: action.user_id };
@@ -174,9 +178,8 @@ export const getMe = async function (req, reply){
             return reply.code(400).send({message: 'Token missing'});
         }
         const gdprRequest = await getRowFromDB(app.pg, 
-            `SELECT user_id FROM gdpr_history WHERE token = $1 AND action = 'request_data'`, 
+            `SELECT user_id FROM gdpr_history WHERE token = $1 AND action = 'request_data' AND (expires_at IS NULL OR expires_at > NOW()`, 
             [token]);
-        
         if (!gdprRequest) {
             return reply.code(404).send({message: 'Invalid or expired token'});
         }
@@ -193,7 +196,7 @@ export const getMe = async function (req, reply){
             WHERE f.sender_id = $1 OR f.receiver_id = $1`,[userId]);
         const historyResponse = await getAllRowsFromDb(app.pg, `SELECT * FROM user_history WHERE user_id = $1`, [userId]);
         const dailyLogtime = await getAllRowsFromDb(app.pg, `SELECT * FROM daily_logtime WHERE user_id = $1`, [userId]);
-        
+        ///
         return reply.code(200).send({
             ...userInfos, 
             stats: userStats, 
