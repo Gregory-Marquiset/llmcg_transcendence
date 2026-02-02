@@ -33,7 +33,6 @@ help:
 	@echo "  make logs                  - Suit les logs du service (SERVICE=..., défaut: project_health)"
 	@echo "  make logs-tail             - Suit les logs du service (SERVICE=..., 200 dernières lignes)"
 	@echo "  make logs-all              - Suit les logs de tous les services"
-	@echo "  make logs-dump             - Dump logs (utils CI)"
 	@echo ""
 	@echo "Tests :"
 	@echo "  make test                  - down puis lance tests/run_all.sh"
@@ -46,8 +45,7 @@ help:
 	@echo "  make total-nuke            - ⚠️  Stop nginx + purge Docker globale (prune images/cache/réseaux + volumes non utilisés)"
 	@echo ""
 	@echo "Utils dev :"
-	@echo "  make dev                   - Build puis démarre les services avec le vite en dev serveur"
-	@echo "  make dev-logs              - Donne les logs du front en mode dev"
+	@echo "  make dev                   - Build puis démarre les services en mode dev avec hot reload"
 	@echo ""
 	@echo "Utils CI :"
 	@echo "  make logs-ci               - Dump logs (utils CI)"
@@ -178,15 +176,13 @@ total-nuke: nuke
 ## <----------------- Utils dev --------------->
 
 dev: clean up
-	@echo "→ Remove frontend (prod) pour éviter le conflit de port 5173…"
-	- $(COMPOSE) stop frontend
-	- $(COMPOSE) rm -f frontend
-	@echo "→ Lancement frontend-dev (Vite + HMR)…"
-	$(COMPOSE) --profile dev up -d --build frontend-dev
+	@echo "→ Switch en mode dev (hot reload)…"
+	@echo "→ Remove services prod pour éviter le conflit de port"
+	- $(COMPOSE) stop frontend gateway auth-service users-service
+	- $(COMPOSE) rm -f frontend gateway auth-service users-service
+	@echo "→ Lancement dev (Vite + HMR)…"
+	$(COMPOSE) --profile dev up -d --build --no-deps frontend-dev gateway-dev auth-service-dev users-service-dev
 	@$(MAKE) --no-print-directory info
-
-logs-dev:
-	- $(COMPOSE) --profile dev logs -f frontend-dev
 
 ## <----------------- Utils CI ----------------->
 

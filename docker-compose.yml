@@ -146,7 +146,67 @@ services:
       interval: 10s
       timeout: 3s
       retries: 20
-
+  statistics-service:
+    build:
+      context: .
+      dockerfile: ./services/statistics/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+    expose:
+      - "5000"
+    networks:
+      - net_backend
+      - net_monitoring
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+  gdpr-service:
+    build:
+      context: .
+      dockerfile: ./services/gdpr/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}" 
+      DATABASE_URL: "${DATABASE_URL}"
+      SMTP_HOST: "smtp.gmail.com"
+      SMTP_PORT: "587"
+      FRONTEND_URL: "http://localhost:5173"
+    expose:
+      - 5000
+    networks:
+      - net_backend
+      - net_monitoring
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
 ### Frontend
 
   frontend:
@@ -170,7 +230,7 @@ services:
   frontend-exporter:
     image: nginx/nginx-prometheus-exporter:latest
     command:
-      - "-nginx.scrape-uri=http://frontend:8080/stub_status"
+      - "-nginx.scrape-uri=http://frontend:80/stub_status"
     depends_on:
       - frontend
     networks:
@@ -239,7 +299,6 @@ services:
     depends_on:
       - prometheus
     restart: unless-stopped
-
 ### Dev
 
   frontend-dev:
@@ -261,11 +320,139 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     depends_on:
-      gateway:
+      gateway-dev:
         condition: service_healthy
     networks:
-      - net_gateway
+      net_gateway:
+        aliases: ["frontend"]
     restart: unless-stopped
+    profiles: ["dev"]
+
+  gateway-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - gateway_node_modules:/app/node_modules
+    ports:
+      - "5000:5000"
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/gateway/package.json package.json
+      && ln -sf services/gateway/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/gateway
+      && node --watch server.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["gateway"]
+      net_gateway:
+        aliases: ["gateway"]
+      net_monitoring:
+        aliases: ["gateway"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev"]
+
+  auth-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - auth_node_modules:/app/node_modules
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/auth/package.json package.json
+      && ln -sf services/auth/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/auth
+      && node --watch authServer.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["auth-service"]
+      net_monitoring:
+        aliases: ["auth-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev"]
+
+  users-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - users_node_modules:/app/node_modules
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/users/package.json package.json
+      && ln -sf services/users/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/users
+      && node --watch usersServer.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["users-service"]
+      net_monitoring:
+        aliases: ["users-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
     profiles: ["dev"]
 
 ### Config
@@ -291,4 +478,6 @@ volumes:
   frontend_node_modules:
   prometheus_data:
   grafana_data:
-  # users_avatar_data:
+  gateway_node_modules:
+  auth_node_modules:
+  users_node_modules:

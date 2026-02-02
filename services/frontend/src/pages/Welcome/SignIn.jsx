@@ -27,7 +27,6 @@ function SignIn(){
         // send email password to back
         const payload = { email, password };
         try {
-
         const response = await fetch("/api/v1/auth/login", {
         method: 'POST',
         body: JSON.stringify( payload ),

@@ -237,20 +237,21 @@ font-size: var(--size);
 .checkbox-wrapper-5 .check label::before,
 .checkbox-wrapper-5 .check label::after,
 .checkbox-wrapper-5 .check {
-appearance: none;
-display: inline-block;
-border-radius: var(--size);
-border: 0;
-transition: .35s ease-in-out;
-box-sizing: border-box;
-cursor: pointer;
+    appearance: none;
+    display: inline-block;
+    border-radius: var(--size);
+    border: 0;
+    transition: .35s ease-in-out;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
 }
 
 .checkbox-wrapper-5 .check label {
-width: calc(2.2 * var(--size));
-height: var(--size);
-background: #d7d7d7;
-overflow: hidden;
+    width: calc(2.2 * var(--size));
+    height: var(--size);
+    background: #d7d7d7;
+    overflow: hidden;
 }
 
 .checkbox-wrapper-5 .check input[type="checkbox"] {

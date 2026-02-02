@@ -1,5 +1,6 @@
 import './styles/App.css'
-import { Welcome, SignIn, SignUp, Auth2, Settings, Profile, About, Dashboard, Ressources, Activity, Achievement, Conversations, ExportData, SetProfile, UserProfile, Policy, Privacy, CGU} from './pages/index.js'
+import { Welcome, SignIn, SignUp, Auth2, Settings, Profile, About, Dashboard, Ressources, Activity, 
+  Achievement, Conversations, ExportData, SetProfile, UserProfile, Policy, Privacy, CGU, GdprConfirm, Me} from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
 import { useTranslation, Trans } from 'react-i18next'
@@ -24,11 +25,13 @@ function App() {
             <Route path="/dashboard/profile" element={<Profile/>}/>
             <Route path="/dashboard/profile/modify" element={<SetProfile/>}/>
             <Route path="/users/:username/profile" element={<UserProfile />} />
-
+            
         </Route>
+      <Route path="/gdpr/confirm" element={<GdprConfirm/>}/>
       <Route path='/policy' element={<Policy/>}/>
       <Route path='/policy?/privacy' element={<Privacy/>}/>
       <Route path='/policy/terms' element={<CGU/>}/>
+      <Route path='/gdpr/me' element={<Me/>}/>
     </Routes>
   )
 }

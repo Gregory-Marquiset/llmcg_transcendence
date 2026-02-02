@@ -8,12 +8,8 @@ import { WeeklyGraph, Streaks, Topxp, Todo } from './DashboardComponents'
 
 
 function Dashboard() {
-  const [quote, setQuote] = useState();
   const navigate = useNavigate();
-        const {
-          isLoggedIn,
-          setIsLoggedIn
-        } = useAuth();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const accessToken = localStorage.getItem("access_token");
   const [userData, setUserData] = useState ({
@@ -21,42 +17,56 @@ function Dashboard() {
       username: '',
       email: '',
       avatar_path: '',
-      twofa_enabled: ''
+      twofa_enabled: '',
+      current_streak_count: 0
   });
+  const [stats, setStats] = useState({
+    app_seniority : 0,
+    created_at : "",
+    current_streak_count : 0,
+    friends_count : 0,
+    last_login : "",
+    monthly_logtime: 0,
+    monthly_logtime_month: "",
+    rank_position: 0,
+    streaks_history: 0,
+    task_completed: 0,
+    updated_at: "",
+    upload_count : 0 });
   useEffect(() => {
   const fetchProfile = async ()  => {
     try {
       const response = await fetch('api/v1/auth/me', {
-        method : 'GET',
-        headers : {
-          'Authorization' : `Bearer ${accessToken}`
+          method : 'GET',
+          headers : {
+            'Authorization' : `Bearer ${accessToken}`
+          }
+        });
+        if (!response.ok){
+          localStorage.clear();
+          setIsLoggedIn(false);
+          navigate('/');
+          alert("cannot fetch your profile, automatic log out");
+          return ;
         }
-      });
-      if (!response.ok){
-        localStorage.clear();
-        setIsLoggedIn(false);
-        navigate('/');
-        alert("cannot fetch your profile, automatic log out");
-        return ;
+        const fetchedUserData = await response.json();
+        setUserData(fetchedUserData);
+        setStats(fetchedUserData.stats);
+        setIsLoading(false);
       }
-      const fetchedUserData = await response.json();
-      console.log(fetchedUserData);
-      setUserData(fetchedUserData);
-      setIsLoading(false);
-    }
-    catch (err){
-      console.log(err);
-    }
-  }
-  if (accessToken) {
-      fetchProfile();
-  }
-  }, [accessToken]);
-useEffect(() => {
-      if (!isLoggedIn) {
-        navigate('/signIn');
+      catch (err){
+        console.log(err);
       }
-    }, [isLoggedIn, navigate]);
+      }
+      if (accessToken) {
+          fetchProfile();
+      }
+      }, [accessToken]);
+    useEffect(() => {
+          if (!isLoggedIn) {
+            navigate('/signIn');
+          }
+        }, [isLoggedIn, navigate]);
 
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
@@ -72,7 +82,7 @@ useEffect(() => {
               <br/>
               <div className='module-container'>
                 <WeeklyGraph/>
-                <Streaks/>
+                <Streaks count={stats.current_streak_count}/>
               </div>
               <div className='module-container'>
                 <Todo/>

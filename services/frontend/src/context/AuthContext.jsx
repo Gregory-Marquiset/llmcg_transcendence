@@ -28,7 +28,6 @@ export function AuthProvider ({ children }) {
           method: "POST",
           credentials: "include",
         });
-
         if (!res.ok) {
           setIsLoggedIn(false);
           setAuthUser(null);
@@ -56,7 +55,6 @@ export function AuthProvider ({ children }) {
       }, 4 * 60 * 1000);
       return () => clearInterval(interval);
     }, [isLoggedIn]);
-    
     const value = { 
         authUser,
         setAuthUser, 
