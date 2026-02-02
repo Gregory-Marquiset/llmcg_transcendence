@@ -6,6 +6,7 @@ export default function GdprConfirm (){
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
+    const [status, setStatus] = useState("");
     const confirmDeletion = async () => {
         if (!token){
             alert("No deletion token");

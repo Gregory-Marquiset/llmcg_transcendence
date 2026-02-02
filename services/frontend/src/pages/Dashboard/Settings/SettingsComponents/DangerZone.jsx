@@ -8,9 +8,27 @@ export default function DangerZone () {
     const { isLoggedIn, setIsLoggedIn } = useAuth();
     const accessToken = localStorage.getItem("access_token");
     const navigate = useNavigate();
+    const handleDataDeletion = async () => {
+        try {
+            const response = await fetch ('/api/v1/gdpr/data', {
+                method : "POST",
+                headers : {
+                    "Authorization" : `Bearer ${accessToken}`,
+                }
+            });
+            if (!response.ok){
+                console.log("while delete data");
+                return ;
+            }
+            alert("A confirmation mail has been sent !");
+        }
+        catch (err){
+            console.log(err);
+        }
+    }
     const handleAccountDeletion = async () => {
         try {
-            const response = await fetch ('/api/v1/gdpr/me', {
+            const response = await fetch ('/api/v1/gdpr/account', {
                 method : "POST",
                 headers : {
                     "Authorization" : `Bearer ${accessToken}`,

@@ -2,12 +2,11 @@ import * as gdprController from './gdprController.js'
 
 export const getMeOpts = {
     schema : {
-        headers : {
+        querystring : {
             type : "object",
             properties : {
-                authorization : {type : "string"},
-            },
-            required : ["authorization"],
+                token : {type : "string"},
+            }
         },
         response : {
             200 : {
@@ -176,6 +175,7 @@ export const requestDeleteMeOpts = {
     },
     handler : gdprController.requestAccountDeletion
 }
+
 export const requestDeleteDataOpts = {
     schema : {
         headers : {
@@ -194,7 +194,7 @@ export const requestDeleteDataOpts = {
 }
 export const confirmDeletionOpts = {
     schema : {
-        headers : {
+        querystring : {
             type : "object",
             properties : {
                 token : {type : "string"},
@@ -206,4 +206,21 @@ export const confirmDeletionOpts = {
         }
     },
     handler : gdprController.confirmDeletion
+}
+
+export const requestMeOpts = {
+     schema : {
+        headers : {
+            type : "object",
+            properties : {
+                authorization : { type : "string"},
+            },
+            required : ["authorization"],
+        },
+        response : {
+            202 : {
+            }
+        }
+    },
+    handler : gdprController.requestDataDisplay
 }

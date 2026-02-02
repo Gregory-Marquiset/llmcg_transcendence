@@ -82,7 +82,7 @@ export const initDb = async function (app) {
                 created_at timestamp DEFAULT NOW())`);
             await client.query(`CREATE TABLE IF NOT EXISTS gdpr_history (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                user_id integer NOT NULL REFERENCES users(id),
+                user_id integer REFERENCES users(id) ON DELETE SET NULL,
                 action text NOT NULL,
                 status text NOT NULL,
                 created_at timestamp DEFAULT NOW(),

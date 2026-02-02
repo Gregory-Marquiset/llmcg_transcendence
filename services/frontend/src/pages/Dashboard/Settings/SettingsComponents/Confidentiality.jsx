@@ -5,27 +5,16 @@ import { useState, useEffect } from 'react'
 
 export default function Confidentiality (){
     const [openSection, setOpenSection] = useState(null)
-    const [gdprUserData, setGdprUserData] = useState({});
     const accessToken = localStorage.getItem("access_token");
-    const [displayGdpr, setDisplayGdpr] = useState(false);
     const handleSection = sectionName => {
-        if (!displayGdpr && (openSection === sectionName)){
-            setOpenSection(false);
-            return ;
-        }
-        else if (displayGdpr && (openSection === sectionName)){
-            setOpenSection(false);
-            setDisplayGdpr(false);
-            return ;
-        }
         setOpenSection(openSection === sectionName ? null : sectionName)
-        if (openSection === null)
-            setDisplayGdpr(false);
     }
-    const fetchAllData = async () => {
+    const requestData = async () => {
+        if (!accessToken)
+            return;
         try {
             const response = await fetch('/api/v1/gdpr/me', {
-                method : "GET",
+                method : "POST",
                 headers : {
                     'Authorization': `Bearer ${accessToken}`
                 }
@@ -34,43 +23,12 @@ export default function Confidentiality (){
                 console.log("error response");
                 return ;
             }
-            const data = await response.json();
-            setGdprUserData(data);
+            alert("A mail has been sent !")
         }
         catch(err){
             console.log("ERROR : ", err);
         }
     }
-    useEffect(() => {
-        if (accessToken)
-            fetchAllData();
-    }, []);
-    const setDisplay = () => {
-        if (displayGdpr)
-            setDisplayGdpr(false);
-        else{
-            setDisplayGdpr(true);
-        }
-    }
-    const exportUserData = () => {
-        if (!gdprUserData) {
-            console.log("No GDPR data to export");
-            return;
-        }
-        const json = JSON.stringify(gdprUserData, null, 2);
-        const blob = new Blob([json], {
-            type: "application/json;charset=utf-8"
-        });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "personal_data.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
-
     return( 
         <section onClick={() => handleSection('confidentiality')}>
             <LogTitle text="Confidentialité" />
@@ -82,14 +40,8 @@ export default function Confidentiality (){
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
                 >
-                <button className="btn-setting" onClick={(e) =>{e.stopPropagation(); setDisplay(true);}}>Consulter mes donnees</button>
-                <button className="btn-setting" onClick={exportUserData}>Exporter mes données</button>
+                <button className="btn-setting" onClick={requestData}>Reclamer mes donnees</button>
                 <button className="btn-setting">Supprimer mes données</button>
-                {displayGdpr && <pre className="json-preview">
-                    <strong>JSON preview : </strong><br/>
-                    {JSON.stringify(gdprUserData, null, 2)}
-                </pre>
-                }
                 </motion.div>
             )}
             </AnimatePresence>
