@@ -74,12 +74,21 @@ export const initDb = async function (app) {
                 logtime_second integer DEFAULT 0,
                 UNIQUE (user_id, day))`)
 
-            await client.query(`CREATE TABLE IF NOT EXISTS history (
+            await client.query(`CREATE TABLE IF NOT EXISTS user_history (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 title text NOT NULL,
                 description text NOT NULL,
                 created_at timestamp DEFAULT NOW())`);
+            await client.query(`CREATE TABLE IF NOT EXISTS gdpr_history (
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                user_id integer REFERENCES users(id) ON DELETE SET NULL,
+                action text NOT NULL,
+                status text NOT NULL,
+                created_at timestamp DEFAULT NOW(),
+                executed_at timestamp,
+                expires_at timestamp DEFAULT NOW(),
+                token text UNIQUE)`)
         });
     } catch (err) {
         console.error(`\nERROR initDb: ${err.message}\n`);

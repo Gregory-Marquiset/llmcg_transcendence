@@ -81,6 +81,17 @@ await app.register(fastifyHttpProxy, {
 });
 
 await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/_docs/gdpr',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/api/v1/gdpr'
+});
+
+await app.register(fastifyHttpProxy, {
 	upstream: 'http://users-service:5000',
 	prefix: '/_docs/users',
 	rewritePrefix: '/docs'

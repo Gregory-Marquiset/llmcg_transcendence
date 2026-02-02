@@ -173,15 +173,37 @@ export const authMe = async function (req, reply) {
 			[req.user.id]);
 		}
 		let userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
-		
 		const created_at = new Date(userStats.created_at);
-        const now = new Date();
-        const newSeniority = Math.floor((now - created_at) / (1000 * 60 * 60 * 24)) + 1;
-        await runSql(app.pg, `UPDATE user_stats SET app_seniority = $1,
-                                last_login = $2,
-                                updated_at = NOW()
-                                WHERE user_id = $3`,
-                            [newSeniority, now, req.user.id]);
+		/// Update of streaks, seniority
+		const now = new Date();
+		const last_login = new Date(userStats.last_login);
+		const lastLoginDate = new Date(last_login.getFullYear(), last_login.getMonth(), last_login.getDate());
+		const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		const daysDifference = Math.floor((todayDate - lastLoginDate) / (1000 * 60 * 60 * 24));
+		const newSeniority = Math.floor((now - created_at) / (1000 * 60 * 60 * 24)) + 1;
+		if (daysDifference >= 1) {
+			let newStreak = 0;
+			if (daysDifference === 1) { // if log happens the very next day
+				newStreak = 1;
+			}
+			else { // if it happens more than one day after
+				await runSql(app.pg, `UPDATE user_stats SET 
+									app_seniority = $1,
+									last_login = $2,
+									updated_at = NOW(),
+									current_streak_count = 0
+									WHERE user_id = $3`,
+								[newSeniority, now, req.user.id]);
+				return (reply.code(200).send({...userInfos, stats : userStats}));
+			}
+			await runSql(app.pg, `UPDATE user_stats SET 
+								app_seniority = $1,
+								last_login = $2,
+								updated_at = NOW(),
+								current_streak_count = current_streak_count + $3
+								WHERE user_id = $4`,
+							[newSeniority, now, newStreak, req.user.id]);
+		}
 		return (reply.code(200).send({...userInfos, stats : userStats}));
 	} catch (err) {
 		console.error(`\nERROR authMe: ${err.message}\n`);
@@ -190,8 +212,6 @@ export const authMe = async function (req, reply) {
 		throw err;
 	}
 }
-
-
 
 export const authRefresh = async function (req, reply) {
 
