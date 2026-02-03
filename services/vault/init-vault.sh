@@ -157,7 +157,7 @@ vault write pki/config/urls \
     crl_distribution_points="http://vault:8200/v1/pki/crl"
 
 vault write pki/roles/backend \
-    allowed_domains="gateway,auth,users" \
+    allowed_domains="gateway,auth,users,frontend,42tracker.local,localhost,waf" \
     allow_subdomains=true \
     allow_bare_domains=true \
     max_ttl="8760h"
@@ -170,6 +170,7 @@ services="
 gateway:gateway
 users:users
 auth:auth
+waf:waf
 "
 
 for entry in $services; do
@@ -186,7 +187,7 @@ for entry in $services; do
   jq -r '.data.private_key' "$OUT/${NAME}_raw.json" > "$OUT/${NAME}.key"
   jq -r '.data.issuing_ca'  "$OUT/${NAME}_raw.json" > "$OUT/ca.crt"
 
-#   rm "$OUT/${NAME}_raw.json"
+  rm "$OUT/${NAME}_raw.json"
 done
 
 echo "✅ Vault est prêt !"

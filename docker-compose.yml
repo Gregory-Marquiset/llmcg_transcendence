@@ -44,8 +44,10 @@ services:
       - PARANOIA=1
       - SEC_RULE_ENGINE=DetectionOnly
     ports:
+      - "8001:443"
       - "8000:80"
     volumes:
+      - vault_secrets:/etc/nginx/certs:ro
       - ./services/waf/default.conf:/etc/nginx/conf.d/waf.conf:ro
     networks:
       - net_gateway
