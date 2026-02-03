@@ -49,7 +49,8 @@ export const createMessage = async function (req, reply) {
             content: isMessageAlreadyInDB.content,
             clientSentAt: isMessageAlreadyInDB.client_sent_at,
             createdAt: isMessageAlreadyInDB.created_at,
-            requestId: isMessageAlreadyInDB.request_id 
+            requestId: isMessageAlreadyInDB.request_id,
+            deliveredAt: isMessageAlreadyInDB.delivered_at 
         };
         // responseObj.messageId = isMessageAlreadyInDB.id;
         // responseObj.fromUserId = isMessageAlreadyInDB.from_user_id;

@@ -8,19 +8,16 @@ export const authRegister = async function (req, reply) {
 	try {
 		const hashedPWD = await app.bcrypt.hash(req.body.password);
 
-		await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
-			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "avatar/default.jpg"]);
-		
-		return (reply.code(201).send({message: "New entry in database"}));
+		const rowCount = await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
+			VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`, [req.body.username, req.body.email, hashedPWD, "avatar/default.jpg"]);
+		if (rowCount !== 1)
+			throw httpError(409, "Username or email already taken");
+		return (reply.code(201).send({ message: "New entry in database" }));
 	} catch (err) {
 		console.error(`\nERROR authRegister: ${err.message}\n`);
-		if (err.code === '23505')
-		{
-			err.statusCode = 409;
-			err.message = "Conflict";
-		}
-		else
-			err.statusCode = 500;
+		if (err.statusCode)
+			throw err;
+		err.statusCode = 500;
 		throw err;
 	}
 }

@@ -31,7 +31,7 @@ const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) => {
     const toUserId = Number(obj.payload.toUserId)
     if (!Number.isFinite(toUserId) || !Number.isInteger(toUserId) || toUserId <= 0 || toUserId === actualUserId)
     {
-        socket.send(JSON.stringify({ type: "error", code: "invalid_userId" }));
+        socket.send(JSON.stringify({ type: "error", code: "invalid_toUserId" }));
         return (null);
     }
 
@@ -231,5 +231,6 @@ export const handleChatSendEvent = async function (socket, obj, connectionsIndex
     //console.log(`\nwebsocketHandler acknowledgment: ${JSON.stringify(acknowledgement)}\n`);
     socket.send(JSON.stringify(acknowledgement));
     
-    await deliverMessage(chatServiceResponse);
+    if (!chatServiceResponse.deliveredAt)
+        await deliverMessage(chatServiceResponse);
 }

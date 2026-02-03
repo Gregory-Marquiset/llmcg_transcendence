@@ -85,7 +85,7 @@ export const websocketHandler = async function (socket, req) {
 					return;
 				}
 				else if (err.statusCode === 403)
-					socket.send(JSON.stringify({ type: "error", code: "invalid_friendships" }));
+					socket.send(JSON.stringify({ type: "error", code: "invalid_friendships_or_messageId" }));
 				else if (err.statusCode === 404)
 					socket.send(JSON.stringify({ type: "error", code: "users_not_found" }));
 				else if (err.statusCode === 409)
@@ -104,12 +104,12 @@ export const websocketHandler = async function (socket, req) {
 
 	} catch (err) {
 		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}\n`);
-		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED")
+		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED" || err.code === 1008)
 			socket.close(1008, "token_expired");
 		else if (typeof err?.code === "string" && (err.code.startsWith("FST_JWT_") || err.code.startsWith("FAST_JWT_")))
 			socket.close(1008, "unauthorized");
 		else
-			socket.close();
+			socket.close(1011, "error");
 	}
 }
 

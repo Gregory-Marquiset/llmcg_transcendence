@@ -1,12 +1,12 @@
 Le chat doit etre sous format JSON
     -Envoi d'un message:
 {
-"type": "chat:send",
-"requestId": "tergsrg",
-"payload": {
-    "toUserId": 4,
-    "content": "Test"
-    }
+    "type": "chat:send",
+    "requestId": "tergsrg",
+    "payload": {
+        "toUserId": 4,
+        "content": "Test"
+        }
 }
 
     -Envoi d'un accusé de réception:

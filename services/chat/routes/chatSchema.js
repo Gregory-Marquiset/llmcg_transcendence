@@ -23,7 +23,8 @@ export const createMessagesOpts = {
 					content: { type: "string" },
 					clientSentAt: { type: "string" },
 					createdAt: { type: "string" },
-					requestId: { type: "string" }
+					requestId: { type: "string" },
+					deliveredAt: { type: "string" }
 				}
 			}
 		}
