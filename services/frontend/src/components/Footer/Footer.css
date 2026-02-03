@@ -6,8 +6,43 @@
   bottom: 0;
   width: 100%;
   text-align: center;
+  height: 23px;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  overflow-y: clip;
+  transition: all 300ms;
+  white-space: pre;
+}
+.footer:hover{
+  height: 30px;
+  font-size : 20px;
+  .footersign-terms{
+    color : white;
+    text-decoration: underline;
+  }
+  .footersign{
+    color: aliceblue;
+  }
+  .footersign-terms:hover{
+    color: #eab2bb;
+  }
+}
+
+.terms{
+  text-align: end;
 }
 
 .footersign {
   color: #888;
+  transition: all 300ms;
+}
+
+.footersign-terms {
+  color: #888;
+  transition: all 300ms;
+}
+
+.footersign-terms:hover{
+  color: #eab2bb;
 }

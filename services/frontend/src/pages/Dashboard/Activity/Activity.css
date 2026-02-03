@@ -1,0 +1,335 @@
+.agenda-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 10px;
+}
+
+.calendar-container {
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    flex: 1;
+    height: 420px;
+}
+
+.calendar-container h3 {
+    font-size: 25px;
+    font-weight: 250;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.react-calendar {
+    border: inherit;
+    border-radius: inherit;
+    font-family: inherit;
+    padding: 20px;
+    background-color: #f6f4f4;
+    flex: 1;
+}
+
+.react-calendar__navigation {
+    /* margin-bottom: 1em; */
+    height: 50px;
+    text-align: center;
+    /* height: 60px; */
+}
+
+.react-calendar__navigation button {
+    min-width: 44px;
+    background: none;
+    font-size: 20px;
+    font-weight: 300;
+    color: #333;
+    border-radius: 8px;
+    transition: all 300ms;
+    padding: 1px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+    background-color: #fff5f7;
+    color: #eab2bb;
+}
+
+.react-calendar__month-view__weekdays {
+    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+        color: #858585;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    padding: 0.5em;
+    
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none;
+}
+
+.react-calendar__tile {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border-radius: 8px;
+    position: relative;
+    transition: all 0.3s;
+    background: none;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: #fff5f7;
+    color: #eab2bb;
+    font-size: 25px;
+}
+
+.react-calendar__tile--now {
+    background: #ffffff;
+    color: #858585;
+    border : #eab2bb solid 3px;
+    font-weight: bold;
+}
+
+.react-calendar__tile--active {
+    background: #eab2bb !important;
+    color: white !important;
+    font-weight: bold;
+    color: #858585;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background: #bd8790 !important;
+    color: #858585;
+}
+
+.react-calendar__tile.has-event {
+    background-color: #eab2bb;
+    color: white;
+    font-weight: 700;
+    top:1px;
+    display: flex;
+    flex-direction: column;
+    font-size: 15px;
+}
+
+.event-dot {
+    position: absolute;
+    bottom: 1px;
+    color: rgb(254, 252, 252);
+    margin: 5px;
+    font-size: 20px;
+    line-height: 0;
+    height: 0;
+    transition: all 300ms;
+}
+
+.todolist-editor-container {
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    flex: 1;
+    margin: 10px;
+    overflow-y: scroll;
+    height: 440px;
+}
+
+.historic-container::-webkit-scrollbar,
+.lastuploads-container::-webkit-scrollbar,
+.todolist-editor-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.historic-container::-webkit-scrollbar-track,
+.lastuploads-container::-webkit-scrollbar-track,
+.todolist-editor-container::-webkit-scrollbar-track {
+    background: #f6f4f4;
+    border-radius: 10px;
+}
+
+.historic-container::-webkit-scrollbar-thumb,
+.lastuploads-container::-webkit-scrollbar-thumb,
+.todolist-editor-container::-webkit-scrollbar-thumb {
+    background-color: #eab2bb;
+    border-radius: 10px;
+}
+
+.historic-container::-webkit-scrollbar-thumb:hover,
+.lastuploads-container::-webkit-scrollbar-thumb:hover,
+.todolist-editor-container::-webkit-scrollbar-thumb:hover {
+    background-color: #d89aa4;
+}
+
+
+.agenda-todo-container{
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    min-height: 300px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.todolist-editor-container h3 {
+    font-size: 25px;
+    font-weight: 250;
+    margin-top: 5px;
+    color: #333;
+    white-space: pre;
+}
+
+.todolist-editor-container h4 {
+    font-size: 20px;
+    font-weight: 250;
+    margin: 0px;
+    color: #333;
+    white-space: pre;
+}
+
+.todo-title-editor{
+    display: flex;
+    flex-direction: row;
+}
+
+.todo-tile-editor{
+    border: 1px solid #eab2bb;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
+    transition : all 300ms;
+}
+
+.todo-tile-editor:hover{
+    background-color: #eab2bb68;
+    box-shadow: 0 0 10px #858585;
+}
+
+.historic-container{
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    margin: 10px;
+    flex: 1;
+    height: 400px;
+    overflow-y: scroll;
+}
+.historic-container h3 {
+    font-size: 25px;
+    font-weight: 250;
+    color: #333;
+    margin-top: 10px;
+}
+
+.lastuploads-container{
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    margin: 10px;
+    flex: 1;
+    white-space: pre;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.lastuploads-container h3 {
+    font-size: 25px;
+    font-weight: 250;
+    margin: 0 0 15px 0;
+    color: #333;
+    white-space: pre;
+        margin-top: 5px;
+}
+.historic-uploads-container{
+    display: flex;
+    flex-direction: row;
+    min-height: 400px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.historic-tile{
+    border: 1px solid #85858568;
+    border-radius: 10px;
+    font-size: 30px;
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+    padding: 2px;
+    transition: all 300ms;
+}
+
+.historic-tile:hover{
+    background-color: #eab2bb37;
+    box-shadow: 0 4px 12px #eab2bb;
+}
+
+.historic-tile h3{
+    font-size: 20px;
+    margin: 0;
+}
+
+.historic-tile h4{
+    font-size: 15px;
+    font-weight: 100;
+    text-align: right;
+    white-space: pre;
+}
+
+.calendar-container,
+.todolist-editor-container,
+.historic-container,
+.lastuploads-container {
+    background-color: #ffffffc2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.input-new-todo{
+    border: 1px solid #85858568;
+    border-radius: 10px;
+    height: 30px;
+    margin : 3px;
+    margin-bottom: 7px;
+}
+
+.day-details{
+    font-size: 20px;
+}
+
+.day-details h3{
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.delete-todo{
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    text-align: center;
+    right : 10px;
+    padding : 0px;
+    font-weight: 900;
+}
+
+.split-todo-container{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.split-todo-container h3 {
+    font-weight: 500;
+}
+
+.delete-container {
+    display: flex;
+    align-items: flex-end;
+    align-self: center;
+    /* right : 10px; */
+}

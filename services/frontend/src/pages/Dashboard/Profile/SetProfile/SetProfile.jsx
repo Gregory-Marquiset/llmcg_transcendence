@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { Background, HeaderBar, Button, Loading} from "../../../../components";
+import { Background, HeaderBar, Button, Loading } from "../../../../components";
 import './SetProfile.css'
 import { useState } from "react";
 import { useAuth } from "../../../../context/AuthContext";
