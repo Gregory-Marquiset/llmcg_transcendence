@@ -2,7 +2,7 @@ import '../../../styles/App.css'
 import './Friends.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useState } from 'react'
-import { FriendList} from '../../../components'
+import { FriendList, RequestList} from '../../../components'
 
 function MyFriends() {
     const accessToken = localStorage.getItem("access_token");
@@ -17,6 +17,7 @@ function MyFriends() {
             <LeftMenu setIsLoading={setIsLoading}/>
             <div className='content-container'>
               <FriendList />
+              <RequestList />
             </div>
           </div>
         </div>

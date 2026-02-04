@@ -52,14 +52,6 @@ function userProfile() {
     }
   }
 
-  const handleAcceptRequest = async () => {
-    try {
-      await respondToFriendRequest(userData.id,'accept', accessToken)
-    } catch (err) {
-      console.error('Failed to accept request:', err)
-    }
-  }
-
   const handleDeleteFriend = async () => {
     try {
       await deleteFriend(userData.id, accessToken)
@@ -152,15 +144,11 @@ function userProfile() {
               userData.friendshipsStatus !== 'blocked' && (
                 <Button text="Ajouter en ami" onClick={handleAddFriend} />
               )}
-            {(userData.friendshipsStatus === 'pending' ||
-              userData.friendshipsStatus === 'accepted') && (
+            {(userData.friendshipsStatus === 'accepted') && (
               <Button text="Supprimer un ami" onClick={handleDeleteFriend} />
             )}
             {userData.blockedBy === 0 && (
               <Button text="Bloquer" onClick={handleBlockUser} />
-            )}
-            {(userData.friendshipsStatus === 'pending') && (
-              <Button text="TEMPORAIRE (ACCEPTER DEMANDE)" onClick={handleAcceptRequest} />
             )}
             <br />
           </div>
