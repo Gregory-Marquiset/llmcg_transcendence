@@ -206,21 +206,11 @@ require_cmd()
 {
     cmd="$1"
 
-    L_COUNT=$((L_COUNT + 1))
-    logs require_cmd "$cmd"
-
     if command -v "$cmd" >/dev/null 2>&1; then
-        ok "cmd found: $cmd"
-        L_OK=$((L_OK + 1))
-        L_ERRNO=0
-        ret
-        return (0)
+        return 0
     fi
 
-    ko "Commande manquante: $cmd"
-    L_KO=$((L_KO + 1))
-    L_ERRNO=1
+    failed "Commande manquante: $cmd"
     ret
-
-    return (1)
+    return 1
 }
