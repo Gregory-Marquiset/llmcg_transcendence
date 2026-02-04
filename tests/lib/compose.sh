@@ -183,7 +183,6 @@ compose_health_status()
     return 0
 }
 
-
 #   compose_wait_healthy [v] <service> [timeout_seconds]
 compose_wait_healthy()
 {
