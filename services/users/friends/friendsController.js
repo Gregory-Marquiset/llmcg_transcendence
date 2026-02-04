@@ -227,7 +227,7 @@ export const friendsList = async function (req, reply) {
 			// friend.status = friendStatus.status;
 			// friend.lastSeenAt = friendStatus.lastSeenAt;
 			// friend.activeSince = friendStatus.activeSince;
-			friend.avatar_path = uploadsDir + friend.avatar_path;
+			//friend.avatar_path = uploadsDir.replace + friend.avatar_path;
 			console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
 		});
 		return (reply.code(200).send(friends));
