@@ -242,14 +242,35 @@ export const friendsList = async function (req, reply) {
 
 
 export const friendsRequestList = async function (req, reply) {
-
 	try {
-		const friendsRequestList = await getAllRowsFromDb(app.pg, `SELECT id, sender_id, receiver_id, status FROM friendships WHERE status = $1 AND
-			(sender_id = $2 OR receiver_id = $2)`, ["pending", req.user.id]);
-		
-		return (reply.code(200).send(friendsRequestList));
+		const friendships = await getAllRowsFromDb(app.pg, 'SELECT * FROM friendships WHERE status = $1 AND (receiver_id = $2)',
+			["pending", req.user.id]);
+		let friendsIds = [];
+		friendships.forEach(friend => {
+			//console.log(`\nfriendsList friendships: ${JSON.stringify(friend)}\n`);
+			if (friend.sender_id !== req.user.id)
+				friendsIds.push(friend.sender_id);
+			else
+				friendsIds.push(friend.receiver_id);
+		});
+
+		//let friendsStatusMap = getPresenceForUsers(friendsIds);
+		let friends = await Promise.all(
+			friendsIds.map(friendId => {
+				return getRowFromDB(app.pg, 'SELECT id, username, avatar_path FROM users WHERE id = $1', [friendId]);
+			})
+		);
+		friends.forEach(friend => {
+			// let friendStatus = friendsStatusMap.get(friend.id);
+			// friend.status = friendStatus.status;
+			// friend.lastSeenAt = friendStatus.lastSeenAt;
+			// friend.activeSince = friendStatus.activeSince;
+			//friend.avatar_path = uploadsDir.replace + friend.avatar_path;
+			console.log(`\nrequestList user infos: ${JSON.stringify(friend)}\n`);
+		});
+		return (reply.code(200).send(friends));
 	} catch (err) {
-		console.log(`\nERROR friendsRequestList: ${err.message}\n`);
+		console.log(`\nERROR requestList: ${err.message}\n`);
 		if (err.statusCode)
 			throw err;
 		err.statusCode = 500;

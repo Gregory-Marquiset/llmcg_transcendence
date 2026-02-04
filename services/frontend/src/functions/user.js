@@ -110,3 +110,17 @@ export async function getFriendList(token)
     return res.json()
 }
 
+export async function getRequestList(token)
+{
+     const res = await fetch(`${BASE_URL}/requestList`, {
+        method : 'GET',
+        headers : {
+          'Authorization' : `Bearer ${token}`
+        }
+      })
+    if (!res.ok) {
+        throw new Error('Failed to fetch requestlist')
+    }
+    return res.json()
+}
+
