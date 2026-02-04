@@ -184,11 +184,11 @@ compose_health_status()
 }
 
 
-# compose_wait_healthy [v] <service> [timeout]
+#   compose_wait_healthy [v] <service> [timeout_seconds]
 compose_wait_healthy()
 {
     if [ "$1" = "v" ]; then
-        verbose="$1"
+        verbose="v"
         svc="$2"
         _timeout="${3:-60}"
     else
@@ -199,6 +199,14 @@ compose_wait_healthy()
 
     L_COUNT=$((L_COUNT + 1))
     logs compose wait_healthy "$svc"
+
+    if [ -z "${svc:-}" ]; then
+        ko "missing service name"
+        L_KO=$((L_KO + 1))
+        L_ERRNO=1
+        ret
+        return 1
+    fi
 
     _i=1
     while [ "$_i" -le "$_timeout" ]; do
@@ -221,6 +229,28 @@ compose_wait_healthy()
             return 1
         fi
 
+        if [ "$status" = "no-healthcheck" ]; then
+            [ "$verbose" = "v" ] && compose ps || true
+            L_KO=$((L_KO + 1))
+            L_ERRNO=1
+            ko "$svc" "no-healthcheck (define a healthcheck in compose)"
+            ret
+            return 1
+        fi
+
+        if [ "$status" = "unhealthy" ]; then
+            if [ "$verbose" = "v" ]; then
+                cid="$(compose_cid "$svc")"
+                [ -n "$cid" ] && docker inspect "$cid" || true
+                compose logs --tail=80 "$svc" || true
+            fi
+            L_KO=$((L_KO + 1))
+            L_ERRNO=1
+            ko "$svc" "unhealthy"
+            ret
+            return 1
+        fi
+
         cid="$(compose_cid "$svc")"
         if [ -n "$cid" ]; then
             running="$(docker inspect -f '{{.State.Running}}' "$cid" 2>/dev/null || echo "false")"
@@ -228,7 +258,7 @@ compose_wait_healthy()
                 [ "$verbose" = "v" ] && docker inspect "$cid" || true
                 L_KO=$((L_KO + 1))
                 L_ERRNO=1
-                ko "$svc" "not-running (status=$status)"
+                ko "$svc" "not-running (health=$status)"
                 ret
                 return 1
             fi
@@ -240,8 +270,10 @@ compose_wait_healthy()
     done
 
     if [ "$verbose" = "v" ]; then
-        compose logs --tail=80 "$svc"
+        compose ps || true
+        compose logs --tail=80 "$svc" || true
     fi
+
     L_KO=$((L_KO + 1))
     L_ERRNO=1
     ko "$svc" "timeout waiting healthy"
