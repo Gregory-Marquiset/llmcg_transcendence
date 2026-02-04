@@ -165,7 +165,8 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
-    # volume: users_avatar_data:/app/users/uploads/avatar
+    volumes: 
+      - users_avatar_data:/app/users/uploads/avatar
     healthcheck:
       test:
         [
@@ -504,6 +505,7 @@ networks:
 
 volumes:
   postgresql_data:
+  users_avatar_data:
   frontend_node_modules:
   prometheus_data:
   grafana_data:
