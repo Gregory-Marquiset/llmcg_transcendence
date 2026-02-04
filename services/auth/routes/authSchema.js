@@ -165,3 +165,18 @@ export const auth2faVerifyOpts = {
 	},
 	handler: authController.auth2faVerify
 }
+
+export const authLogin42Opts = {
+  schema: {
+	response: {
+			200: {
+				type: "object",
+				properties: {
+					access_token: { type: "string" }
+				},
+				required: ["access_token"]
+			}
+		}
+	},
+	handler: authController.authLogin42Callback
+}
