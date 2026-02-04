@@ -26,7 +26,8 @@ function Welcome() {
   }
   const handleSignIn = () => handleNavigateWithDelay('/signIn', 300)
   const handleSignUp = () => handleNavigateWithDelay('/signUp', 600)
-  const handleAuth2 = () => handleNavigateWithDelay('/Auth2', 600)
+  // const handleAuth2 = () => handleNavigateWithDelay('/Auth2', 600)
+  const handleAuth42 = () => handleNavigateWithDelay('/Auth42', 600)
   const { t, i18n } = useTranslation()
   const handleLanguageChange = () => {
     const nextLang = i18n.language === 'fr' ? 'en' : 'fr'
@@ -74,7 +75,7 @@ function Welcome() {
               <Separator />
             </motion.div>
             <motion.div variants={itemVariants}>
-              <Button onClick={handleAuth2} text={t('home.login42')} />
+              <Button onClick={handleAuth42} text={t('home.login42')} />
             </motion.div>
             <motion.div variants={itemVariants}>
               <Separator />

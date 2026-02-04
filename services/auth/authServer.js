@@ -12,6 +12,7 @@ import postgresPlugin from '../shared/postgresPlugin.js';
 import { initDb } from '../shared/postgresFunction.js';
 
 import metricsPlugin from '../shared/metricsPlugin.js';
+import oauthPlugin from '@fastify/oauth2';
 
 export const app = Fastify({
     logger: true
@@ -89,6 +90,25 @@ app.setNotFoundHandler((req, reply) => {
 app.get('/health', async (req, reply) => {
   reply.code(200).send({ status: 'ok' });
 });
+
+await app.register(oauthPlugin, {
+  name: 'fortyTwoOAuth2',
+  credentials: {
+    client: {
+      id: 'u-s4t2ud-4c510f5e66963d2eba659caf03072a2d050ba58ac2a1dbad44b815aa7ddba83a',
+      secret: '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',
+    },
+    auth: {
+      authorizeHost: 'https://api.intra.42.fr',
+      authorizePath: '/oauth/authorize',
+      tokenHost: 'https://api.intra.42.fr',
+      tokenPath: '/oauth/token',
+    },
+  },
+  scope: ['public'],
+  startRedirectPath: '/login/42',
+  callbackUri: 'http://localhost:5000/api/v1/auth/login/42/callback',
+})
 
 await app.ready();
 //app.log.info('\nAUTH ROUTES:\n' + app.printRoutes());
