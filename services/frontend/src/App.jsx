@@ -1,6 +1,6 @@
 import './styles/App.css'
 import { Welcome, SignIn, SignUp, Auth2, Settings, Profile, About, Dashboard, Ressources, Activity, 
-  Achievement, Conversations, ExportData, SetProfile, UserProfile, Policy, Privacy, CGU, GdprConfirm, Me} from './pages/index.js'
+  Achievement, Conversations, ExportData, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me} from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
 import { useTranslation, Trans } from 'react-i18next'
@@ -16,6 +16,7 @@ function App() {
         <Route element={<ProtectedRoutes/>}>
             <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/dashboard/activity" element={<Activity/>}/>
+            <Route path="/dashboard/friends" element={<Friends/>}/>
             <Route path="/dashboard/achievement" element={<Achievement/>}/>
             <Route path="/dashboard/conversations" element={<Conversations/>}/>
             <Route path="/dashboard/ressources" element={<Ressources/>}/>
