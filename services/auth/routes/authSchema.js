@@ -13,7 +13,10 @@ export const authRegisterOpts = {
 		},
 		response: {
 			201: {
-				type: "string"
+				type: "object",
+				properties: {
+					message: { type: "string" }
+				}
 			}
 		}
 	},

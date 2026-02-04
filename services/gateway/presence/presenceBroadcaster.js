@@ -11,5 +11,4 @@ export const presenceBroadcaster = function (data) {
             console.error(`\nERROR presenceBroadcaster: ${err.message}\n`);
         }
     });
-
 }

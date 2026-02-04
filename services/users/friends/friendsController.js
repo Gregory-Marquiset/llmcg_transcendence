@@ -107,7 +107,7 @@ export const deleteFriend = async function (req, reply) {
 		const searchForFriendship = await getRowFromDB(app.pg, 'SELECT * FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $3 AND receiver_id = $4)',
 			[targetId, req.user.id, req.user.id, targetId]);
 		if (!searchForFriendship || searchForFriendship.status === "refused" ||
-			searchForFriendship.status === "pending" || searchForFriendship.status === "removed")
+			searchForFriendship.status === "removed")
 			throw httpError(404, "Friendships not found");
 		if (searchForFriendship.status === "blocked")
 			throw httpError(400, "This friendships is blocked");

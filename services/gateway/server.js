@@ -64,6 +64,11 @@ await app.register(fastifyHttpProxy, {
 });
 
 await app.register(fastifyHttpProxy, {
+	upstream: 'http://chat-service:5000',
+	prefix: '/api/v1/chat'
+});
+
+await app.register(fastifyHttpProxy, {
 	upstream: 'http://auth-service:5000',
 	prefix: '/_docs/auth',
 	rewritePrefix: '/docs'
@@ -94,6 +99,12 @@ await app.register(fastifyHttpProxy, {
 await app.register(fastifyHttpProxy, {
 	upstream: 'http://users-service:5000',
 	prefix: '/_docs/users',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://chat-service:5000',
+	prefix: '/_docs/chat',
 	rewritePrefix: '/docs'
 });
 

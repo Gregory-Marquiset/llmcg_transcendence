@@ -41,6 +41,16 @@ export const initDb = async function (app) {
                 created_at timestamp DEFAULT CURRENT_TIMESTAMP,
                 updated_at timestamp,
                 UNIQUE (sender_id, receiver_id))`);
+            
+            await client.query(`CREATE TABLE IF NOT EXISTS chat_history (
+                id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                from_user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                to_user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                content text NOT NULL,
+                request_id text UNIQUE NOT NULL,
+                client_sent_at text,
+                created_at text,
+                delivered_at text)`);
 
             await client.query(`CREATE TABLE IF NOT EXISTS user_stats (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

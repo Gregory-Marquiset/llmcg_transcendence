@@ -40,7 +40,7 @@ await app.register(fastifySwagger, {
             description: 'Auth service description',
             version: '0.1.0'
         },
-        servers: [{ url: 'http://localhost:5000', description: 'Auth' }],
+        servers: [{ url: 'http://localhost:5000/api/v1/auth' }],
         tags: [{ name: 'auth', description: 'Authentication' }],
         components: {
             securitySchemes: {
