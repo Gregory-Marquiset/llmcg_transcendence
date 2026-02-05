@@ -24,7 +24,7 @@ import { badges, starBadge } from '../../../badges/badges'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
-  const {errStatus, setErrStatus}= useAuth();
+ 
 
   let currentLevel = 0;
   for (let i = levels.length - 1; i >= 0; i--) {
@@ -48,7 +48,8 @@ function computeBadgeProgress(badge, statValue) {
   };
 }
 
-function userProfile() {
+function UserProfile() {
+  const {errStatus, setErrStatus}= useAuth();
   const [userData, setUserData] = useState({
     id: '',
     username: '',
@@ -249,4 +250,4 @@ if (userData.blockedBy === CurrUserData.id) {
   )
 }
 
-export default userProfile
+export default UserProfile

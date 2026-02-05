@@ -83,7 +83,7 @@ export async function getUserProfile(username, token) {
 
 export async function getCurrUserProfile(token)
 {
-     const res = await fetch(`http://localhost:5000/api/v1/auth/me`, {
+     const res = await fetch(`/api/v1/auth/me`, {
         method : 'GET',
         headers : {
           'Authorization' : `Bearer ${token}`

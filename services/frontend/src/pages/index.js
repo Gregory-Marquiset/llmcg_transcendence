@@ -10,7 +10,7 @@ export { default as Conversations } from './Dashboard/Conversations/Conversation
 export { default as Profile } from './Dashboard/Profile/Profile'
 export { default as Settings } from './Dashboard/Settings/Settings'
 export { default as SetProfile } from './Dashboard/Profile/SetProfile/SetProfile.jsx'
-export { default as UserProfile } from './Dashboard/Profile/userProfile.jsx'
+export { default as UserProfile } from './Dashboard/Profile/UserProfile.jsx'
 export { default as Policy } from './Policy/Policy.jsx'
 export { default as Privacy } from './Policy/Privacy/Privacy.jsx'
 export { default as CGU } from './Policy/CGU/CGU.jsx'
