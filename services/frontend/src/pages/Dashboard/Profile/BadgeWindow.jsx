@@ -5,33 +5,26 @@ function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
 
   let currentLevel = 0;
-
-  for (let i = 1; i < levels.length; i++) {
+  for (let i = levels.length - 1; i >= 0; i--) {
     if (statValue >= levels[i].threshold) {
       currentLevel = i;
-    } else {
       break;
     }
   }
-
   if (currentLevel === levels.length - 1) {
     return { level: currentLevel, progress: 100 };
   }
-
-  const prevThreshold = levels[currentLevel].threshold;
+  const currentThreshold = levels[currentLevel].threshold;
   const nextThreshold = levels[currentLevel + 1].threshold;
 
   const progress =
-    ((statValue - prevThreshold) /
-      (nextThreshold - prevThreshold)) *
-    100;
+    ((statValue - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
 
   return {
     level: currentLevel,
     progress: Math.max(0, Math.min(100, progress)),
   };
 }
-
 export default function BadgeWindow({isLoading}){
     const [starBadgeOwner, setStarBadge] = useState(true);
     const [stats, setStats] = useState(null);
@@ -40,7 +33,6 @@ export default function BadgeWindow({isLoading}){
     useEffect(() => {
       const fetchProfile = async () => {
         try {
-            // isLoading(true);
           const responseMe = await fetch('/api/v1/auth/me', {
             method: 'GET',
             headers: {
@@ -56,7 +48,6 @@ export default function BadgeWindow({isLoading}){
           const fetchedUserData = await responseMe.json();
           console.log(fetchedUserData);
           setStats(fetchedUserData.stats);
-        //   isLoading(false);
         } catch (err) {
           console.error("Fetch error:", err);
         }

@@ -1,93 +1,177 @@
-.content-wrapper{
-    display: flex;
-    flex-direction: column ;
-    /* border : solid red 10px; */
-    margin : 2%;
-    height: 1000px;
-    align-items: stretch;
-    align-items: center;
+/* ========================================
+   SETTINGS PAGE
+   ======================================== */
 
+.setting-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 15px;
 }
 
 .settings-title {
-    /* display: content; */
-    /* flex-wrap: nowrap; */
     background-color: whitesmoke;
     border: solid #858585 3px;
     border-radius: 20px;
     margin-bottom: 30px;
-    /* font-size: 32px; */
-    width: 300px;
-    /* padding : 20px; */
+    width: 100%;
+    max-width: 400px;
+    min-width: 280px;
     color: #545454;
     text-align: center;
-    height: 100px;
+    padding: 20px;
     font-family: Arial, Helvetica, sans-serif;
     filter: drop-shadow(0 2px 2px #545454);
     animation: slideIn 0.4s ease-out;
     transition: all 300ms;
 }
+
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.settings-title:hover{
-    filter: drop-shadow(0 9px 10px #eab2bb);
-    background-color: white;
-    border : solid #eab2bb 3px;
-}
-section{
-    border: solid #858585 3px;
-    background-color: whitesmoke;
-    align-self: stretch;
-    /* display: flex; */
-    justify-content: center;
-    align-items: center;
-    border-radius: 20px;
-    padding-bottom: 15px;
-    margin-bottom: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: all 300ms;
-}
-
-section:hover{
+.settings-title:hover {
     filter: drop-shadow(0 9px 10px #eab2bb);
     background-color: white;
     border: solid #eab2bb 3px;
 }
+
+/* Sections */
+section {
+    border: solid #858585 3px;
+    background-color: whitesmoke;
+    width: 100%;
+    max-width: 3000px;
+    min-width: 280px;
+    border-radius: 20px;
+    padding-bottom: 25px;
+    margin-bottom: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: all 300ms;
+    cursor: pointer;
+}
+
+section:hover {
+    filter: drop-shadow(0 9px 10px #eab2bb);
+    background-color: white;
+    border: solid #eab2bb 3px;
+}
+
+/* Buttons Container */
+section > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    width: 100%;
+}
+
 .btn-setting {
-  background-color: #eab2bb;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  height: 50px;
-  font-size: 18px;
-  transition: all 300ms;
-  text-align: center;
-  filter: drop-shadow(0 2px 2px #545454);
-  margin: 10px;
+    background-color: #eab2bb;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    font-weight: 500;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: clamp(16px, 3vw, 18px);
+    transition: all 300ms;
+    text-align: center;
+    filter: drop-shadow(0 2px 2px #545454);
+    width: 100%;
+    min-height: 50px;
 }
 
-.setting-wrapper{
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  min-width: 100px;
-  padding: 50px;
+.btn-setting:hover {
+    background-color: #d89aa4;
+    filter: drop-shadow(0 4px 8px #eab2bb);
+    transform: translateY(-2px);
 }
 
-.json-preview{
-  text-align: start;
-  margin: 30px;
+.btn-setting:active {
+    transform: translateY(0);
+    filter: drop-shadow(0 2px 4px #858585);
 }
 
+/* JSON Preview */
+.json-preview {
+    text-align: start;
+    margin: 30px;
+    padding: 20px;
+    background-color: #f6f4f4;
+    border-radius: 10px;
+    border: 2px solid #eab2bb;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+/* ========================================
+   MEDIA QUERIES - TABLETTE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .setting-wrapper {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .settings-title {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    section {
+        padding: 15px;
+    }
+
+    .btn-setting {
+        padding: 12px 20px;
+        min-height: 45px;
+    }
+}
+
+/* ========================================
+   MEDIA QUERIES - MOBILE
+   ======================================== */
+
+@media (max-width: 480px) {
+    .setting-wrapper {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .settings-title {
+        margin-bottom: 15px;
+        padding: 12px;
+        max-width: 100%;
+    }
+
+    section {
+        padding: 12px;
+        max-width: 100%;
+        min-width: auto;
+    }
+
+    .btn-setting {
+        padding: 10px 15px;
+        min-height: 40px;
+        font-size: 16px;
+    }
+
+    .json-preview {
+        margin: 15px;
+        padding: 15px;
+    }
+}
