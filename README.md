@@ -1,4 +1,4 @@
-> This project has been created as part of the 42 curriculum by lobriot, lzaengel, mdacunh, cdutel, gmarquis.
+> This project has been created as part of the 42 curriculum lobriott, lzaengel, mda-cunh, cdutel, gmarquiset.
 
 ---
 
@@ -14,14 +14,13 @@
 ---
 <a id="description"></a>
 
-## 🌐 Description 
+## 🌐 Description
 
 ### llmcg_transcendence — 42 Gamification Platform
 
-**Goal:** provide a clean, simple and motivating platform where 42 students can create or join challenges, track progress and compete fairly.
+**Overview:** A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
 
-**Overview:**
-A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
+**Goal:** Provide a clean, simple and motivating platform where 42 students can create or join challenges, track progress and compete fairly.
 
 **Users:** 42 students (multi-user concurrency supported).
 
@@ -30,11 +29,14 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 * Authentication (signup/login) + user profiles
 * Challenges between students (create, join, validate, history)
 * XP, levels, badges, streaks (gamification loop)
-* Leaderboards (global + per challenge/category)
 * Real-time updates : WebSocket events for live challenge updates, notifications, and online presence
 * Basic chat system between two users via WebScket.
 
 > Note: The app must run on **Chrome stable** with **no console errors**.
+
+### Project Management
+
+The team organized the work using clear task distribution and regular coordination. Tasks were managed and tracked through GitHub Projects, allowing everyone to follow progress and responsibilities. Communication was handled primarily via Discord, with weekly video calls to discuss progress, address issues, and plan upcoming work.
 
 ### Architecture
 
@@ -61,8 +63,12 @@ High-level components:
 
 ### Database
 
-* PostgreSQL
+* PostgreSQL (Chosen for its industry standard status)
 * Adminer
+
+## 📊 Database Schema
+
+➡️ [View database schema diagram](docs/database_schema.mmd)
 
 ### DevOps
 
@@ -85,6 +91,7 @@ High-level components:
 
 * Docker + Docker Compose
 * GNU Make
+* curl + grep
 
 ### 1) Configure environment
 
@@ -348,6 +355,10 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 * [Docker Compose documentation](https://docs.docker.com/compose/)
 * [Prometheus documentation](https://prometheus.io/docs/introduction/overview/)
 * [Grafana documentation](https://grafana.com/docs/)
+* [Elastic Stack documentation (Elasticsearch / Logstash / Kibana)](https://www.elastic.co/docs/get-started/the-stack)
+* [Elasticsearch reference](https://www.elastic.co/docs/reference/elasticsearch)
+* [Logstash reference](https://www.elastic.co/docs/reference/logstash)
+* [Kibana reference](https://www.elastic.co/docs/reference/kibana)
 * [HashiCorp Vault documentation](https://developer.hashicorp.com/vault/docs)
 * [ModSecurity documentation](https://github.com/owasp-modsecurity/ModSecurity/wiki)
 * [OWASP Core Rule Set (CRS) documentation](https://coreruleset.org/docs/)

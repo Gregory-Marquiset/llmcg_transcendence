@@ -1,0 +1,110 @@
+erDiagram
+  USERS {
+    int id PK
+    bigint intra_id UK
+    text username UK
+    text email UK
+    text password
+    text avatar_path
+    timestamp createdAt
+    text auth_provider
+    boolean twofa_enabled
+    text twofa_secret UK
+  }
+
+  REFRESHED_TOKENS {
+    int jwt_id PK
+    int user_id FK
+    text token
+  }
+
+  FRIENDSHIPS {
+    int id PK
+    int sender_id FK
+    int receiver_id FK
+    text status
+    int blocked_by FK
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  CHAT_HISTORY {
+    int id PK
+    int from_user_id FK
+    int to_user_id FK
+    text content
+    text request_id UK
+    text client_sent_at
+    text created_at
+    text delivered_at
+  }
+
+  USER_STATS {
+    int id PK
+    int user_id FK
+    int rank_position
+    int task_completed
+    int friends_count
+    int streaks_history
+    int current_streak_count
+    int monthly_logtime
+    text monthly_logtime_month
+    int app_seniority
+    int upload_count
+    timestamp created_at
+    timestamp updated_at
+    int progressbar
+    timestamp last_login
+  }
+
+  TODO_LIST {
+    int id PK
+    int user_id FK
+    text title
+    text description
+    boolean done
+    timestamp deadline
+    timestamp created_at
+  }
+
+  DAILY_LOGTIME {
+    int id PK
+    int user_id FK
+    date day
+    int logtime_second
+  }
+
+  USER_HISTORY {
+    int id PK
+    int user_id FK
+    text title
+    text description
+    timestamp created_at
+  }
+
+  GDPR_HISTORY {
+    int id PK
+    int user_id FK
+    text action
+    text status
+    timestamp created_at
+    timestamp executed_at
+    timestamp expires_at
+    text token UK
+  }
+
+  USERS ||--o{ REFRESHED_TOKENS : has
+  USERS ||--o| USER_STATS : has
+
+  USERS ||--o{ TODO_LIST : owns
+  USERS ||--o{ DAILY_LOGTIME : tracks
+  USERS ||--o{ USER_HISTORY : logs
+
+  USERS ||--o{ CHAT_HISTORY : sends
+  USERS ||--o{ CHAT_HISTORY : receives
+
+  USERS ||--o{ FRIENDSHIPS : sender
+  USERS ||--o{ FRIENDSHIPS : receiver
+  USERS ||--o{ FRIENDSHIPS : blocked_by
+
+  USERS ||--o{ GDPR_HISTORY : gdpr_events
