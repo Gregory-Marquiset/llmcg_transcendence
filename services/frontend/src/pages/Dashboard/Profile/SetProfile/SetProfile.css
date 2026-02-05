@@ -5,6 +5,11 @@
     flex-direction: column;
     width: 700px;
     height : 500px;
+    transition: all 300ms;
+    border-radius: 50px;
+    color: black;
+    border: #eab2bb solid 10px;
+    background-color: rgba(255, 255, 255, 0.639);
 }
 
 input{
