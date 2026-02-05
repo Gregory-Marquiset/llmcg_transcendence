@@ -1,26 +1,27 @@
-> This project has been created as part of the 42 curriculum by 5 42 [students](#contributors-responsabilities).
-
-# llmcg_transcendence — 42 Gamification Platform
-
-A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
+> This project has been created as part of the 42 curriculum by lobriot, lzaengel, mdacunh, cdutel, gmarquis.
 
 ---
 
 ## Table of Contents
 
-* [Project overview](#project-overview)
-* [Quickstart and tests](#quickstart-and-tests)
+* [Description](#description)
+* [Instructions](#instructions)
 * [CI/CD & Project management](#cicd--project-management)
 * [Modules points](#modules-points)
 * [Contributors responsibilities](#contributors-responsabilities)
-* [Resources & AI Usage](#resources--ai-usage)
+* [Resources](#resources)
 
 ---
-<a id="project-overview"></a>
+<a id="description"></a>
 
-## 🌐 Project Overview
+## 🌐 Description 
+
+### llmcg_transcendence — 42 Gamification Platform
 
 **Goal:** provide a clean, simple and motivating platform where 42 students can create or join challenges, track progress and compete fairly.
+
+**Overview:**
+A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
 
 **Users:** 42 students (multi-user concurrency supported).
 
@@ -76,9 +77,9 @@ High-level components:
 * HashiCorp Vault for secrets
 
 ---
-<a id="quickstart-and-tests"></a>
+<a id="instructions"></a>
 
-## 🚀 Quickstart and tests
+## 🚀 Instructions
 
 ### Prerequisites
 
@@ -335,9 +336,9 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 > And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
 
 ---
-<a id="resources--ai-usage"></a>
+<a id="resources"></a>
 
-## 📑 Resources & AI Usage
+## 📑 Resources
 
 ### Documentation / References
 
@@ -347,10 +348,6 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 * [Docker Compose documentation](https://docs.docker.com/compose/)
 * [Prometheus documentation](https://prometheus.io/docs/introduction/overview/)
 * [Grafana documentation](https://grafana.com/docs/)
-* [Elastic Stack documentation (Elasticsearch / Logstash / Kibana)](https://www.elastic.co/docs/get-started/the-stack)
-* [Elasticsearch reference](https://www.elastic.co/docs/reference/elasticsearch)
-* [Logstash reference](https://www.elastic.co/docs/reference/logstash)
-* [Kibana reference](https://www.elastic.co/docs/reference/kibana)
 * [HashiCorp Vault documentation](https://developer.hashicorp.com/vault/docs)
 * [ModSecurity documentation](https://github.com/owasp-modsecurity/ModSecurity/wiki)
 * [OWASP Core Rule Set (CRS) documentation](https://coreruleset.org/docs/)

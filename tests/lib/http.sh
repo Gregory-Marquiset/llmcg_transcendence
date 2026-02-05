@@ -145,19 +145,39 @@ http_get_headers()
     fi
 }
 
-# http_get_health [v] [URL] -> GET le health check
+#   http_get_health [v] <base_url_or_health_url>
+# Examples:
+#   http_get_health http://localhost:5000
+#   http_get_health http://localhost:5000/health
+#   http_get_health v http://localhost:5000
 http_get_health()
 {
     L_COUNT=$((L_COUNT + 1))
     logs health http test
 
-    if [ "$#" -ge 2 ]; then
-        _health="$2"health/
+    if [ "$1" = "v" ]; then
+        verbose="v"
+        _health="${2:-}"
     else
-        _health="$1"health/
+        verbose=""
+        _health="${1:-}"
     fi
 
-    if [ "$1" = "v" ]; then
+    if [ -z "$_health" ]; then
+        ko "health check failed: missing url"
+        L_KO=$((L_KO + 1))
+        L_ERRNO=1
+        ret
+        return 1
+    fi
+
+    case "$_health" in
+        */health|*/health/) : ;;
+        */) _health="${_health}health" ;;
+        *)  _health="${_health}/health" ;;
+    esac
+
+    if [ "$verbose" = "v" ]; then
         if curl -fsS "$_health"; then
             ret
             ok "health check successful: $_health"
@@ -165,26 +185,20 @@ http_get_health()
             L_ERRNO=0
             ret
             return 0
-        else
-            ko "health check failed: $_health"
-            L_KO=$((L_KO + 1))
-            L_ERRNO=1
-            ret
-            return 1
         fi
     else
-        if curl -fsS "$_health" >/dev/null; then
+        if curl -fsS "$_health" >/dev/null 2>&1; then
             ok "health check successful: $_health"
             L_OK=$((L_OK + 1))
             L_ERRNO=0
             ret
             return 0
-        else
-            ko "health check failed: $_health"
-            L_KO=$((L_KO + 1))
-            L_ERRNO=1
-            ret
-            return 1
         fi
     fi
+
+    ko "health check failed: $_health"
+    L_KO=$((L_KO + 1))
+    L_ERRNO=1
+    ret
+    return 1
 }

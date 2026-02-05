@@ -18,3 +18,4 @@ export { default as GdprConfirm } from './Dashboard/Settings/Gdpr/GdprConfirm.js
 export { default as Me } from './Dashboard/Settings/Gdpr/Me.jsx'
 export { default as Error404 } from './ErrorPages/404.jsx'
 export { default as Error401 } from './ErrorPages/401.jsx'
+export { default as Watchdog } from './Metrics/Watchdog.jsx'
