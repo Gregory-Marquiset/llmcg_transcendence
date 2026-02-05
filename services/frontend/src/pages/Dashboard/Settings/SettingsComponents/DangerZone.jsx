@@ -1,13 +1,17 @@
 import '../Settings.css'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogTitle } from '../../../../components'
+import { LogTitle, Button } from '../../../../components'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import Error404 from '../../../ErrorPages/404'
+import Error401 from '../../../ErrorPages/401'
+
 export default function DangerZone () {
     const { isLoggedIn, setIsLoggedIn } = useAuth();
     const accessToken = localStorage.getItem("access_token");
     const navigate = useNavigate();
+    const {errStatus, setErrStatus}= useAuth();
     const handleDataDeletion = async () => {
         try {
             const response = await fetch ('/api/v1/gdpr/data', {
@@ -18,6 +22,7 @@ export default function DangerZone () {
             });
             if (!response.ok){
                 console.log("while delete data");
+                setErrStatus(response.status);
                 return ;
             }
             alert("A confirmation mail has been sent !");
@@ -48,23 +53,13 @@ export default function DangerZone () {
     const handleSection = sectionName => {
         setOpenSection(openSection === sectionName ? null : sectionName)
     }
+    if (errStatus === 404) return <Error404/>
+    if (errStatus === 401) return <Error401/>
     return (
         <section onClick={() => handleSection('dangerZone')}>
             <LogTitle text="Danger zone" />
-            <AnimatePresence>
-            {openSection === 'dangerZone' && (
-                <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                >
-                {/* <button className="btn-setting" onClick={() => navigate('/gdpr/confirm/datadeletion')}>access</button> */}
-                <button className="btn-setting" onClick={handleAccountDeletion}>Supprimer mon compte</button>
-                <button className="btn-setting" onClick={handleDataDeletion}>Effacer mes données</button>
-                </motion.div>
-            )}
-            </AnimatePresence>
+                <Button className="btn-setting" onClick={handleAccountDeletion} text="Supprimer mon compte"/>
+                <Button className="btn-setting" onClick={handleDataDeletion} text="Effacer mes données"/>
         </section>
     )
 }

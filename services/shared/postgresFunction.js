@@ -68,6 +68,7 @@ export const initDb = async function (app) {
                 upload_count integer DEFAULT 0,
                 created_at timestamp DEFAULT CURRENT_TIMESTAMP,
                 updated_at timestamp,
+                progressbar integer DEFAULT 0,
                 last_login timestamp)
                 `);
             await client.query(`CREATE TABLE IF NOT EXISTS todo_list (

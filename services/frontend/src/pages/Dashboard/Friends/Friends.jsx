@@ -3,7 +3,7 @@ import './Friends.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useState } from 'react'
 import { FriendList, RequestList} from '../../../components'
-
+import { useAuth } from '../../../context/AuthContext'
 function MyFriends() {
     const [refresh, setRefresh] = useState(0)
     const triggerRefresh = () => {

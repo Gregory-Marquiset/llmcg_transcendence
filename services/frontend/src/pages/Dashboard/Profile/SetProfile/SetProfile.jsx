@@ -11,6 +11,7 @@ function SetProfile(){
     useAuth();
     const accessToken = localStorage.getItem('access_token')
     const [loading, setLoading] = useState(false);
+    const {errStatus, setErrStatus}= useAuth();
     const handleAvatarModification = async ( event ) => {
         setLoading(true);
         event.preventDefault();

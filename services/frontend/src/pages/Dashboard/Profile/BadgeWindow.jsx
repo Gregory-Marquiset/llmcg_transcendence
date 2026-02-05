@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { badges, starBadge } from '../../../badges/badges'
+import { badges } from '../../../badges/badges'
+import { useAuth } from '../../../context/AuthContext'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
@@ -19,17 +20,15 @@ function computeBadgeProgress(badge, statValue) {
 
   const progress =
     ((statValue - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
-
   return {
     level: currentLevel,
     progress: Math.max(0, Math.min(100, progress)),
   };
 }
 export default function BadgeWindow({isLoading}){
-    const [starBadgeOwner, setStarBadge] = useState(true);
     const [stats, setStats] = useState(null);
     const accessToken = localStorage.getItem("access_token");
-
+    const {errStatus, setErrStatus}= useAuth();
     useEffect(() => {
       const fetchProfile = async () => {
         try {
@@ -92,16 +91,6 @@ export default function BadgeWindow({isLoading}){
                     </div>
                 );
             })}
-            {starBadgeOwner && (
-                <div className='badge-container'>
-                    <img 
-                        className='badge'
-                        src={starBadge.path}
-                        alt="Star Badge - Admin"
-                    />
-                    <div className="badge-name">Admin ⭐</div>
-                </div>
-            )}
         </div>
     );
 }

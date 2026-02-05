@@ -5,39 +5,39 @@ import { ideaSilver, ideaGold, ideaRegular } from './idea/index'
 import { likeSilver, likeGold, likeRegular } from './like/index'
 import { medalSilver, medalGold, medalRegular } from './medal/index'
 import { screenSilver, screenGold, screenRegular } from './screen/index'
-import star  from './star/star.png'
+// import star  from './star/star.png'
 export const badges = [ {
-        name : 'Trophee',
-        category : 'Ranking',
-        color : '#e3574c',
-        key : "rank_position",
-        levels : [
-                {
-                    level: 0,
-                    description: 'No rank yet',
-                    threshold: 0,
-                    path: tropheeSilver,
-                },
-                {
-                    level : 1,
-                    description: 'Under top 10',
-                    threshold : 10,
-                    path: tropheeSilver
-                },
-                {
-                    level : 2,
-                    description: 'Under top 3',
-                    threshold : 3,
-                    path: tropheeRegular
-                },
-                {
-                    level : 3,
-                    description: 'Top 1',
-                    threshold : 1,
-                    path: tropheeGold
-                }
-            ]
-    }, {
+    //     name : 'Trophee',
+    //     category : 'Ranking',
+    //     color : '#e3574c',
+    //     key : "rank_position",
+    //     levels : [
+    //             {
+    //                 level: 0,
+    //                 description: 'No rank yet',
+    //                 threshold: 0,
+    //                 path: tropheeSilver,
+    //             },
+    //             {
+    //                 level : 1,
+    //                 description: 'Under top 10',
+    //                 threshold : 10,
+    //                 path: tropheeSilver
+    //             },
+    //             {
+    //                 level : 2,
+    //                 description: 'Under top 3',
+    //                 threshold : 3,
+    //                 path: tropheeRegular
+    //             },
+    //             {
+    //                 level : 3,
+    //                 description: 'Top 1',
+    //                 threshold : 1,
+    //                 path: tropheeGold
+    //             }
+    //         ]
+    // }, {
         name : 'Croissance',
         category : 'Productivity',
         color : '#72b242',
@@ -187,42 +187,42 @@ export const badges = [ {
                 path: spaceshipGold
         }]      
     },
-    {
-        name : 'Idea',
-        category : 'Number of upload',
-        color : '#e6c437',
-        key : "upload_count",
-        levels : [
-        {
-                level : 0,
-                description: 'No upload yet',
-                threshold : 0,
-                path: ideaSilver
-        },
-        {
-                level : 1,
-                description: '1 file uploaded',
-                threshold : 1,
-                path: ideaSilver
-        },
-        {
-                level : 2,
-                description: '10 file uploaded',
-                threshold : 10,
-                path: ideaRegular
-        },
-        {
-                level : 3,
-                description: '50 file uploaded',
-                threshold : 50,
-                path: ideaGold
-        }]
-    },
+    // {
+    //     name : 'Idea',
+    //     category : 'Number of upload',
+    //     color : '#e6c437',
+    //     key : "upload_count",
+    //     levels : [
+    //     {
+    //             level : 0,
+    //             description: 'No upload yet',
+    //             threshold : 0,
+    //             path: ideaSilver
+    //     },
+    //     {
+    //             level : 1,
+    //             description: '1 file uploaded',
+    //             threshold : 1,
+    //             path: ideaSilver
+    //     },
+    //     {
+    //             level : 2,
+    //             description: '10 file uploaded',
+    //             threshold : 10,
+    //             path: ideaRegular
+    //     },
+    //     {
+    //             level : 3,
+    //             description: '50 file uploaded',
+    //             threshold : 50,
+    //             path: ideaGold
+    //     }]
+    // },
 ]
-export const starBadge = {
-    name: 'Star',
-    category: 'Admin',
-    color: '#FFD700',
-    logins: ['gmarquis', 'mda-cunh', 'cdutel', 'lzaengel', 'lobriott'],
-    path: star
-}
+// export const starBadge = {
+//     name: 'Star',
+//     category: 'Admin',
+//     color: '#FFD700',
+//     logins: ['gmarquis', 'mda-cunh', 'cdutel', 'lzaengel', 'lobriott'],
+//     path: star
+// }

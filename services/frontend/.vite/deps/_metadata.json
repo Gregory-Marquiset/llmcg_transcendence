@@ -1,106 +1,115 @@
 {
-  "hash": "9a7871b1",
+  "hash": "2f5c778c",
   "configHash": "ae85d8c1",
-  "lockfileHash": "91d5a26d",
-  "browserHash": "b421eba3",
+  "lockfileHash": "86d94f91",
+  "browserHash": "7fefc089",
   "optimized": {
     "react": {
       "src": "../../conf/node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "40816812",
+      "fileHash": "60b9219c",
       "needsInterop": true
     },
     "react-dom": {
       "src": "../../conf/node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "73f5ea1d",
+      "fileHash": "a8975b9b",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../conf/node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "a93f2b86",
+      "fileHash": "358fff47",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../conf/node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "f4e5108c",
+      "fileHash": "15793583",
       "needsInterop": true
     },
     "framer-motion": {
       "src": "../../conf/node_modules/framer-motion/dist/es/index.mjs",
       "file": "framer-motion.js",
-      "fileHash": "be888346",
+      "fileHash": "8473aadd",
       "needsInterop": false
     },
     "i18next": {
       "src": "../../conf/node_modules/i18next/dist/esm/i18next.js",
       "file": "i18next.js",
-      "fileHash": "427e0992",
+      "fileHash": "fc746b2c",
       "needsInterop": false
     },
     "i18next-browser-languagedetector": {
       "src": "../../conf/node_modules/i18next-browser-languagedetector/dist/esm/i18nextBrowserLanguageDetector.js",
       "file": "i18next-browser-languagedetector.js",
-      "fileHash": "9a5bed77",
+      "fileHash": "02f9a4f2",
       "needsInterop": false
     },
     "i18next-http-backend": {
       "src": "../../conf/node_modules/i18next-http-backend/esm/index.js",
       "file": "i18next-http-backend.js",
-      "fileHash": "f640dde9",
+      "fileHash": "7c1752b5",
       "needsInterop": false
     },
     "react-calendar": {
       "src": "../../conf/node_modules/react-calendar/dist/index.js",
       "file": "react-calendar.js",
-      "fileHash": "6d816906",
+      "fileHash": "6a4131a5",
       "needsInterop": false
     },
     "react-dom/client": {
       "src": "../../conf/node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "a07f2e50",
+      "fileHash": "6a48baa3",
       "needsInterop": true
     },
     "react-i18next": {
       "src": "../../conf/node_modules/react-i18next/dist/es/index.js",
       "file": "react-i18next.js",
-      "fileHash": "3b5e9fe0",
+      "fileHash": "9d7b00a1",
       "needsInterop": false
     },
     "react-router-dom": {
       "src": "../../conf/node_modules/react-router-dom/dist/index.mjs",
       "file": "react-router-dom.js",
-      "fileHash": "a4204174",
+      "fileHash": "4eb4797d",
       "needsInterop": false
     },
     "recharts": {
       "src": "../../conf/node_modules/recharts/es6/index.js",
       "file": "recharts.js",
-      "fileHash": "0984e0b2",
+      "fileHash": "edb8de5e",
+      "needsInterop": false
+    },
+    "react-router": {
+      "src": "../../conf/node_modules/react-router/dist/development/index.mjs",
+      "file": "react-router.js",
+      "fileHash": "c42017bd",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-XYVKAWMZ": {
-      "file": "chunk-XYVKAWMZ.js"
+    "chunk-GU65HFZT": {
+      "file": "chunk-GU65HFZT.js"
     },
     "chunk-JFYBPAT5": {
       "file": "chunk-JFYBPAT5.js"
     },
-    "chunk-GU65HFZT": {
-      "file": "chunk-GU65HFZT.js"
+    "chunk-XYVKAWMZ": {
+      "file": "chunk-XYVKAWMZ.js"
     },
     "browser-ponyfill-R74LPF5G": {
       "file": "browser-ponyfill-R74LPF5G.js"
     },
-    "chunk-TAEQWH64": {
-      "file": "chunk-TAEQWH64.js"
+    "chunk-LOY5WXLR": {
+      "file": "chunk-LOY5WXLR.js"
     },
     "chunk-LS3N2DRT": {
       "file": "chunk-LS3N2DRT.js"
+    },
+    "chunk-TAEQWH64": {
+      "file": "chunk-TAEQWH64.js"
     },
     "chunk-ROTG7ULQ": {
       "file": "chunk-ROTG7ULQ.js"

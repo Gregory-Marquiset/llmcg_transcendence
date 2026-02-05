@@ -6,5 +6,5 @@ export async function statsRoutes(app, options){
     app.delete('/todo/:id', {onRequest: [app.authenticate], ...statisticsOpts.deleteTodoOpts});
     app.patch('/todo/:id', {onRequest: [app.authenticate], ...statisticsOpts.markAsDoneOpts});
     app.get('/history', {onRequest: [app.authenticate], ...statisticsOpts.getHistoryOpts});
-    app.get('/weeklylogtime', {onRequest : [app.authenticate], ...statisticsOpts.getWeeklyLogtimeOpts})
+    app.get('/weeklylogtime', {onRequest : [app.authenticate], ...statisticsOpts.getWeeklyLogtimeOpts});
 }
