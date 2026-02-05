@@ -20,7 +20,6 @@ function Activity() {
                 </div>
                 <div className='historic-uploads-container'>
                   <Historic setIsLoading={setIsLoading}/>
-                  <LastUploads setIsLoading={setIsLoading}/>
                 </div>
               </div>
             </div>

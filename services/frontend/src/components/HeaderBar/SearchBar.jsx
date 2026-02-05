@@ -65,6 +65,7 @@ export function SearchBar ({ searchInput, setSearchInput,
                     </div>
                     <span className="text-slate-400 text-sm font-medium uppercase tracking-wider"/>
                   </div>
+                
                 ))}
             </div>
             }

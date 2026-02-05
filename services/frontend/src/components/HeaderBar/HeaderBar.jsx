@@ -2,8 +2,6 @@
   import { setting, profile, logoheader } from '../../assets'
   import './HeaderBar.css'
   import { useNavigate } from 'react-router-dom'
-  import { searchPages } from './SearchConfig';
-  import Loading from '../Loading/Loading';
   import SearchBar from './SearchBar';
 
   export default function HeaderBar() {
@@ -49,12 +47,6 @@
             showResult={showResult}
             setShowResult={setShowResult}
           />
-          <button className="navbar-btn" onClick={() => handleOnClick("/dashboard/profile")}>
-            <img src={profile} />
-          </button>
-          <button className="navbar-btn" onClick={() => handleOnClick("/dashboard/settings")}>
-            <img src={setting} />
-          </button>
         </div>
         </div>
       </>

@@ -1,12 +1,4 @@
 
-.core-container{
-    display: flex;
-    top: 20px;
-    gap : 10px;
-    flex-direction: row;
-    align-items: stretch;
-    margin: 1%;
-}
 
 .content-container {
     text-align: start;
@@ -15,7 +7,6 @@
     flex-direction: column;
     flex: 1;
     left: 400px;
-    min-height: calc(100vh - 200px);
     border: solid 7px #858585;
     border-radius: 5%;
     background: linear-gradient(
@@ -25,12 +16,15 @@
     );
     color: black;
     justify-content: center;
-    white-space: pre;
     margin-bottom: 20px;
+    font-size: clamp(18px, 3vw, 32px);
+    min-height: auto;
+    white-space: normal;
 }
 
 .weekly-graph {
-    height: 400px;
+    min-height: 300px;
+    height: auto;
     margin: 20px;
     flex: 1;
     display: flex;
@@ -58,6 +52,13 @@
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
+    flex: 1;
+}
+
+@media (max-width: 900px) {
+    .module-container {
+        flex-direction: column;
+    }
 }
 
 .todo-summary{
@@ -66,13 +67,14 @@
     font-size: 35px;
     background-color: #ffffff48;
     border-radius: 10px;
-    width: 400px;
+    /* width: 400px; */
     margin-left: 20px;
     min-height: calc(100vh - 300px);
     margin-bottom: 20px;
     text-align: left;
     padding-top: 10px;
     white-space: pre;
+    flex: 1;
 }
 .todo-summary h3{
     font-size: 25px;
@@ -109,8 +111,9 @@
     background-color: white;
     position: relative;
     text-align: center;
-    height: 400px;
-    width : 280px;
+    min-height: 300px;
+    height: auto;   
+    /* width : 280px; */
     display: flex;
     flex-direction: column;
 }
@@ -339,6 +342,7 @@ line-height: 0;
         scale : 1.15;
     }
 }
+
 .avatar-xp{
     border-radius: 50px;
     width: 80px;

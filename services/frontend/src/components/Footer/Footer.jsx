@@ -1,7 +1,4 @@
-import { useState } from "react";
 import "./Footer.css" 
-import { useNavigate }  from 'react-router-dom'
-import Loading from "../Loading/Loading";
 
 export default function Footer(){
     return <>
