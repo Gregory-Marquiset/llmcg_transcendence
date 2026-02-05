@@ -3,14 +3,12 @@ import { Background, Footer, LogTitle, Button } from "../../../../components";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../Settings.css'
-import { useAuth } from '../../../../context/AuthContext'
 export default function Me () {
     const [searchParams] = useSearchParams();
     const [gdprUserData, setGdprUserData] = useState({});
     const token = searchParams.get("token");
     const [displayGdpr, setDisplayGdpr] = useState(false);
     const navigate = useNavigate();
-    const {errStatus, setErrStatus}= useAuth();
     const fetchAllData = async () => {
         try {
             const response = await fetch(`/api/v1/gdpr/me?token=${token}`, {
@@ -22,6 +20,7 @@ export default function Me () {
             }
             const data = await response.json();
             setGdprUserData(data);
+            console.log("MES DATAS ", data);
         }
         catch(err){
             console.log("ERROR : ", err);
@@ -55,8 +54,7 @@ export default function Me () {
         else
             setDisplayGdpr(true)
     }
-    if (errStatus === 404) return <Error404/>
-    if (errStatus === 401) return <Error401/>
+
     return (
         <>
             <Background>

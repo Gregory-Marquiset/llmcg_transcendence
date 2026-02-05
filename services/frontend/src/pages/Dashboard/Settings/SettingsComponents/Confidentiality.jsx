@@ -49,6 +49,37 @@ export default function Confidentiality (){
             console.log("ERROR : ", err);
         }
     }
+    const requestDataDeletion = async () => {
+        if (!accessToken) {
+            alert("Vous devez être connecté");
+            return;
+        }
+        
+        if (!confirm("Voulez-vous vraiment supprimer vos données d'activité (todo, historique, stats) ? Votre compte sera conservé. Un email de confirmation vous sera envoyé.")) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/v1/gdpr/data', {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                }
+            });
+            if (!response.ok) {
+                const error = await response.json();
+                alert(`Erreur: ${error.message || 'Une erreur est survenue'}`);
+                return;
+            }
+            alert("Un email de confirmation vous a été envoyé. Suivez le lien pour confirmer la suppression de vos données.");
+            fetchHistory();
+        }
+        catch(err) {
+            console.error("ERROR requesting data deletion:", err);
+            alert("Erreur lors de la demande");
+        }
+    }
+    
     const fetchHistory = async () => {
         try {
             const response = await fetch ('/api/v1/gdpr/history', {
@@ -79,7 +110,7 @@ export default function Confidentiality (){
         <section onClick={() => handleSection('confidentiality')}>
             <LogTitle text="Confidentialité" />
                 <Button className="btn-setting" onClick={requestData} text="Reclamer mes donnees"/>
-                <Button className="btn-setting" text="Supprimer mes données"/>
+                <Button className="btn-setting" onClick={requestDataDeletion} text="Supprimer mes données"/>
                 <Button className="btn-setting" onClick={updateHistoryView} text="Historique RGPD"/>
                 {displayHistory && <pre className="json-preview" onClick={{updateHistoryView}}>
                     <strong>JSON preview : </strong><br/>

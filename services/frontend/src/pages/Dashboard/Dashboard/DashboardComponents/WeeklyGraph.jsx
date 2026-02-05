@@ -28,8 +28,6 @@ export default function WeeklyGraph() {
                 "authorization": `Bearer ${accessToken}`,
             },
         });
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
         
         if (!response.ok) {
             setErrStatus(response.status);
