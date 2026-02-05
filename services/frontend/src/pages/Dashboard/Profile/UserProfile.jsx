@@ -104,7 +104,7 @@ function UserProfile() {
   const handleUnblockUser = async () => {
     try {
       await unblockUser(userData.id, accessToken)
-      setUserData(prev => ({ ...prev, blockedBy: 0, friendshipsStatus: '' }))
+      setUserData(prev => ({ ...prev, blockedBy: null, friendshipsStatus: '' }))
     } catch (err) {
       console.error('Failed to unblock user:', err)
     }
@@ -150,7 +150,7 @@ function UserProfile() {
     });
       ///
   if (loading) return <Loading duration={400} showButton={false} />
-if (userData.blockedBy === CurrUserData.id) {
+  if (userData.blockedBy === userData.id) {
   return (
     <Background>
       <div className="page-wrapper">
@@ -166,7 +166,7 @@ if (userData.blockedBy === CurrUserData.id) {
 
   if (errStatus === 404) return <Error404/>
   if (errStatus === 401) return <Error401/>
-  if (userData.blockedBy === userData.id) {
+  if (userData.blockedBy === CurrUserData.id) {
     return (
       <Background>
         <div className="page-wrapper">
@@ -238,7 +238,7 @@ if (userData.blockedBy === CurrUserData.id) {
             {(userData.friendshipsStatus === 'accepted') && (
               <Button text="Supprimer un ami" onClick={handleDeleteFriend} />
             )}
-            {userData.blockedBy === 0 && (
+            {userData.blockedBy === null && (
               <Button text="Bloquer" onClick={handleBlockUser} />
             )}
             <br />
