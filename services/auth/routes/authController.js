@@ -340,3 +340,71 @@ export const auth2faVerify = async function (req, reply) {
 		throw err;
 	}
 }
+
+export const authLogin42Callback = async (request, reply) => {
+    const token =
+      await request.server.fortyTwoOAuth2
+        .getAccessTokenFromAuthorizationCodeFlow(request)
+
+    const response = await fetch('https://api.intra.42.fr/v2/me', {
+      headers: {
+        Authorization: `Bearer ${token.token.access_token}`,
+      },
+    })
+
+    const intraUser = await response.json()
+
+    if (!intraUser.id) {
+      return reply.code(401).send({ message: `OAuth42 failed ${token.access_token}` })
+	}
+	const rows = await getRowFromDB(app.pg, 'SELECT * FROM users WHERE intra_id = $1',[intraUser.id]);
+
+	if (!rows || rows.length === 0) {
+		const result = await getRowFromDB(
+			request.server.pg,
+			`INSERT INTO users (username, email, intra_id, password, avatar_path, auth_provider)
+			VALUES ($1, $2, $3, $4, $5, $6)
+			RETURNING *`,
+			[
+			intraUser.login,
+			intraUser.email,
+			intraUser.id,
+			'oauth42', // placeholder (jamais utilisé)
+			"avatar/default.jpg",
+			'oauth42'
+			]
+		)
+	}
+	const userInfo = await getRowFromDB(app.pg, 'SELECT id, username FROM users WHERE email = $1', [intraUser.email]);
+	
+	await runSql(app.pg, `INSERT INTO daily_logtime (user_id, day, logtime_second) VALUES ($1, CURRENT_DATE, 0)
+			ON CONFLICT (user_id, day) DO NOTHING`, [userInfo.id]);
+	const nowMonth = new Date().toISOString().slice(0, 7);
+	const statMonth = await getRowFromDB(app.pg, `SELECT monthly_logtime_month FROM user_stats WHERE user_id = $1`, [userInfo.id]);
+
+	if (!statMonth) {
+		await runSql(app.pg,`INSERT INTO user_stats (user_id, monthly_logtime, monthly_logtime_month)
+			VALUES ($1, 0, $2)`,
+			[userInfo.id, nowMonth]
+		);
+	}
+	else if(statMonth.monthly_logtime_month !== nowMonth){
+		await runSql(app.pg, `UPDATE user_stats SET  monthly_logtime = 0, monthly_logtime_month = $1 WHERE user_id = $2`,
+		[nowMonth, userInfo.id]);
+	}
+
+	const access_tok = app.jwt.sign(userInfo, { expiresIn: '5m' });
+	const refresh_tok = app.jwt.sign(userInfo, { expiresIn: '1d' });
+
+	console.log(`\nauthLogin access_token: ${access_tok}\nauthLogin refresh_token: ${refresh_tok}\n`);
+	await runSql(app.pg, `INSERT INTO refreshed_tokens(user_id, token) VALUES ($1, $2)`, [userInfo.id, refresh_tok]);
+	app.bizMetrics.loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();
+	return (reply
+		.setCookie('refreshToken', refresh_tok, {
+			httpOnly: true,
+			path: '/',
+			maxAge: 24 * 60 * 60
+		})
+		.code(302)
+		.redirect(`http://localhost:5173/Auth2?token=${access_tok}`))
+}
