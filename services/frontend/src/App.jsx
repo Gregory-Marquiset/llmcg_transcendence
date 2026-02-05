@@ -17,7 +17,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/dashboard/activity" element={<Activity/>}/>
             <Route path="/dashboard/friends" element={<Friends/>}/>
-            <Route path="/dashboard/conversations" element={<Conversations/>}/>
+            <Route path="/users/:username/chat" element={<Conversations/>}/>
             <Route path="/dashboard/settings" element={<Settings/>}/>
             <Route path="/dashboard/profile" element={<Profile/>}/>
             <Route path="/dashboard/profile/modify" element={<SetProfile/>}/>

@@ -32,14 +32,14 @@ export const searchablePages = [
         icon: '📊',
         keywords: [ 'activity' , 'agenda', 'activite' ]
     },
-    {
-        id: 'conversations',
-        title: 'Messageries',
-        description: 'Ouvrir le fil des conversations',
-        path: "/dashboard/conversations" ,
-        icon: '💬',
-        keywords: [ 'messages', 'message', 'conversations' ]
-    },
+    // {
+    //     id: 'conversations',
+    //     title: 'Messageries',
+    //     description: 'Ouvrir le fil des conversations',
+    //     path: "/dashboard/conversations" ,
+    //     icon: '💬',
+    //     keywords: [ 'messages', 'message', 'conversations' ]
+    // },
     {
         id: 'about',
         title: 'A propos',

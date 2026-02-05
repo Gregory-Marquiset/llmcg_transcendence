@@ -1,17 +1,29 @@
 import './Conversations.css'
+import '../../../styles/App.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading } from '../../../components'
 import { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom'
+import {
+  getUserProfile,
+  getCurrUserProfile,
+} from '../../../functions/user'
 
 function Conversations() {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  
   const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [CurrUserData, setCurrUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const messagesEndRef = useRef(null);
   const accessToken = localStorage.getItem('access_token');
+  const { username } = useParams()
+  const generateRequestId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  };
 
   // Auto-scroll vers le bas
   useEffect(() => {
@@ -21,36 +33,26 @@ function Conversations() {
   // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
-      setLoading(true);
+      setIsLoading(true)
       try {
-        const responseMe = await fetch('/api/v1/auth/me', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        });
-        
-        if (!responseMe.ok) {
-          localStorage.clear();
-          console.error("Error while fetching info");
-          setIsLoggedIn(false);
-          return;
+        const fetchedCurrUserData = await getCurrUserProfile(accessToken)
+        const fetchedUserData = await getUserProfile(username, accessToken)
+        setUserData(fetchedUserData)
+        setCurrUserData(fetchedCurrUserData)
+        setIsLoading(false)
+
+        if (fetchedCurrUserData.id === fetchedUserData.id) {
+          navigate('/dashboard/profile')
         }
-        
-        const fetchedUserData = await responseMe.json();
-        console.log(fetchedUserData);
-        setUserData(fetchedUserData);
       } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
+        console.error('Fetch error:', err)
+        setIsLoading(false)
+        navigate('/dashboard')
       }
     }
-    
-    if (accessToken) {
-      fetchProfile();
-    }
-  }, [accessToken]);
+
+    if (accessToken) fetchProfile()
+  }, [username, accessToken]);
 
   // WebSocket connection
   useEffect(() => {
@@ -58,7 +60,7 @@ function Conversations() {
 
     setConnectionStatus('connecting');
     const host = window.location.hostname;
-    const ws = new WebSocket(`ws://${host}:5000/ws?token=${accessToken}&userId=${userData.id}`);
+    const ws = new WebSocket(`ws://${host}:5000/ws?token=${accessToken}&userId=${CurrUserData.id}`);
 
     
     ws.onopen = () => {
@@ -67,8 +69,10 @@ function Conversations() {
     };
     
     ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
       console.log("Message reçu:", event.data);
-      setMessages((prev) => [...prev, event.data]);
+      if(data.type === "chat:message" && data.payload.fromUserId === userData.id)
+        setMessages((prev) => [...prev, {content: `${data.payload.content}`, sender: 'other'} ]);
     };
     
     ws.onclose = () => {
@@ -88,19 +92,28 @@ function Conversations() {
         ws.close();
       }
     };
-  }, [accessToken, userData]);
+  }, [accessToken, CurrUserData]);
 
   const sendMessage = () => {
     if (!input.trim()) return;
     
     if (socket && socket.readyState === WebSocket.OPEN) {
+      const messageJson = {
+      type: "chat:send",
+      requestId: generateRequestId(),
+      payload: {
+        toUserId: userData.id, // must be set from route or selected conversation
+        content: input
+      }
+    };
+
       console.log("Envoi du message:", input);
       
       // Ajouter le message envoyé à l'affichage immédiatement
-      setMessages((prev) => [...prev, `Moi: ${input}`]);
+      setMessages((prev) => [...prev, {content :`${input}`, sender:'current'}]);
       
       // Envoyer au serveur
-      socket.send(input);
+      socket.send(JSON.stringify(messageJson));
       setInput("");
     } else {
       alert("Connection lost. Please refresh the page.");
@@ -114,7 +127,7 @@ function Conversations() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -122,7 +135,7 @@ function Conversations() {
     return (
       <div className="Conversations">
         <HeaderBar />
-        <LeftMenu />
+        <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
         <Background />
         <div className="error-container">
           <h2>Please log in to access the chat</h2>
@@ -130,59 +143,66 @@ function Conversations() {
         <Footer />
       </div>
     );
-  }
+  }    
 
-  return (
-    <div className="Conversations">
-      <HeaderBar />
-      <LeftMenu />
-      <Background />
-      
-      <div className="chat-container">
-        <div className="chat-header">
-          <h1>Chat</h1>
-          <div className={`connection-status ${connectionStatus}`}>
-            {connectionStatus === 'connected' && '🟢 Connected'}
-            {connectionStatus === 'connecting' && '🟡 Connecting...'}
-            {connectionStatus === 'disconnected' && '🔴 Disconnected'}
+return (
+  <>
+    <Background>
+      <div className="page-wrapper">
+        <HeaderBar />
+        <div className="core-container">
+          <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
+          <div className="content-container">
+            <div className="chat-container">
+              <div className="chat-header">
+                <h1>Chat with ${username}</h1>
+                <div className={`connection-status ${connectionStatus}`}>
+                  {connectionStatus === 'connected' && '🟢 Connected'}
+                  {connectionStatus === 'connecting' && '🟡 Connecting...'}
+                  {connectionStatus === 'disconnected' && '🔴 Disconnected'}
+                </div>
+              </div>
+              <div className="chat-box">
+                {messages.length === 0 ? (
+                  <div className="no-messages">
+                    <p>No messages yet. Start the conversation!</p>
+                  </div>
+                ) : (
+                  messages.map((msg, i) => (
+                  <div key={i} className={`message ${msg.sender}`}>
+                    <p>{msg.content}</p>
+                  </div>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              <div className="chat-input-container">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your message..."
+                  disabled={connectionStatus !== 'connected'}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={connectionStatus !== 'connected' || !input.trim()}
+                >
+                  Send
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="chat-box">
-          {messages.length === 0 ? (
-            <div className="no-messages">
-              <p>No messages yet. Start the conversation!</p>
-            </div>
-          ) : (
-            messages.map((msg, i) => (
-              <div key={i} className="message">
-                <p>{msg}</p>
-              </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div className="chat-input-container">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
-            disabled={connectionStatus !== 'connected'}
-          />
-          <button 
-            onClick={sendMessage}
-            disabled={connectionStatus !== 'connected' || !input.trim()}
-          >
-            Send
-          </button>
-        </div>
+        <Footer />
       </div>
-      
-      <Footer />
-    </div>
-  );
+    </Background>
+  </>
+);
+
 }
 
 export default Conversations;
+
+

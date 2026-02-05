@@ -2,20 +2,23 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding: 1rem;
 }
 
 .chat-container {
-  max-width: 800px;
+  width: 100%;
+  max-width: 90%; /* Chat container width */
   margin: 2rem auto;
   padding: 1rem;
-  background: white;
+  background: rgba(255, 255, 255, 0.9); /* Slight transparency */
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 200px);
+  height: calc(100vh - 200px); /* Adjust as necessary */
 }
 
+/* Chat Header */
 .chat-header {
   display: flex;
   justify-content: space-between;
@@ -53,6 +56,7 @@
   color: #721c24;
 }
 
+/* Chat Box */
 .chat-box {
   flex: 1;
   overflow-y: auto;
@@ -60,14 +64,12 @@
   background: #f9f9f9;
   border-radius: 8px;
   margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Ensures it stacks messages vertically */
 }
 
-.no-messages {
-  text-align: center;
-  color: #999;
-  padding: 2rem;
-}
-
+/* General Message Styling */
 .message {
   background: white;
   padding: 0.75rem 1rem;
@@ -75,12 +77,32 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease-in;
+  font-size: 0.9rem;
+  max-width: 70%; /* Smaller message width */
+  word-wrap: break-word;
+  display: block;
+  text-align: left; /* Make sure text is left aligned */
 }
 
-.message.raw {
-  background: #e3f2fd;
+/* Align "me" messages to the right */
+.message.current {
+  background-color: #e1f5fe; /* Light blue background for "me" */
+  align-self: flex-end; /* Align "me" messages to the right */
+  margin-left: 0; /* Remove left margin */
+  margin-right: 10px; /* Add margin to the right */
+  text-align: left; /* Ensure message text is left-aligned inside */
 }
 
+/* Align "other" messages to the left */
+.message.other {
+  background-color: #f1f1f1; /* Light gray background for others */
+  align-self: flex-start; /* Align other messages to the left */
+  margin-left: 10px; /* Add margin to the left */
+  margin-right: 0; /* Remove right margin */
+  text-align: left; /* Ensure message text is left-aligned inside */
+}
+
+/* Message Type Badge */
 .message-type {
   display: inline-block;
   background: #007bff;
@@ -92,11 +114,11 @@
 }
 
 .message p {
-  margin: 0.5rem 0 0 0;
+  margin: 0;
   color: #333;
-  word-wrap: break-word;
 }
 
+/* Fade-in animation for messages */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -108,9 +130,11 @@
   }
 }
 
+/* Chat Input and Button */
 .chat-input-container {
   display: flex;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .chat-input-container input {
@@ -144,7 +168,7 @@
   transition: background 0.3s;
 }
 
-.chat-input-container button:hover:not(.disabled) {
+.chat-input-container button:hover {
   background: #0056b3;
 }
 
@@ -153,13 +177,14 @@
   cursor: not-allowed;
 }
 
+/* Error Message */
 .error-container {
   text-align: center;
   padding: 3rem;
   color: #721c24;
 }
 
-/* Scrollbar styling */
+/* Scrollbar Styling */
 .chat-box::-webkit-scrollbar {
   width: 8px;
 }
@@ -176,4 +201,17 @@
 
 .chat-box::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .chat-container {
+    max-width: 100%; /* Full width on smaller screens */
+    padding: 1rem; /* Adjust padding for smaller screens */
+  }
+
+  .message {
+    font-size: 0.85rem; /* Slightly smaller font on mobile */
+    max-width: 85%; /* Allow a bit more width on smaller screens */
+  }
 }
