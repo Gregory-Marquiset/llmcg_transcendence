@@ -15,6 +15,10 @@ function SignUp() {
   const [username, setUsername] = useState("")
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false);
+  const isUsernameValid = (username) => username.length >= 3 && username.length <= 20
+  const isPasswordValid = (password) => password.length >= 3 && password.length <= 24
+  const isEmailValid = (email) => /^[^@]+@[^@]+.[^@]+$/.test(email)
+
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
     setTimeout(() => {
@@ -24,11 +28,28 @@ function SignUp() {
   const manageSignUp = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        if(password !== confpassword)
-        {
-          alert(t('signup.errors.password_mismatch'));
-          setIsLoading(false);
-          return;
+        if (!isUsernameValid(username)) {
+          alert(t('signup.errors.invalid_username'))
+          setIsLoading(false)
+          return
+        }
+
+        if (!isPasswordValid(password)) {
+          alert(t('signup.errors.password_policy'))
+          setIsLoading(false)
+          return
+        }
+
+        if (!isEmailValid(email)) {
+          alert(t('signup.errors.email_policy'))
+          setIsLoading(false)
+          return
+        }
+
+        if (password !== confpassword) {
+          alert(t('signup.errors.password_mismatch'))
+          setIsLoading(false)
+          return
         }
         const payload = { username, email, password };
         console.log({ username, email, password });

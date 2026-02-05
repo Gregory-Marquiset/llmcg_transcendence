@@ -133,9 +133,10 @@ function UserProfile() {
     if (accessToken) fetchProfile()
   }, [username, accessToken])
 
+  const host = window.location.hostname;
   const avatarUrl =
     userData.avatar_path && !onError
-      ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
+      ? `http://${host}:5000/${userData.avatar_path}`
       : profilepicture
 
        const computedBadges = badges.map((badge) => {

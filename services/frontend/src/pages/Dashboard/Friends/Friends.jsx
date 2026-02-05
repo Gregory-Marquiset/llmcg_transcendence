@@ -5,6 +5,11 @@ import { useState } from 'react'
 import { FriendList, RequestList} from '../../../components'
 import { useAuth } from '../../../context/AuthContext'
 function MyFriends() {
+    const [refresh, setRefresh] = useState(0)
+    const triggerRefresh = () => {
+      setRefresh(prev => prev + 1)
+    }
+    const accessToken = localStorage.getItem("access_token");
     const [isLoading, setIsLoading] = useState(false);
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
@@ -15,8 +20,8 @@ function MyFriends() {
           <div className='core-container'>
             <LeftMenu setIsLoading={setIsLoading}/>
             <div className='content-container'>
-              <FriendList />
-              <RequestList />
+              <FriendList refresh={refresh} />
+              <RequestList refresh={refresh} onActionDone={triggerRefresh} />
             </div>
           </div>
         </div>
@@ -25,5 +30,7 @@ function MyFriends() {
     </>
   )
 }
+
+
 
 export default MyFriends

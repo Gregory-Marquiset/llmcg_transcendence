@@ -103,8 +103,9 @@ const handleModify = () => {
   else
     setModify(true);
 }
+const host = window.location.hostname;
 const avatarUrl = userData.avatar_path && !onError
-    ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
+    ? `http://${host}:5000/${userData.avatar_path}`
     : profilepicture;
   if (errStatus === 404) return <Error404/>
   if (errStatus === 401) return <Error401/>

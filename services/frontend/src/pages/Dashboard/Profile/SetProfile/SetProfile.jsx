@@ -8,7 +8,8 @@ function SetProfile(){
     const [newAvatar, setNewAvatar] = useState();
     const [newName, setNewName] = useState();
     const [newEmail, setNewEmail] = useState();
-    const {accessToken} = useAuth();
+    useAuth();
+    const accessToken = localStorage.getItem('access_token')
     const [loading, setLoading] = useState(false);
     const {errStatus, setErrStatus}= useAuth();
     const handleAvatarModification = async ( event ) => {
@@ -21,8 +22,9 @@ function SetProfile(){
         try{
             const formData = new FormData();
             formData.append('avatar', newAvatar);
+            console.info(accessToken)
             const response = await fetch('/api/v1/users/user/me/avatar', {
-                method : 'POST',
+                method : 'PUT',
                 headers : {
                     'Authorization' : `Bearer ${accessToken}`
                 },

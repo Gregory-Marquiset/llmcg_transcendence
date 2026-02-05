@@ -103,7 +103,7 @@ restore:
 ## <----------------- Watchdog ----------------->
 
 watchdog-start:
-	@sleep 30
+	@sleep 15
 	@mkdir -p tests_logs
 	@if [ -f "$(WATCHDOG_PID)" ] && kill -0 $$(cat "$(WATCHDOG_PID)") 2>/dev/null; then \
 		echo "watchdog: already running (pid=$$(cat "$(WATCHDOG_PID)"))"; \

@@ -9,16 +9,39 @@ let connectId = 0;
 
 export const websocketHandler = async function (socket, req) {
 	try {
-		await req.jwtVerify();
+		const url = new URL(req.url, 'http://localhost');
+		
+		const token = url.searchParams.get('token');
+		
+		if (!token) {
+			socket.close(1008, "missing_token");
+			return;
+		}
+
+		let decoded;
+		try {
+			decoded = await req.server.jwt.verify(token);
+		} catch (jwtError) {
+			console.error(`JWT verification failed: ${jwtError.message}`);
+			if (jwtError.message.includes('expired')) {
+				socket.close(1008, "token_expired");
+			} else {
+				socket.close(1008, "unauthorized");
+			}
+			return;
+		}
+		
+		const userId = decoded.id;
+		
 		socket.isAlive = true;
-		socket.userId = req.user.id;
-		socket.currentToken = req.headers.authorization;
+		socket.userId = userId;
+		socket.currentToken = token;
 		socket.badFrames = 0;
 		let date = new Date().toISOString();
-		console.log(`\nwebsocketHandler: new socket\n`);
+		console.log(`\nwebsocketHandler: new socket for user ${userId}\n`);
 
 		connectionsIndex.set(socket, {
-			userId: req.user.id,
+			userId: userId,
 			connectionId: connectId++,
 			ip: req.socket.remoteAddress,
 		});
@@ -29,10 +52,18 @@ export const websocketHandler = async function (socket, req) {
 		});
 
 		let becameOnline = presence.onSocketConnected(socket.userId, socket, date);
-		if (becameOnline === true)
-			await wsChatHandler.pushUndeliveredMessages(socket.currentToken);
+		
+		if (becameOnline === true) {
+			try {
+				await wsChatHandler.pushUndeliveredMessages(socket.currentToken);
+				console.log(`\npushUndeliveredMessages success\n`);
+			} catch (pushError) {
+				console.error(`\nERROR in pushUndeliveredMessages: ${pushError.message}\n`);
+			}
+		}
 
 		console.log(`\napres pushUndeliveredMessages\n`);
+		
 		socket.on("message", async (event) => {
 			try {
 				// NEED AJOUT SECU NOMBRE MSG PAR SECONDE
@@ -97,19 +128,23 @@ export const websocketHandler = async function (socket, req) {
 
 		socket.on("close", (code, reason) => {
 			date = new Date().toISOString();
-			presence.onSocketDisconnected(req.user.id, socket, date);
+			presence.onSocketDisconnected(socket.userId, socket, date);
 			connectionsIndex.delete(socket);
 			console.log(`\nwebsocketHandler socket.on close, code: ${code} and reason: ${reason}\n`);
 		});
 
 	} catch (err) {
-		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}\n`);
+		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}, stack: ${err.stack}\n`);
+		
+		// Fermer le socket seulement en cas d'erreur critique
 		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED" || err.code === 1008)
 			socket.close(1008, "token_expired");
 		else if (typeof err?.code === "string" && (err.code.startsWith("FST_JWT_") || err.code.startsWith("FAST_JWT_")))
 			socket.close(1008, "unauthorized");
-		else
-			socket.close(1011, "error");
+		else {
+			// Ne pas fermer pour toutes les erreurs
+			console.error(`\nNon-critical error, keeping socket open\n`);
+		}
 	}
 }
 

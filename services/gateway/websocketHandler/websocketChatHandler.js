@@ -62,7 +62,7 @@ const chatServiceCreateMessage = async function (chatObj, token) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(chatObj)
     });
@@ -115,7 +115,7 @@ export const pushUndeliveredMessages = async function (token) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": token
+            "Authorization": `Bearer ${token}`
         }
     });
     if (!response.ok) {
@@ -191,7 +191,7 @@ export const markAsDeliveredInDb = async function (socket, obj, connectionsIndex
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": socket.currentToken
+            "Authorization": `Bearer ${socket.currentToken}`
         },
         body: JSON.stringify({ messageId })
     });
