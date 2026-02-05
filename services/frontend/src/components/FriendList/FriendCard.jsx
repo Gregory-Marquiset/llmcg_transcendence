@@ -10,8 +10,9 @@ function FriendCard({ friend }) {
     navigate(`/users/${friend.username}/profile`)
   }
 
+  const host = window.location.hostname;
   const avatarUrl = friend.avatar_path && !onError
-    ? `http://localhost:5000/uploads/avatar/${friend.avatar_path}`
+    ? `http://${host}:5000/${friend.avatar_path}`
     : profilepicture;
 
   return (

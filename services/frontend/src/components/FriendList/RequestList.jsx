@@ -3,7 +3,7 @@ import RequestCard from './RequestCard'
 import './FriendList.css'
 import { useState, useEffect } from 'react'
 
-function RequestList() {
+function RequestList({ refresh, onActionDone }) {
   const accessToken = localStorage.getItem('access_token')
   const [requests, setRequests] = useState([])
   const [loading, setLoading] = useState(false)
@@ -25,14 +25,14 @@ function RequestList() {
       }
     }
     fetchRequests()
-  }, [accessToken])
+  }, [accessToken, refresh])
 
   return (
     <div className="friend-list-container">
       <h3> Number of request pending : {requests.length}</h3>
       <div className="friend-list">
         {requests.map(request => (
-          <RequestCard key={request.id} request={request} />
+          <RequestCard key={request.id} request={request} onActionDone={onActionDone}/>
         ))}
       </div>
     </div>

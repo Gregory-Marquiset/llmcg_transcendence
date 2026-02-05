@@ -106,9 +106,10 @@ function userProfile() {
     if (accessToken) fetchProfile()
   }, [username, accessToken])
 
+  const host = window.location.hostname;
   const avatarUrl =
     userData.avatar_path && !onError
-      ? `http://localhost:5000/${userData.avatar_path}`
+      ? `http://${host}:5000/${userData.avatar_path}`
       : profilepicture
 
   if (loading) return <Loading duration={400} showButton={false} />

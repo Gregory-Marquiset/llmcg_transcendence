@@ -17,6 +17,8 @@ function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const isUsernameValid = (username) => username.length >= 3 && username.length <= 20
   const isPasswordValid = (password) => password.length >= 3 && password.length <= 24
+  const isEmailValid = (email) => /^[^@]+@[^@]+.[^@]+$/.test(email)
+
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
     setTimeout(() => {
@@ -34,6 +36,12 @@ function SignUp() {
 
         if (!isPasswordValid(password)) {
           alert(t('signup.errors.password_policy'))
+          setIsLoading(false)
+          return
+        }
+
+        if (!isEmailValid(email)) {
+          alert(t('signup.errors.email_policy'))
           setIsLoading(false)
           return
         }

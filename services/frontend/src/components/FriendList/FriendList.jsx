@@ -3,7 +3,7 @@ import FriendCard from './FriendCard'
 import './FriendList.css'
 import { useState, useEffect } from 'react'
 
-function FriendList() {
+function FriendList({ refresh }) {
   const accessToken = localStorage.getItem('access_token')
   const [friends, setFriends] = useState([])
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ function FriendList() {
       }
     }
     fetchFriends()
-  }, [accessToken])
+  }, [accessToken, refresh])
 
   return (
     <div className="friend-list-container">

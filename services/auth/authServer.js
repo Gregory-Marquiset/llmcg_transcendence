@@ -96,7 +96,7 @@ await app.register(oauthPlugin, {
   credentials: {
     client: {
       id: 'u-s4t2ud-4c510f5e66963d2eba659caf03072a2d050ba58ac2a1dbad44b815aa7ddba83a',
-      secret: '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',
+      secret: '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',
     },
     auth: {
       authorizeHost: 'https://api.intra.42.fr',

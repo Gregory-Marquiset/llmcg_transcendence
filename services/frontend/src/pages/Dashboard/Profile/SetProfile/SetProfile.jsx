@@ -23,7 +23,7 @@ function SetProfile(){
             formData.append('avatar', newAvatar);
             console.info(accessToken)
             const response = await fetch('/api/v1/users/user/me/avatar', {
-                method : 'POST',
+                method : 'PUT',
                 headers : {
                     'Authorization' : `Bearer ${accessToken}`
                 },

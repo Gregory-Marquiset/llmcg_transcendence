@@ -30,7 +30,7 @@ export const userMeAvatarOpts = {
 	schema: {
 		consumes: ["multipart/form-data"],
 		response: {
-			200: {
+			201: {
 				type: "object",
 				properties: {
 					avatar_url: { type: "string" }

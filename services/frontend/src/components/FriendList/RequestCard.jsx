@@ -5,7 +5,7 @@ import { respondToFriendRequest } from '../../functions/user'
 import { Button }from '../'
 import { useState} from 'react'
 
-function RequestCard({ request }) {
+function RequestCard({ request, onActionDone }) {
   const accessToken = localStorage.getItem('access_token')
   const navigate = useNavigate()
   const [onError, setOnError] = useState(false)
@@ -17,6 +17,7 @@ function RequestCard({ request }) {
   const handleAcceptRequest = async () => {
     try {
       await respondToFriendRequest(request.id,'accept', accessToken)
+      onActionDone()
     } catch (err) {
       console.error('Failed to accept request:', err)
     }
@@ -25,13 +26,14 @@ function RequestCard({ request }) {
   const handleRefuseRequest = async () => {
     try {
       await respondToFriendRequest(request.id,'refuse', accessToken)
+      onActionDone()
     } catch (err) {
       console.error('Failed to accept request:', err)
     }
   }
-
+  const host = window.location.hostname;
   const avatarUrl = request.avatar_path && !onError
-    ? `http://localhost:5000/uploads/avatar/${request.avatar_path}`
+    ? `http://${host}:5000/${request.avatar_path}`
     : profilepicture;
 return (
   <div className="friend-card" onClick={handleClick}>

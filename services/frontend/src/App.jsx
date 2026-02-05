@@ -20,7 +20,7 @@ function App() {
             <Route path="/dashboard/settings" element={<Settings/>}/>
             <Route path="/dashboard/profile" element={<Profile/>}/>
             <Route path="/dashboard/profile/modify" element={<SetProfile/>}/>
-            <Route path="/users/:username/profile" element={<UserProfile />} />
+            <Route path="/user/:username/profile" element={<UserProfile />} />
         </Route>
       <Route path="/gdpr/confirm" element={<GdprConfirm/>}/>
       <Route path='/policy' element={<Policy/>}/>
