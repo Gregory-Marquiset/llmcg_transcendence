@@ -33,6 +33,7 @@ export default function GdprConfirm (){
             console.log(err);
         }
     }
+
  return (<>
     <Background>
         <img src={logoheader} className="logoheader" alt="42 Tracker" />

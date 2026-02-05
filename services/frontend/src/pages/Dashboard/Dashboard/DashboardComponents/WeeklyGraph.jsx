@@ -1,6 +1,7 @@
 import '../Dashboard.css'
 import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, YAxis, Tooltip, ReferenceLine} from 'recharts'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../../../../context/AuthContext'
 
 function formatMinutes(minutes) {
     if (minutes === 0)
@@ -18,6 +19,7 @@ function formatMinutes(minutes) {
 export default function WeeklyGraph() {
     const [weeklyLogtime, setWeeklyLogtime] = useState([]);
     const accessToken = localStorage.getItem("access_token");
+    const {errStatus, setErrStatus}= useAuth();
     const fetchWeeklyLogtime = async () => {
     try {
         const response = await fetch('/api/v1/statistics/weeklylogtime', {
@@ -26,10 +28,9 @@ export default function WeeklyGraph() {
                 "authorization": `Bearer ${accessToken}`,
             },
         });
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
         
         if (!response.ok) {
+            setErrStatus(response.status);
             const errorText = await response.text();
             console.error('Error response:', errorText);
             return;

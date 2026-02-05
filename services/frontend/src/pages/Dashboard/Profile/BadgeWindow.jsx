@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { badges, starBadge } from '../../../badges/badges'
+import { useAuth } from '../../../context/AuthContext'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
@@ -29,7 +30,7 @@ export default function BadgeWindow({isLoading}){
     const [starBadgeOwner, setStarBadge] = useState(true);
     const [stats, setStats] = useState(null);
     const accessToken = localStorage.getItem("access_token");
-
+    const {errStatus, setErrStatus}= useAuth();
     useEffect(() => {
       const fetchProfile = async () => {
         try {

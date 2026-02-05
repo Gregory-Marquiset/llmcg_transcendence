@@ -1,12 +1,14 @@
 import '../Activity.css'
 import { Button } from '../../../../components'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../../../../context/AuthContext'
 
 export default function ToDoListEditor(){
     const [title, setTitle]= useState('');
     const [description, setDescription]= useState('');
     const [todo, setTodo] = useState([]);
     const accessToken = localStorage.getItem('access_token');
+    const {errStatus, setErrStatus}= useAuth();
     const fetchTodo = async () => {
         try{
             const response = await fetch('/api/v1/statistics/todo', {
@@ -15,6 +17,7 @@ export default function ToDoListEditor(){
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
+            setErrStatus(response.status);
             if (!response.ok){
                 console.log("error while fetchin todo");
                 return ;
@@ -44,9 +47,8 @@ export default function ToDoListEditor(){
             },
             body: JSON.stringify({ title, description })
         });
-        
+        setErrStatus(response.status);
         if (!response.ok) throw new Error('Failed to create todo');
-        
         const data = await response.json();
         console.log("Todo created:", data);
         setTitle('');
@@ -69,6 +71,7 @@ export default function ToDoListEditor(){
                 }
             });
             if (!response.ok){
+                setErrStatus(response.status);
                 console.log("Reponse of fetch is not ok");
                 return ;
             }

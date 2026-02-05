@@ -1,5 +1,6 @@
 import './styles/App.css'
-import { Welcome, SignIn, SignUp, Auth2, Auth42, Settings, Profile, Dashboard, Activity, Conversations, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me} from './pages/index.js'
+import { Welcome, SignIn, SignUp, Auth2, Auth42, Settings, Profile, Dashboard, Activity, Conversations, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me, Error404
+  } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +28,7 @@ function App() {
       <Route path='/policy?/privacy' element={<Privacy/>}/>
       <Route path='/policy/terms' element={<CGU/>}/>
       <Route path='/gdpr/me' element={<Me/>}/>
+      <Route path="*" element={<Error404 />} />
     </Routes>
   )
 }

@@ -10,6 +10,7 @@ function SetProfile(){
     const [newEmail, setNewEmail] = useState();
     const {accessToken} = useAuth();
     const [loading, setLoading] = useState(false);
+    const {errStatus, setErrStatus}= useAuth();
     const handleAvatarModification = async ( event ) => {
         setLoading(true);
         event.preventDefault();

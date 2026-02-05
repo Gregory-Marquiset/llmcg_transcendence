@@ -1,4 +1,5 @@
 import { getFriendList } from '../../functions/user'
+import { Error401, Error404 } from '../../pages'
 import FriendCard from './FriendCard'
 import './FriendList.css'
 import { useState, useEffect } from 'react'
@@ -7,12 +8,7 @@ function FriendList() {
   const accessToken = localStorage.getItem('access_token')
   const [friends, setFriends] = useState([])
   const [loading, setLoading] = useState(false)
-  //     const friends = [
-  //   { id: 1, username: 'Alice', avatar_path: 'https://i.pravatar.cc/150?img=1' },
-  //   { id: 2, username: 'Bob', avatar_path: 'https://i.pravatar.cc/150?img=2' },
-  //   { id: 3, username: 'Charlie', avatar_path: 'https://i.pravatar.cc/150?img=3' },
-  //   { id: 4, username: 'Diana', avatar_path: 'https://i.pravatar.cc/150?img=4' }
-  //     ];
+  const [err, setErr] = useState(0)
   useEffect(() => {
     const fetchFriends = async () => {
       setLoading(true)
@@ -26,7 +22,6 @@ function FriendList() {
     }
     fetchFriends()
   }, [accessToken])
-
   return (
     <div className="friend-list-container">
       <h3> Number of friends : {friends.length}</h3>

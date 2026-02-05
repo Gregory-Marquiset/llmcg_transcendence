@@ -162,13 +162,22 @@ export const authMe = async function (req, reply) {
 	try {
 		const userInfos = await getRowFromDB(app.pg, 'SELECT id, username, email, avatar_path, twofa_enabled, createdAt FROM users WHERE id = $1', [req.user.id]);
 		console.log(`\nauthMe userInfos: ${JSON.stringify(userInfos)}\n`);
-		let userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+		///
+		let userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login, progressbar FROM user_stats WHERE user_id = $1',
 			[req.user.id]);
 		if (!userStats){
 			await runSql(app.pg, 'INSERT INTO user_stats (user_id) VALUES ($1)', [req.user.id]);
-			userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+			userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login, progressbar FROM user_stats WHERE user_id = $1',
 			[req.user.id]);
 		}
+		///
+		// let userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+		// 	[req.user.id]);
+		// if (!userStats){
+		// 	await runSql(app.pg, 'INSERT INTO user_stats (user_id) VALUES ($1)', [req.user.id]);
+		// 	userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
+		// 	[req.user.id]);
+		// }
 		let userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
 		const created_at = new Date(userStats.created_at);
 		/// Update of streaks, seniority
@@ -230,8 +239,18 @@ export const authRefresh = async function (req, reply) {
 						ON CONFLICT (user_id, day)
 						DO UPDATE SET logtime_second =
 						daily_logtime.logtime_second + EXCLUDED.logtime_second`, [decoded.id]);
-
-		await runSql(app.pg, `SELECT logtime_second FROM daily_logtime WHERE user_id = $1 AND day = CURRENT_DATE`, 
+		const currentLogTime = await getRowFromDB(app.pg, 
+			`SELECT logtime_second FROM daily_logtime WHERE user_id = $1 AND day = CURRENT_DATE`, 
+			[decoded.id]);		
+		if (currentLogTime && currentLogTime.logtime_second >= 25200)
+		await runSql(app.pg, `
+			UPDATE user_stats 
+			SET progressbar = CASE 
+				WHEN progressbar >= 1000 THEN 1000
+				WHEN progressbar + 30 > 1000 THEN 1000
+				ELSE progressbar + 30
+			END 
+			WHERE user_id = $1`, 
 			[decoded.id]);
 		await runSql(app.pg, `UPDATE user_stats SET monthly_logtime = monthly_logtime + 4
 			WHERE user_id = $1`, [decoded.id])
