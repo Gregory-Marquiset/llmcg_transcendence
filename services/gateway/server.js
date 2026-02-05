@@ -12,6 +12,7 @@ import fastifyHttpProxy from '@fastify/http-proxy'
 // import { fileURLToPath } from 'node:url'
 //###IMPORT OWN FILES ###
 import * as health from './routes/health.js'
+import * as watchdog from "./routes/watchdog.js";
 //import * as auth from '../auth/auth.js'
 //import * as user from '../users/user/user.js'
 //import * as friends from '../users/friends/friends.js'
@@ -211,6 +212,7 @@ await app.register(fastifyBcrypt, {
 //####### ROUTES #######
 await app.register(health.healthRoute);
 await app.register(health.ping);
+await app.register(watchdog.watchdogRoute);
 // app.register(auth.authRoutes, { prefix: '/api/v1' });
 // app.register(user.userRoutes, { prefix: '/api/v1' });
 // app.register(friends.friendsRoutes, { prefix: '/api/v1' });

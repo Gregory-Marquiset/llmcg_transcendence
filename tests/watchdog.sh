@@ -8,7 +8,6 @@ COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.yml}"
 ENV_FILE="${ENV_FILE:-.env}"
 
 INTERVAL_SEC="${INTERVAL_SEC:-60}"
-
 RECHECK_AFTER_RESTART_SEC="${RECHECK_AFTER_RESTART_SEC:-30}"
 
 LOG_FILE="${LOG_FILE:-./tests/logs_watchdog.log}"
@@ -17,6 +16,9 @@ SERVICES="${SERVICES:-postgres gateway auth-service chat-service users-service s
 
 WAIT_AFTER_RESTART_SEC="${WAIT_AFTER_RESTART_SEC:-60}"
 WAIT_STEP_SEC="${WAIT_STEP_SEC:-5}"
+
+# NEW: JSON snapshot (read by gateway)
+STATE_FILE="${STATE_FILE:-./tests_logs/watchdog_state.json}"
 
 # -----------------------------
 # Helpers
@@ -48,11 +50,6 @@ health_of()
   [ -n "$st" ] || { echo "unknown"; return 0; }
 
   echo "$st"
-}
-
-is_ok_health()
-{
-  [ "$1" = "healthy" ]
 }
 
 restart_service()
@@ -96,6 +93,49 @@ wait_healthy()
   return 1
 }
 
+# NEW: write a snapshot JSON file
+write_state_json()
+{
+  mkdir -p "$(dirname "$STATE_FILE")" 2>/dev/null || true
+  tmp="${STATE_FILE}.tmp"
+
+  checked="$(ts)"
+
+  # Compute global state
+  global="ok"
+  for svc in $SERVICES; do
+    st="$(health_of "$svc")"
+    if [ "$st" = "starting" ]; then
+      [ "$global" = "ok" ] && global="wait"
+    elif [ "$st" != "healthy" ]; then
+      global="ko"
+      break
+    fi
+  done
+
+  # ok boolean
+  ok="false"
+  [ "$global" = "ok" ] && ok="true"
+
+  # JSON build
+  printf '{' > "$tmp"
+  printf '"ok":%s,' "$ok" >> "$tmp"
+  printf '"global":"%s",' "$global" >> "$tmp"
+  printf '"checkedAt":"%s",' "$checked" >> "$tmp"
+  printf '"services":[' >> "$tmp"
+
+  first=1
+  for svc in $SERVICES; do
+    st="$(health_of "$svc")"
+    [ "$first" -eq 0 ] && printf ',' >> "$tmp"
+    first=0
+    printf '{"name":"%s","status":"%s"}' "$svc" "$st" >> "$tmp"
+  done
+
+  printf ']}\n' >> "$tmp"
+  mv "$tmp" "$STATE_FILE" 2>/dev/null || true
+}
+
 # -----------------------------
 # Main
 # -----------------------------
@@ -115,6 +155,8 @@ log_line "services: $SERVICES"
 while :; do
   result="$(check_all_services)"
 
+  write_state_json
+
   case "$result" in
     ok)
       log_line "watchdog health check: ok"
@@ -131,14 +173,12 @@ while :; do
       log_line "watchdog health check: ko $svc (docker_health=$st) -> restart"
 
       if restart_service "$svc"; then
-        # Attente active: on laisse Docker le temps de repasser healthy
         if wait_healthy "$svc"; then
           log_line "watchdog post-restart wait: $svc became healthy"
         else
           log_line "watchdog post-restart wait: timeout ($svc still not healthy, docker_health=$(health_of "$svc"))"
         fi
 
-        # Recheck global après le restart (et la phase d'attente)
         result2="$(check_all_services)"
         if [ "$result2" = "ok" ]; then
           log_line "watchdog post-restart recheck: ok"
@@ -152,6 +192,9 @@ while :; do
       fi
       ;;
   esac
+
+  # NEW: export JSON snapshot each loop
+  write_state_json
 
   sleep "$INTERVAL_SEC"
 done
