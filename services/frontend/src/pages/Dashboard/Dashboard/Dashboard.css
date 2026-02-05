@@ -22,18 +22,6 @@
     white-space: normal;
 }
 
-.weekly-graph {
-    min-height: 300px;
-    height: auto;
-    margin: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #eab2bb;
-    border-radius: 10px;
-    padding: 15px;
-    background: white;
-}
 
 .weekly-graph h3 {
     font-size: 30px;
@@ -47,37 +35,29 @@
     min-height: 0;
 }
 
-.module-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    flex: 1;
-}
-
 @media (max-width: 900px) {
     .module-container {
         flex-direction: column;
     }
 }
 
-.todo-summary{
-    /* height: 280px; */
+.todo-summary {
     border: 2px solid #eab2bb;
-    font-size: 35px;
+    font-size: clamp(18px, 3vw, 35px);
     background-color: #ffffff48;
     border-radius: 10px;
-    /* width: 400px; */
-    margin-left: 20px;
-    min-height: calc(100vh - 300px);
-    margin-bottom: 20px;
+    margin: 10px;
+    min-height: 200px;
     text-align: left;
-    padding-top: 10px;
-    white-space: pre;
+    padding: 10px;
     flex: 1;
+    min-width: 250px;
+    overflow-y: auto;
+    max-height: 600px;
 }
-.todo-summary h3{
-    font-size: 25px;
+
+.todo-summary h3 {
+    font-size: clamp(20px, 3vw, 25px);
     font-weight: 250;
 }
 
@@ -101,38 +81,6 @@
     white-space: pre;
 }
 
-.streaks {
-    margin : 20px;
-    margin-left: 10px;
-    border: 2px solid #eab2bb;
-    border-radius: 10px;
-    flex: 0 0 280px;
-    padding: 15px;
-    background-color: white;
-    position: relative;
-    text-align: center;
-    min-height: 300px;
-    height: auto;   
-    /* width : 280px; */
-    display: flex;
-    flex-direction: column;
-}
-
-.streaks h3 {
-    font-size: 25px;
-    font-weight: 250;
-    white-space: pre;
-        margin: 0 0 10px 0;
-    flex-shrink: 0;
-}
-
-.streak-container {
-    position: relative;
-    width: 100%;
-    height: calc(100% - 30px);
-    flex: 1;
-    min-height: 0;
-}
 
 .streak-center {
     position: absolute;
@@ -144,22 +92,8 @@
     pointer-events: none;
 }
 
-.streak-number {
-    font-size: 48px;
-    font-weight: bold;
-    color: #eab2bb;
-    line-height: 1;
-    transition: color 0.3s ease;
-}
-
 .streak-number.zero {
     color: #ccc;
-}
-
-.streak-label {
-    font-size: 14px;
-    color: #666;
-    margin-top: 5px;
 }
 
 .streak-days {
@@ -194,7 +128,7 @@
     background: #fff5f7;
 }
 
-.todo{
+.todo {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
@@ -203,10 +137,8 @@
     margin: 10px;
     border-radius: 10px;
     transition: all 300ms;
-    .checkbox-wrapper-5{
-        text-align: right;
-        margin-right: 15px;
-    }
+    padding: 10px;
+    overflow: hidden; /* Empêche le débordement */
 }
 
 .todo:hover {
@@ -215,17 +147,32 @@
 }
 
 .todo-description {
-    font-size: 17px;
+    font-size: clamp(14px, 2.5vw, 17px);
     margin-left: 5px;
     font-weight: 200;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limite à 2 lignes */
+    -webkit-box-orient: vertical;
 }
 
 .todo-title {
-    font-size: 30px;
+    font-size: clamp(20px, 4vw, 30px);
     margin-top: 5px;
     margin-left: 10px;
     font-weight: 500;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 }
+
 .checkbox-wrapper-5 .check {
 --size: 30px;
 position: relative;
@@ -378,4 +325,216 @@ line-height: 0;
 .friend-ranked{
     background-color: #ffffffc2;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+
+
+/* Améliorations pour le weekly-graph */
+.weekly-graph {
+    min-height: 250px;
+    height: auto;
+    margin: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    padding: 15px;
+    background: white;
+}
+
+
+.chart-wrapper {
+    flex: 1;
+    min-height: 200px;
+    width: 100%;
+}
+
+/* Améliorations pour les streaks */
+.streaks {
+    margin: 20px;
+    margin-left: 10px;
+    border: 2px solid #eab2bb;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    padding: 15px;
+    background-color: white;
+    position: relative;
+    text-align: center;
+    min-height: 250px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.streaks h3 {
+    font-size: clamp(20px, 4vw, 25px);
+    font-weight: 250;
+    white-space: pre;
+    margin: 0 0 10px 0;
+    flex-shrink: 0;
+}
+
+.streak-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    flex: 1;
+}
+
+.streak-number {
+    font-size: clamp(36px, 8vw, 48px);
+    font-weight: bold;
+    color: #eab2bb;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.streak-label {
+    font-size: clamp(12px, 2vw, 14px);
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Améliorations du module-container */
+.module-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex: 1;
+    width: 100%;
+}
+
+/* Media queries pour mobile */
+@media (max-width: 900px) {
+    .module-container {
+        flex-direction: column;
+    }
+    
+    .weekly-graph,
+    .streaks {
+        margin: 10px;
+        max-width: 100%;
+        min-width: auto;
+    }
+    
+    .content-container {
+        border-radius: 3%;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .weekly-graph {
+        min-height: 200px;
+        padding: 10px;
+    }
+    
+    .streaks {
+        min-height: 200px;
+        padding: 10px;
+    }
+    
+    .chart-wrapper {
+        min-height: 150px;
+    }
+    
+    .streak-container {
+        min-height: 150px;
+    }
+}
+
+/* Amélioration pour todo et topxp */
+.todo-summary {
+    border: 2px solid #eab2bb;
+    font-size: clamp(18px, 3vw, 35px);
+    background-color: #ffffff48;
+    border-radius: 10px;
+    margin: 10px;
+    min-height: 200px;
+    text-align: left;
+    padding: 10px;
+    flex: 1;
+    min-width: 250px;
+}
+
+.todo-summary h3 {
+    font-size: clamp(20px, 3vw, 25px);
+    font-weight: 250;
+}
+
+.topxp-summary {
+    flex: 1;
+    border: 2px solid #eab2bb;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #cacaca48;
+    transition: all 300ms;
+    padding: 10px;
+    min-width: 250px;
+}
+
+.topxp-summary h3 {
+    font-size: clamp(20px, 3vw, 25px);
+    font-weight: 250;
+    white-space: pre;
+}
+
+
+.checkbox-wrapper-5 {
+    text-align: right;
+    margin-right: 15px;
+    flex-shrink: 0; /* Empêche la checkbox de rétrécir */
+}
+
+.checkbox-wrapper-5 .check {
+    --size: 30px;
+    position: relative;
+    background: linear-gradient(90deg, #eab2bb, rgb(250, 150, 182));
+    line-height: 0;
+    perspective: 400px;
+    font-size: var(--size);
+}
+
+/* Media queries pour mobile */
+@media (max-width: 768px) {
+    .todo-summary {
+        margin: 5px;
+        padding: 8px;
+        min-height: 150px;
+    }
+    
+    .todo {
+        margin: 5px;
+        padding: 8px;
+    }
+    
+    .todo-description {
+        -webkit-line-clamp: 3; /* Plus de lignes sur mobile */
+    }
+    
+    .checkbox-wrapper-5 .check {
+        --size: 25px; /* Checkbox un peu plus petite sur mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .todo-summary {
+        margin: 3px;
+        padding: 5px;
+    }
+    
+    .todo {
+        margin: 3px;
+        padding: 5px;
+    }
+    
+    .checkbox-wrapper-5 .check {
+        --size: 22px;
+    }
 }
