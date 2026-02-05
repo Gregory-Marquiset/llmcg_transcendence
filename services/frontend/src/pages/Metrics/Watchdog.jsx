@@ -26,6 +26,7 @@ function StatusLabel({ status }) {
 
 export default function WatchdogPage() {
   const [data, setData] = useState(null);
+  const [backupInfo, setBackupInfo] = useState(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,6 +37,9 @@ export default function WatchdogPage() {
 
       const res = await fetch("/api/v1/watchdog", { cache: "no-store" });
       const json = await res.json().catch(() => null);
+      const bres = await fetch("/api/v1/backups", { cache: "no-store" });
+      const bjson = await bres.json().catch(() => null);
+      setBackupInfo(bjson);
 
       setData(json);
 
@@ -85,6 +89,50 @@ export default function WatchdogPage() {
 
                 {error && <div className="wd-error">{error}</div>}
               </section>
+
+
+              <section className="wd-card">
+                <div className="wd-services-title">Backups</div>
+
+                {!backupInfo ? (
+                  <div className="wd-loading">Chargement…</div>
+                ) : (
+                  <div className="wd-backups">
+                    <div className="wd-backups-row">
+                      <span className="wd-label">Dernier fichier</span>
+                      <span className="wd-time">
+                        {backupInfo.latest?.name ? backupInfo.latest.name : "Aucun"}
+                      </span>
+                    </div>
+
+                    <div className="wd-backups-row">
+                      <span className="wd-label">Taille</span>
+                      <span className="wd-time">
+                        {typeof backupInfo.latest?.size === "number" ? `${backupInfo.latest.size} bytes` : "-"}
+                      </span>
+                    </div>
+
+                    <div className="wd-backups-row">
+                      <span className="wd-label">Dernier run</span>
+                      <span className="wd-time">
+                        {backupInfo.meta?.lastRunAt ?? "-"}
+                      </span>
+                    </div>
+
+                    <div className="wd-backups-row">
+                      <span className="wd-label">Prochain run</span>
+                      <span className="wd-time">
+                        {backupInfo.meta?.nextRunAt ?? "-"}
+                      </span>
+                    </div>
+
+                    {backupInfo.meta?.lastOk === false && backupInfo.meta?.lastError ? (
+                      <pre className="wd-output">{backupInfo.meta.lastError}</pre>
+                    ) : null}
+                  </div>
+                )}
+              </section>
+
 
               {!data ? (
                 <section className="wd-card">

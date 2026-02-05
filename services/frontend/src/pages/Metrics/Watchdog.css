@@ -160,3 +160,15 @@
     white-space: normal;
   }
 }
+
+.wd-backups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wd-backups-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}

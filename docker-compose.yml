@@ -54,6 +54,53 @@ services:
       timeout: 3s
       retries: 20
 
+  backup:
+    build:
+      context: ./services/backup
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - BACKUP_DIR=/backups
+      - KEEP_DAYS=7
+      - KEEP_LAST=50
+      - TZ=UTC
+    volumes:
+      - backups_data:/backups
+    networks:
+      - net_database
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  backup-cron:
+    build:
+      context: ./services/backup
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - BACKUP_DIR=/backups
+      - KEEP_DAYS=7
+      - KEEP_LAST=50
+      - TZ=UTC
+      - BACKUP_INTERVAL_SEC=3600
+      - BACKUP_JITTER_SEC=20
+    volumes:
+      - backups_data:/backups
+    networks:
+      - net_database
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["/app/cron.sh"]
+    restart: unless-stopped
+
 ### Backend
 
   gateway:
@@ -76,6 +123,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./tests_logs:/watchdog:ro
+      - backups_data:/backups:ro
     user: "0:0"
     depends_on:
       postgres:
@@ -87,22 +135,22 @@ services:
       test:
         [
           "CMD-SHELL",
-          "failAfter=$${HEALTH_FAIL_AFTER:-90}; \
-          start_ticks=$$(awk '{print $$22}' /proc/1/stat 2>/dev/null || echo 0); \
-          hz=$$(getconf CLK_TCK 2>/dev/null || echo 100); \
-          up=$$(cut -d' ' -f1 /proc/uptime 2>/dev/null || echo 0); \
-          elapsed=$$(awk -v up=\"$$up\" -v st=\"$$start_ticks\" -v hz=\"$$hz\" 'BEGIN{printf \"%d\", up - (st/hz)}'); \
-          if [ \"$$elapsed\" -ge \"$$failAfter\" ]; then exit 1; fi; \
-          node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
         ]
       interval: 10s
       timeout: 3s
       retries: 3
       start_period: 10s
-        # [
-        #   "CMD-SHELL",
-        #   "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
-        # ]
+      # [
+      #   "CMD-SHELL",
+      #   "failAfter=$${HEALTH_FAIL_AFTER:-90}; \
+      #   start_ticks=$$(awk '{print $$22}' /proc/1/stat 2>/dev/null || echo 0); \
+      #   hz=$$(getconf CLK_TCK 2>/dev/null || echo 100); \
+      #   up=$$(cut -d' ' -f1 /proc/uptime 2>/dev/null || echo 0); \
+      #   elapsed=$$(awk -v up=\"$$up\" -v st=\"$$start_ticks\" -v hz=\"$$hz\" 'BEGIN{printf \"%d\", up - (st/hz)}'); \
+      #   if [ \"$$elapsed\" -ge \"$$failAfter\" ]; then exit 1; fi; \
+      #   node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+      # ]
 
 
   auth-service:
@@ -535,3 +583,4 @@ volumes:
   gateway_node_modules:
   auth_node_modules:
   users_node_modules:
+  backups_data:

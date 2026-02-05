@@ -11,7 +11,7 @@ WATCHDOG_PID    := tests_logs/watchdog.pid
 WATCHDOG_LOCK   := tests_logs/watchdog.lock
 
 .DEFAULT_GOAL := help
-.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci info watchdog-start watchdog-stop watchdog-status watchdog-logs watchdog-clean
+.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci info watchdog-start watchdog-stop watchdog-status watchdog-logs watchdog-clean backup restore backups-ls
 
 ## <----------------- Helper ----------------->
 
@@ -86,6 +86,19 @@ restart:
 re:
 	@$(MAKE) --no-print-directory nuke
 	@$(MAKE) --no-print-directory up-nc
+
+backup:
+	$(COMPOSE) run --rm backup /app/backup.sh
+
+backups-ls:
+	$(COMPOSE) run --rm backup sh -lc 'ls -lah /backups || true'
+
+restore:
+	@if [ -n "$(FILE)" ]; then \
+		$(COMPOSE) run --rm backup /app/restore.sh "$(FILE)"; \
+	else \
+		$(COMPOSE) run --rm backup /app/restore.sh latest; \
+	fi
 
 ## <----------------- Watchdog ----------------->
 

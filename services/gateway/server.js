@@ -21,6 +21,7 @@ import * as wsHandler from './websocketHandler/websocketHandler.js'
 import authPlugin from '../shared/authPlugin.js'
 //Metrics for Prometheus
 import metricsPlugin from "../shared/metricsPlugin.js";	//	metrics
+import { backupsRoutes } from "./routes/backups.js";
 
 export const app = Fastify({
 	logger: true
@@ -213,6 +214,7 @@ await app.register(fastifyBcrypt, {
 await app.register(health.healthRoute);
 await app.register(health.ping);
 await app.register(watchdog.watchdogRoute);
+await app.register(backupsRoutes);
 // app.register(auth.authRoutes, { prefix: '/api/v1' });
 // app.register(user.userRoutes, { prefix: '/api/v1' });
 // app.register(friends.friendsRoutes, { prefix: '/api/v1' });
