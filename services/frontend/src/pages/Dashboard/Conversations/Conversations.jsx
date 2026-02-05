@@ -1,17 +1,28 @@
 import './Conversations.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading } from '../../../components'
 import { useState, useEffect, useRef } from "react";
+import { useParams } from 'react-router-dom'
+import {
+  getUserProfile,
+  getCurrUserProfile,
+} from '../../../functions/user'
 
 function Conversations() {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  
   const [userData, setUserData] = useState(null);
+  const [CurrUserData, setCurrUserData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const messagesEndRef = useRef(null);
   const accessToken = localStorage.getItem('access_token');
+  const { username } = useParams()
+  const generateRequestId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  };
 
   // Auto-scroll vers le bas
   useEffect(() => {
@@ -21,36 +32,26 @@ function Conversations() {
   // Fetch user profile
   useEffect(() => {
     const fetchProfile = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const responseMe = await fetch('/api/v1/auth/me', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        });
-        
-        if (!responseMe.ok) {
-          localStorage.clear();
-          console.error("Error while fetching info");
-          setIsLoggedIn(false);
-          return;
+        const fetchedCurrUserData = await getCurrUserProfile(accessToken)
+        const fetchedUserData = await getUserProfile(username, accessToken)
+        setUserData(fetchedUserData)
+        setCurrUserData(fetchedCurrUserData)
+        setLoading(false)
+
+        if (fetchedCurrUserData.id === fetchedUserData.id) {
+          navigate('/dashboard/profile')
         }
-        
-        const fetchedUserData = await responseMe.json();
-        console.log(fetchedUserData);
-        setUserData(fetchedUserData);
       } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
+        console.error('Fetch error:', err)
+        setLoading(false)
+        navigate('/dashboard')
       }
     }
-    
-    if (accessToken) {
-      fetchProfile();
-    }
-  }, [accessToken]);
+
+    if (accessToken) fetchProfile()
+  }, [username, accessToken])
 
   // WebSocket connection
   useEffect(() => {
@@ -94,13 +95,22 @@ function Conversations() {
     if (!input.trim()) return;
     
     if (socket && socket.readyState === WebSocket.OPEN) {
+       const messageJson = {
+      type: "chat:send",
+      requestId: generateRequestId(),
+      payload: {
+        toUserId: userData.id, // must be set from route or selected conversation
+        content: input
+      }
+    };
+
       console.log("Envoi du message:", input);
       
       // Ajouter le message envoyé à l'affichage immédiatement
       setMessages((prev) => [...prev, `Moi: ${input}`]);
       
       // Envoyer au serveur
-      socket.send(input);
+      socket.send(JSON.stringify(messageJson));
       setInput("");
     } else {
       alert("Connection lost. Please refresh the page.");
@@ -130,7 +140,12 @@ function Conversations() {
         <Footer />
       </div>
     );
-  }
+  }      socket.send(JSON.stringify({
+        from: CurrUserData.id,
+        to: fetchedUserData.id,
+        content: input,
+        type: "message"
+      }));
 
   return (
     <div className="Conversations">
