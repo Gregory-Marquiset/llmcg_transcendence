@@ -4,6 +4,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import cors from '@fastify/cors';
+import 'dotenv/config';
 
 //###IMPORT OWN FILES ###
 import * as auth from './routes/auth.js';
@@ -95,8 +96,8 @@ await app.register(oauthPlugin, {
   name: 'fortyTwoOAuth2',
   credentials: {
     client: {
-      id: 'u-s4t2ud-4c510f5e66963d2eba659caf03072a2d050ba58ac2a1dbad44b815aa7ddba83a',
-      secret: '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',
+      id: process.env.FORTY_TWO_CLIENT_ID,
+      secret: process.env.FORTY_TWO_CLIENT_SECRET,
     },
     auth: {
       authorizeHost: 'https://api.intra.42.fr',
@@ -114,8 +115,11 @@ await app.ready();
 //app.log.info('\nAUTH ROUTES:\n' + app.printRoutes());
 //###### STARTING SERVER ######
 const start = async () => {
-    try {
-        await initDb(app);
+  try {
+    await initDb(app);
+    console.log(process.env.FORTY_TWO_CLIENT_ID)
+    console.log(process.env.FORTY_TWO_CLIENT_SECRET)
+    
         await app.listen({ port: 5000, host: '0.0.0.0' });
     } catch (err) {
         console.error(`\nERROR authServer\n`);

@@ -162,6 +162,8 @@ services:
       PORT: "5000"
       JWT_SECRET: "${JWT_SECRET}"
       DATABASE_URL: "${DATABASE_URL}"
+      FORTY_TWO_CLIENT_ID: "${FORTY_TWO_CLIENT_ID}"
+      FORTY_TWO_CLIENT_SECRET: "${FORTY_TWO_CLIENT_SECRET}"
     expose: 
       - "5000"
     networks:
