@@ -1,0 +1,174 @@
+/* Card style proche des blocs “Réglages” */
+.wd-card {
+  width: min(980px, 92%);
+  margin: 26px auto;
+  padding: 26px 28px;
+  border-radius: 22px;
+  border: 2px solid rgba(0,0,0,0.35);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  text-align: left;
+}
+
+/* GLOBAL */
+.wd-global-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.wd-global-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wd-label {
+  font-weight: 700;
+  color: rgba(0,0,0,0.65);
+}
+
+.wd-time {
+  font-size: 0.9rem;
+  color: rgba(0,0,0,0.55);
+}
+
+.wd-refresh {
+  min-width: 160px;
+}
+
+/* Badges */
+.wd-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(0,0,0,0.15);
+}
+
+.wd-ok {
+  background: rgba(152, 255, 152, 0.55);
+  color: rgba(0,0,0,0.75);
+}
+
+.wd-wait {
+  background: rgba(255, 240, 150, 0.65);
+  color: rgba(0,0,0,0.75);
+}
+
+.wd-ko {
+  background: rgba(255, 170, 170, 0.70);
+  color: rgba(0,0,0,0.75);
+}
+
+.wd-extra {
+  margin-left: 10px;
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.55);
+}
+
+/* Messages */
+.wd-error {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 210, 210, 0.55);
+  border: 1px solid rgba(255, 120, 120, 0.6);
+  color: rgba(0,0,0,0.75);
+}
+
+.wd-loading {
+  padding: 14px 0;
+  color: rgba(0,0,0,0.65);
+}
+
+/* Services */
+.wd-services-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: rgba(0,0,0,0.7);
+  margin-bottom: 14px;
+}
+
+.wd-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wd-row {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.wd-row-head {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.wd-name {
+  font-weight: 800;
+  color: rgba(0,0,0,0.70);
+  text-transform: lowercase;
+}
+
+.wd-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.wd-meta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.55);
+  white-space: nowrap;
+}
+
+.wd-output {
+  margin-top: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.12);
+  font-size: 0.85rem;
+  color: rgba(0,0,0,0.75);
+  overflow-x: auto;
+  max-height: 180px;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .wd-row-head {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .wd-meta {
+    white-space: normal;
+  }
+}
+
+.wd-backups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wd-backups-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}

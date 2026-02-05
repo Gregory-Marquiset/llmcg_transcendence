@@ -11,8 +11,8 @@ LOG_LIB_FILE="$DIR/lib/lib.sh"
 
 global_init
 
-require_cmd curl
-require_cmd grep
+require_cmd curl || { global_resume; }
+require_cmd grep || { global_resume; }
 
 ret; separator; ret
 launch "Run tests from $NAME"

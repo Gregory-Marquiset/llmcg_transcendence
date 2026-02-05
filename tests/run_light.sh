@@ -11,8 +11,8 @@ LOG_LIB_FILE="$DIR/lib/lib.sh"
 
 global_init
 
-require_cmd curl
-require_cmd grep
+require_cmd curl || { global_resume; }
+require_cmd grep || { global_resume; }
 
 ret; separator; ret
 launch "Run tests from $NAME"
@@ -22,7 +22,7 @@ for _t in "$DIR"/*/[0-9][0-9]_*__*.sh; do
 	[ -f "$_t" ] || continue
 
 	case "$_t" in
-		*/00_compose/*) continue ;;
+		*/00_project/*) continue ;;
 	esac
 
 	G_COUNT=$((G_COUNT + 1))

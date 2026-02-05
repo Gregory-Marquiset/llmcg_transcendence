@@ -24,7 +24,7 @@ import { badges } from '../../../badges/badges'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
-  const {errStatus, setErrStatus}= useAuth();
+ 
 
   let currentLevel = 0;
   for (let i = levels.length - 1; i >= 0; i--) {
@@ -48,7 +48,8 @@ function computeBadgeProgress(badge, statValue) {
   };
 }
 
-function userProfile() {
+function UserProfile() {
+  const {errStatus, setErrStatus}= useAuth();
   const [userData, setUserData] = useState({
     id: '',
     username: '',
@@ -103,7 +104,7 @@ function userProfile() {
   const handleUnblockUser = async () => {
     try {
       await unblockUser(userData.id, accessToken)
-      setUserData(prev => ({ ...prev, blockedBy: 0, friendshipsStatus: '' }))
+      setUserData(prev => ({ ...prev, blockedBy: null, friendshipsStatus: '' }))
     } catch (err) {
       console.error('Failed to unblock user:', err)
     }
@@ -147,7 +148,7 @@ function userProfile() {
         };
     });
   if (loading) return <Loading duration={400} showButton={false} />
-if (userData.blockedBy === CurrUserData.id) {
+  if (userData.blockedBy === userData.id) {
   return (
     <Background>
       <div className="page-wrapper">
@@ -163,7 +164,7 @@ if (userData.blockedBy === CurrUserData.id) {
 
   if (errStatus === 404) return <Error404/>
   if (errStatus === 401) return <Error401/>
-  if (userData.blockedBy === userData.id) {
+  if (userData.blockedBy === CurrUserData.id) {
     return (
       <Background>
         <div className="page-wrapper">
@@ -235,7 +236,7 @@ if (userData.blockedBy === CurrUserData.id) {
             {(userData.friendshipsStatus === 'accepted') && (
               <Button text="Supprimer un ami" onClick={handleDeleteFriend} />
             )}
-            {userData.blockedBy === 0 && (
+            {userData.blockedBy === null && (
               <Button text="Bloquer" onClick={handleBlockUser} />
             )}
             <br />
@@ -247,4 +248,4 @@ if (userData.blockedBy === CurrUserData.id) {
   )
 }
 
-export default userProfile
+export default UserProfile
