@@ -5,7 +5,6 @@ import { useAuth } from '../../../../context/AuthContext'
 
 export default function Languages () {
     const [openSection, setOpenSection] = useState(null)
-    const {errStatus, setErrStatus}= useAuth();
     const handleSection = sectionName => {
     setOpenSection(openSection === sectionName ? null : sectionName)
     }

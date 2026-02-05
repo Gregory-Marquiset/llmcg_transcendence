@@ -4,6 +4,8 @@ import { LogTitle, Button } from '../../../../components'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import Error404 from '../../../ErrorPages/404'
+import Error401 from '../../../ErrorPages/401'
 
 export default function DangerZone () {
     const { isLoggedIn, setIsLoggedIn } = useAuth();
@@ -20,6 +22,7 @@ export default function DangerZone () {
             });
             if (!response.ok){
                 console.log("while delete data");
+                setErrStatus(response.status);
                 return ;
             }
             alert("A confirmation mail has been sent !");
@@ -50,6 +53,8 @@ export default function DangerZone () {
     const handleSection = sectionName => {
         setOpenSection(openSection === sectionName ? null : sectionName)
     }
+    if (errStatus === 404) return <Error404/>
+    if (errStatus === 401) return <Error401/>
     return (
         <section onClick={() => handleSection('dangerZone')}>
             <LogTitle text="Danger zone" />

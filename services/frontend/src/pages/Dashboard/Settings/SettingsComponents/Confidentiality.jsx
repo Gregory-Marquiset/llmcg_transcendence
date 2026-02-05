@@ -18,7 +18,6 @@ export default function Confidentiality (){
             setOpenSection(null);
             setDisplayHistory(false);
         }
-
         setOpenSection(openSection === sectionName ? null : sectionName)
     }
     const updateHistoryView = (e) => {
@@ -50,15 +49,11 @@ export default function Confidentiality (){
         }
     }
     const requestDataDeletion = async () => {
-        if (!accessToken) {
-            alert("Vous devez être connecté");
+        if (!accessToken)
             return;
-        }
-        
         if (!confirm("Voulez-vous vraiment supprimer vos données d'activité (todo, historique, stats) ? Votre compte sera conservé. Un email de confirmation vous sera envoyé.")) {
             return;
         }
-        
         try {
             const response = await fetch('/api/v1/gdpr/data', {
                 method: "POST",
@@ -105,7 +100,7 @@ export default function Confidentiality (){
             fetchHistory();
     }, []);
     if (errStatus === 404) return <Error404/>
-  if (errStatus === 401) return <Error401/>
+    if (errStatus === 401) return <Error401/>
     return( 
         <section onClick={() => handleSection('confidentiality')}>
             <LogTitle text="Confidentialité" />

@@ -6,7 +6,6 @@ import { FriendList, RequestList} from '../../../components'
 import { useAuth } from '../../../context/AuthContext'
 function MyFriends() {
     const [isLoading, setIsLoading] = useState(false);
-    const {errStatus, setErrStatus}= useAuth();
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
     <>

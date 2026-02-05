@@ -82,6 +82,10 @@ export const manageFriendRequest = async function (req, reply) {
 			await runSql(app.pg, 'UPDATE friendships SET status = $1, updated_at = $2 WHERE sender_id = $3 AND receiver_id = $4',
 				["accepted", date, senderId, req.user.id]);
 			status = "accepted";
+			await runSql(app.pg, 'UPDATE user_stats SET friends_count = friends_count + 1, updated_at = $1 WHERE user_id = $2',
+				[date, senderId]);
+			await runSql(app.pg, 'UPDATE user_stats SET friends_count = friends_count + 1, updated_at = $1 WHERE user_id = $2',
+				[date, req.user.id]);
 		}
 		else if (req.body.action === "refuse")
 		{
