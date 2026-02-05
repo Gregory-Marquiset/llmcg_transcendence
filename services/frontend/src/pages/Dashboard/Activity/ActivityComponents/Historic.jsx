@@ -1,28 +1,10 @@
 import { useEffect, useState } from "react";
-// const data = [
-//     {
-//         id: 1,
-//         title: 'Experience',
-//         description : 'A gagné 10xp',
-//         date : '30/12/2025'
-//     },
-//     {
-//         id: 2,
-//         title: 'A upload a file',
-//         description : 'sujet minishell',
-//         date : '30/12/2025'
-//     },
-//     {
-//         id: 3,
-//         title: 'A un nouvel ami',
-//         description : 'lobriott',
-//         date : '30/12/2025'
-//     }
-// ]
+import { useAuth } from '../../../../context/AuthContext'
 
 export default function Historic({setIsLoading}){
     const accessToken = localStorage.getItem("access_token");
     const [history, setHistory] = useState([]);
+    const {errStatus, setErrStatus}= useAuth();
     const fetchHistory = async () => {
         try {
             const response = await fetch('/api/v1/statistics/history', {
@@ -32,6 +14,7 @@ export default function Historic({setIsLoading}){
                     'Authorization' : `Bearer ${accessToken}`
                 }
             });
+            setErrStatus(response.status);
             const data = await response.json();
             setHistory(data);
             console.log(data);

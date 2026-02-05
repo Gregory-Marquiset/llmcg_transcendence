@@ -24,6 +24,7 @@ import { badges, starBadge } from '../../../badges/badges'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
+  const {errStatus, setErrStatus}= useAuth();
 
   let currentLevel = 0;
   for (let i = levels.length - 1; i >= 0; i--) {
@@ -162,7 +163,8 @@ if (userData.blockedBy === CurrUserData.id) {
   )
 }
 
-
+  if (errStatus === 404) return <Error404/>
+  if (errStatus === 401) return <Error401/>
   if (userData.blockedBy === userData.id) {
     return (
       <Background>

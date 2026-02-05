@@ -2,11 +2,13 @@ import { Button } from '../../../../components';
 import '../Dashboard.css'
 import { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../../context/AuthContext'
 
 export default function Todo (){
     const navigate = useNavigate();
     const [todo, setTodo] = useState([]);
     const accessToken = localStorage.getItem('access_token');
+    const {errStatus, setErrStatus}= useAuth();
     const fetchTodo = async () => {
         try{
             const response = await fetch('/api/v1/statistics/todo', {
@@ -16,11 +18,12 @@ export default function Todo (){
                 }
             });
             if (!response.ok){
+                setErrStatus(response.status);
                 console.log("error while fetchin todo");
                 return ;
             }
-            const hey = await response.json();
-            setTodo(hey);
+            const data = await response.json();
+            setTodo(data);
         }
         catch (err){
             console.error(err);
@@ -41,6 +44,7 @@ export default function Todo (){
             });
             await fetchTodo();
             if (!response.ok){
+                setErrStatus(response.status);
                 console.error("While marking as done task");
                 return ;
             }
