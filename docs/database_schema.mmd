@@ -1,0 +1,226 @@
+erDiagram
+  USERS {
+    int id PK
+    bigint intra_id "UNIQUE,erDiagram
+  USERS {
+    int id PK
+    bigint intra_id "UNIQUE, nullable"
+    text username "UNIQUE, NOT NULL"
+    text email "UNIQUE, NOT NULL"
+    text password "NOT NULL"
+    text avatar_path "NOT NULL"
+    timestamp createdAt "DEFAULT CURRENT_TIMESTAMP"
+    text auth_provider "DEFAULT 'local'"
+    boolean twofa_enabled "DEFAULT false"
+    text twofa_secret "UNIQUE, nullable"
+  }
+
+  REFRESHED_TOKENS {
+    int jwt_id PK
+    int user_id FK "NOT NULL"
+    text token "NOT NULL"
+  }
+
+  FRIENDSHIPS {
+    int id PK
+    int sender_id FK "NOT NULL"
+    int receiver_id FK "NOT NULL"
+    text status "NOT NULL (pending|accepted|refused|blocked|removed)"
+    int blocked_by FK "nullable"
+    timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    timestamp updated_at "nullable"
+    string unique_sender_receiver "UNIQUE(sender_id, receiver_id)"
+  }
+
+  CHAT_HISTORY {
+    int id PK
+    int from_user_id FK "NOT NULL"
+    int to_user_id FK "NOT NULL"
+    text content "NOT NULL"
+    text request_id "UNIQUE, NOT NULL"
+    text client_sent_at "nullable"
+    text created_at "nullable"
+    text delivered_at "nullable"
+  }
+
+  USER_STATS {
+    int id PK
+    int user_id FK "UNIQUE, NOT NULL"
+    int rank_position "DEFAULT 0"
+    int task_completed "DEFAULT 0"
+    int friends_count "DEFAULT 0"
+    int streaks_history "DEFAULT 0"
+    int current_streak_count "DEFAULT 0"
+    int monthly_logtime "DEFAULT 0"
+    text monthly_logtime_month "nullable"
+    int app_seniority "DEFAULT 0"
+    int upload_count "DEFAULT 0"
+    timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    timestamp updated_at "nullable"
+    int progressbar "DEFAULT 0"
+    timestamp last_login "nullable"
+  }
+
+  TODO_LIST {
+    int id PK
+    int user_id FK "NOT NULL"
+    text title "NOT NULL (also UNIQUE globally in current SQL)"
+    text description "nullable"
+    boolean done "DEFAULT false"
+    timestamp deadline "nullable"
+    timestamp created_at "DEFAULT NOW()"
+    string unique_user_title "UNIQUE(user_id, title)"
+  }
+
+  DAILY_LOGTIME {
+    int id PK
+    int user_id FK "NOT NULL"
+    date day "NOT NULL, DEFAULT CURRENT_DATE"
+    int logtime_second "DEFAULT 0"
+    string unique_user_day "UNIQUE(user_id, day)"
+  }
+
+  USER_HISTORY {
+    int id PK
+    int user_id FK "NOT NULL"
+    text title "NOT NULL"
+    text description "NOT NULL"
+    timestamp created_at "DEFAULT NOW()"
+  }
+
+  GDPR_HISTORY {
+    int id PK
+    int user_id FK "nullable (ON DELETE SET NULL)"
+    text action "NOT NULL"
+    text status "NOT NULL"
+    timestamp created_at "DEFAULT NOW()"
+    timestamp executed_at "nullable"
+    timestamp expires_at "DEFAULT NOW()"
+    text token "UNIQUE"
+  }
+
+  USERS ||--o{ REFRESHED_TOKENS : has
+  USERS ||--o| USER_STATS : has
+
+  USERS ||--o{ TODO_LIST : owns
+  USERS ||--o{ DAILY_LOGTIME : tracks
+  USERS ||--o{ USER_HISTORY : logs
+
+  USERS ||--o{ CHAT_HISTORY : sends
+  USERS ||--o{ CHAT_HISTORY : receives
+
+  USERS ||--o{ FRIENDSHIPS : sender
+  USERS ||--o{ FRIENDSHIPS : receiver
+  USERS ||--o{ FRIENDSHIPS : blocked_by
+
+  USERS ||--o{ GDPR_HISTORY : gdpr_events
+ nullable"
+    text username "UNIQUE, NOT NULL"
+    text email "UNIQUE, NOT NULL"
+    text password "NOT NULL"
+    text avatar_path "NOT NULL"
+    timestamp createdAt "DEFAULT CURRENT_TIMESTAMP"
+    text auth_provider "DEFAULT 'local'"
+    boolean twofa_enabled "DEFAULT false"
+    text twofa_secret "UNIQUE, nullable"
+  }
+
+  REFRESHED_TOKENS {
+    int jwt_id PK
+    int user_id FK "NOT NULL"
+    text token "NOT NULL"
+  }
+
+  FRIENDSHIPS {
+    int id PK
+    int sender_id FK "NOT NULL"
+    int receiver_id FK "NOT NULL"
+    text status "NOT NULL (pending|accepted|refused|blocked|removed)"
+    int blocked_by FK "nullable"
+    timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    timestamp updated_at "nullable"
+    string unique_sender_receiver "UNIQUE(sender_id, receiver_id)"
+  }
+
+  CHAT_HISTORY {
+    int id PK
+    int from_user_id FK "NOT NULL"
+    int to_user_id FK "NOT NULL"
+    text content "NOT NULL"
+    text request_id "UNIQUE, NOT NULL"
+    text client_sent_at "nullable"
+    text created_at "nullable"
+    text delivered_at "nullable"
+  }
+
+  USER_STATS {
+    int id PK
+    int user_id FK "UNIQUE, NOT NULL"
+    int rank_position "DEFAULT 0"
+    int task_completed "DEFAULT 0"
+    int friends_count "DEFAULT 0"
+    int streaks_history "DEFAULT 0"
+    int current_streak_count "DEFAULT 0"
+    int monthly_logtime "DEFAULT 0"
+    text monthly_logtime_month "nullable"
+    int app_seniority "DEFAULT 0"
+    int upload_count "DEFAULT 0"
+    timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    timestamp updated_at "nullable"
+    int progressbar "DEFAULT 0"
+    timestamp last_login "nullable"
+  }
+
+  TODO_LIST {
+    int id PK
+    int user_id FK "NOT NULL"
+    text title "NOT NULL (also UNIQUE globally in current SQL)"
+    text description "nullable"
+    boolean done "DEFAULT false"
+    timestamp deadline "nullable"
+    timestamp created_at "DEFAULT NOW()"
+    string unique_user_title "UNIQUE(user_id, title)"
+  }
+
+  DAILY_LOGTIME {
+    int id PK
+    int user_id FK "NOT NULL"
+    date day "NOT NULL, DEFAULT CURRENT_DATE"
+    int logtime_second "DEFAULT 0"
+    string unique_user_day "UNIQUE(user_id, day)"
+  }
+
+  USER_HISTORY {
+    int id PK
+    int user_id FK "NOT NULL"
+    text title "NOT NULL"
+    text description "NOT NULL"
+    timestamp created_at "DEFAULT NOW()"
+  }
+
+  GDPR_HISTORY {
+    int id PK
+    int user_id FK "nullable (ON DELETE SET NULL)"
+    text action "NOT NULL"
+    text status "NOT NULL"
+    timestamp created_at "DEFAULT NOW()"
+    timestamp executed_at "nullable"
+    timestamp expires_at "DEFAULT NOW()"
+    text token "UNIQUE"
+  }
+
+  USERS ||--o{ REFRESHED_TOKENS : has
+  USERS ||--o| USER_STATS : has
+
+  USERS ||--o{ TODO_LIST : owns
+  USERS ||--o{ DAILY_LOGTIME : tracks
+  USERS ||--o{ USER_HISTORY : logs
+
+  USERS ||--o{ CHAT_HISTORY : sends
+  USERS ||--o{ CHAT_HISTORY : receives
+
+  USERS ||--o{ FRIENDSHIPS : sender
+  USERS ||--o{ FRIENDSHIPS : receiver
+  USERS ||--o{ FRIENDSHIPS : blocked_by
+
+  USERS ||--o{ GDPR_HISTORY : gdpr_events
