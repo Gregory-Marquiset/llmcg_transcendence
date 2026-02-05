@@ -20,7 +20,7 @@ function Settings() {
         <div className="page-wrapper">
           <HeaderBar />
           <div className='core-container'>
-          <LeftMenu/>
+          <LeftMenu setIsLoading={setIsLoading}/>
           
           <div className="setting-wrapper">
             <h2 className="settings-title">
