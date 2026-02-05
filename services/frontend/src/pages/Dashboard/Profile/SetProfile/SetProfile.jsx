@@ -105,8 +105,8 @@ function SetProfile(){
     return (
         <>
             <div className="page-wrapper">
-                <Background>
-                    <HeaderBar/>
+                <HeaderBar/>
+                    <Background>
                     <div className='profile-wrapper'>
                         <div className="personal-infos">
                             <label className="input-data"> <strong>Changer son avatar :      </strong></label>
@@ -126,7 +126,9 @@ function SetProfile(){
                             <Button text="Mettre a jour" onClick={handleEmailModification}/>
                         </div>
                         <Button text="Retour" onClick={()=> navigate('/dashboard/profile')}/>
-                    </div>
+                   
+                   
+                     </div>
                 </Background>
             </div>
         </>

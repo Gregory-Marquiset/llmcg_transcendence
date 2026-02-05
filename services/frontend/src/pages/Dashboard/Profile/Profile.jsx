@@ -1,5 +1,5 @@
 import '../../../styles/App.css'
-import { Footer, Background, HeaderBar, Button, Loading } from '../../../components'
+import { Footer, Background, HeaderBar, Button, Loading, LeftMenu } from '../../../components'
 import './Profile.css' 
 import { useState, useEffect } from 'react'
 import { profilepicture } from '../../../assets'
@@ -18,6 +18,7 @@ function Profile() {
   const {isLoggedIn, setIsLoggedIn} = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [modify, setModify] = useState(false);
   const [onError, setOnError] = useState(false);
   const accessToken = localStorage.getItem("access_token");
@@ -95,6 +96,8 @@ const avatarUrl = userData.avatar_path && !onError
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
+          <div className='core-container'>
+          <LeftMenu setIsLoading={setIsLoading}/>
           <div className='profile-wrapper'>
             <div className='profile-picture'>
               <img onError={() => setOnError(true)} src={avatarUrl} className='profilepic' onMouseEnter={handleModify}/>
@@ -114,6 +117,7 @@ const avatarUrl = userData.avatar_path && !onError
               <BadgeWindow name={userData.username} isLoading={setLoading}/>
               <Button text="Se déconnecter" onClick={handleLogOut}/>
               <br/>
+          </div>
           </div>
           </div>
         <Footer/>

@@ -1,7 +1,7 @@
 import '../../../styles/App.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useState } from 'react'
-import { Agenda, ToDoListEditor, Historic, LastUploads} from './ActivityComponents'
+import { Agenda, ToDoListEditor, Historic} from './ActivityComponents'
 
 function Activity() {
     const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +20,6 @@ function Activity() {
                 </div>
                 <div className='historic-uploads-container'>
                   <Historic setIsLoading={setIsLoading}/>
-                  <LastUploads setIsLoading={setIsLoading}/>
                 </div>
               </div>
             </div>
