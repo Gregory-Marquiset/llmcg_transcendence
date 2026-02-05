@@ -78,7 +78,6 @@ export async function getUserProfile(username, token) {
   if (!res.ok) {
     throw new Error('Failed to fetch profile')
   }
-
   return res.json()
 }
 

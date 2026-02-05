@@ -1,85 +1,85 @@
 {
-  "hash": "9a7871b1",
+  "hash": "2f5c778c",
   "configHash": "ae85d8c1",
-  "lockfileHash": "91d5a26d",
-  "browserHash": "b421eba3",
+  "lockfileHash": "86d94f91",
+  "browserHash": "63cbb82f",
   "optimized": {
     "react": {
       "src": "../../conf/node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "40816812",
+      "fileHash": "14fa617d",
       "needsInterop": true
     },
     "react-dom": {
       "src": "../../conf/node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "73f5ea1d",
+      "fileHash": "12b064b5",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../conf/node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "a93f2b86",
+      "fileHash": "dd92731e",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../conf/node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "f4e5108c",
+      "fileHash": "582c4d1b",
       "needsInterop": true
     },
     "framer-motion": {
       "src": "../../conf/node_modules/framer-motion/dist/es/index.mjs",
       "file": "framer-motion.js",
-      "fileHash": "be888346",
+      "fileHash": "2c71ecc1",
       "needsInterop": false
     },
     "i18next": {
       "src": "../../conf/node_modules/i18next/dist/esm/i18next.js",
       "file": "i18next.js",
-      "fileHash": "427e0992",
+      "fileHash": "316de99f",
       "needsInterop": false
     },
     "i18next-browser-languagedetector": {
       "src": "../../conf/node_modules/i18next-browser-languagedetector/dist/esm/i18nextBrowserLanguageDetector.js",
       "file": "i18next-browser-languagedetector.js",
-      "fileHash": "9a5bed77",
+      "fileHash": "fb426ce5",
       "needsInterop": false
     },
     "i18next-http-backend": {
       "src": "../../conf/node_modules/i18next-http-backend/esm/index.js",
       "file": "i18next-http-backend.js",
-      "fileHash": "f640dde9",
+      "fileHash": "150c7dc4",
       "needsInterop": false
     },
     "react-calendar": {
       "src": "../../conf/node_modules/react-calendar/dist/index.js",
       "file": "react-calendar.js",
-      "fileHash": "6d816906",
+      "fileHash": "56363a83",
       "needsInterop": false
     },
     "react-dom/client": {
       "src": "../../conf/node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "a07f2e50",
+      "fileHash": "a9a0326e",
       "needsInterop": true
     },
     "react-i18next": {
       "src": "../../conf/node_modules/react-i18next/dist/es/index.js",
       "file": "react-i18next.js",
-      "fileHash": "3b5e9fe0",
+      "fileHash": "5d8e2b05",
       "needsInterop": false
     },
     "react-router-dom": {
       "src": "../../conf/node_modules/react-router-dom/dist/index.mjs",
       "file": "react-router-dom.js",
-      "fileHash": "a4204174",
+      "fileHash": "683c10f7",
       "needsInterop": false
     },
     "recharts": {
       "src": "../../conf/node_modules/recharts/es6/index.js",
       "file": "recharts.js",
-      "fileHash": "0984e0b2",
+      "fileHash": "c77dc9fe",
       "needsInterop": false
     }
   },
@@ -87,20 +87,20 @@
     "chunk-XYVKAWMZ": {
       "file": "chunk-XYVKAWMZ.js"
     },
-    "chunk-JFYBPAT5": {
-      "file": "chunk-JFYBPAT5.js"
-    },
     "chunk-GU65HFZT": {
       "file": "chunk-GU65HFZT.js"
     },
     "browser-ponyfill-R74LPF5G": {
       "file": "browser-ponyfill-R74LPF5G.js"
     },
-    "chunk-TAEQWH64": {
-      "file": "chunk-TAEQWH64.js"
-    },
     "chunk-LS3N2DRT": {
       "file": "chunk-LS3N2DRT.js"
+    },
+    "chunk-JFYBPAT5": {
+      "file": "chunk-JFYBPAT5.js"
+    },
+    "chunk-TAEQWH64": {
+      "file": "chunk-TAEQWH64.js"
     },
     "chunk-ROTG7ULQ": {
       "file": "chunk-ROTG7ULQ.js"

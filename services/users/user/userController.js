@@ -79,29 +79,92 @@ export const userMeAvatar = async function (req, reply) {
 
 
 
+// export const userProfil = async function (req, reply) {
+// 	try {
+// 		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE username = $1`, [req.params.targetUsername]);
+// 		if (!userInDb)
+// 			throw httpError(404, "User not found");
+// 		const isBlocked = await getRowFromDB(app.pg, `SELECT status, blocked_by FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
+// 			[req.user.id, userInDb.id]);
+// 		if (isBlocked?.status)
+// 		{
+// 			userInDb.friendshipsStatus = isBlocked.status;
+// 			userInDb.blockedBy = isBlocked.blocked_by;
+// 		}
+// 		else
+// 		{
+// 			userInDb.friendshipsStatus = null;
+// 			userInDb.blockedBy = null;
+// 		}
+// 		reply.code(200).send(userInDb);
+// 	} catch (err) {
+// 		console.error(`ERROR userProfil: ${ err.message }`);
+// 		if (err.statusCode)
+// 			throw err;
+// 		err.statusCode = 500;
+// 		throw err;
+// 	}
+// }
+
 export const userProfil = async function (req, reply) {
-	try {
-		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE username = $1`, [req.params.targetUsername]);
-		if (!userInDb)
-			throw httpError(404, "User not found");
-		const isBlocked = await getRowFromDB(app.pg, `SELECT status, blocked_by FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
-			[req.user.id, userInDb.id]);
-		if (isBlocked?.status)
-		{
-			userInDb.friendshipsStatus = isBlocked.status;
-			userInDb.blockedBy = isBlocked.blocked_by;
-		}
-		else
-		{
-			userInDb.friendshipsStatus = null;
-			userInDb.blockedBy = null;
-		}
-		reply.code(200).send(userInDb);
-	} catch (err) {
-		console.error(`ERROR userProfil: ${ err.message }`);
-		if (err.statusCode)
-			throw err;
-		err.statusCode = 500;
-		throw err;
-	}
+    try {
+        const userInDb = await getRowFromDB(app.pg, `
+            SELECT 
+                u.id, 
+                u.username, 
+                u.avatar_path,
+                s.rank_position,
+                s.task_completed,
+                s.friends_count,
+                s.streaks_history,
+                s.current_streak_count,
+                s.monthly_logtime,
+                s.app_seniority,
+                s.upload_count,
+                s.progressbar,
+                s.last_login
+            FROM users u
+            LEFT JOIN user_stats s ON u.id = s.user_id
+            WHERE u.username = $1
+        `, [req.params.targetUsername]);
+
+        if (!userInDb)
+            throw httpError(404, "User not found");
+
+        const isBlocked = await getRowFromDB(app.pg, `
+            SELECT status, blocked_by 
+            FROM friendships 
+            WHERE (sender_id = $1 AND receiver_id = $2) 
+               OR (sender_id = $2 AND receiver_id = $1)
+        `, [req.user.id, userInDb.id]);
+
+        // Structure propre de la réponse
+        const response = {
+            id: userInDb.id,
+            username: userInDb.username,
+            avatar_path: userInDb.avatar_path,
+            friendshipsStatus: isBlocked?.status || null,
+            blockedBy: isBlocked?.blocked_by || null,
+            stats: {
+                rank_position: userInDb.rank_position,
+                task_completed: userInDb.task_completed,
+                friends_count: userInDb.friends_count,
+                streaks_history: userInDb.streaks_history,
+                current_streak_count: userInDb.current_streak_count,
+                monthly_logtime: userInDb.monthly_logtime,
+                app_seniority: userInDb.app_seniority,
+                upload_count: userInDb.upload_count,
+                progressbar: userInDb.progressbar,
+                last_login: userInDb.last_login
+            }
+        };
+
+        reply.code(200).send(response);
+    } catch (err) {
+        console.error(`ERROR userProfil: ${err.message}`);
+        if (err.statusCode)
+            throw err;
+        err.statusCode = 500;
+        throw err;
+    }
 }

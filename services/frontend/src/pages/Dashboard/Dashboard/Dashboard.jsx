@@ -32,6 +32,7 @@ function Dashboard() {
     streaks_history: 0,
     task_completed: 0,
     updated_at: "",
+    progressbar: 0,
     upload_count : 0 });
   useEffect(() => {
   const fetchProfile = async ()  => {

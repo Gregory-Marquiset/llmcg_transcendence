@@ -8,7 +8,9 @@
     align-items: center;
     gap: 30px;
 }
-
+body {
+    color: black;
+}
 .profile-picture{
     /* border: solid white 10px; */
     display: flex;
