@@ -95,7 +95,8 @@ export const authMeOpts = {
 						upload_count: { type: "integer" },
 						created_at: { type: "string" },
 						updated_at: { type: "string" },
-						last_login: { type: "string" }
+						last_login: { type: "string" },
+						progressbar: { type : "integer"}
 					}
 				}
 				}
@@ -164,4 +165,19 @@ export const auth2faVerifyOpts = {
 		}
 	},
 	handler: authController.auth2faVerify
+}
+
+export const authLogin42Opts = {
+  schema: {
+	response: {
+			200: {
+				type: "object",
+				properties: {
+					access_token: { type: "string" }
+				},
+				required: ["access_token"]
+			}
+		}
+	},
+	handler: authController.authLogin42Callback
 }

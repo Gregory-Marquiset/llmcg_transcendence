@@ -78,13 +78,12 @@ export async function getUserProfile(username, token) {
   if (!res.ok) {
     throw new Error('Failed to fetch profile')
   }
-
   return res.json()
 }
 
 export async function getCurrUserProfile(token)
 {
-     const res = await fetch(`http://localhost:5000/api/v1/auth/me`, {
+     const res = await fetch(`/api/v1/auth/me`, {
         method : 'GET',
         headers : {
           'Authorization' : `Bearer ${token}`
@@ -106,6 +105,20 @@ export async function getFriendList(token)
       })
     if (!res.ok) {
         throw new Error('Failed to fetch friend list')
+    }
+    return res.json()
+}
+
+export async function getRequestList(token)
+{
+     const res = await fetch(`${BASE_URL}/requestList`, {
+        method : 'GET',
+        headers : {
+          'Authorization' : `Bearer ${token}`
+        }
+      })
+    if (!res.ok) {
+        throw new Error('Failed to fetch requestlist')
     }
     return res.json()
 }

@@ -4,14 +4,16 @@ import './Dashboard.css'
 import { useNavigate } from 'react-router-dom'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useEffect, useState } from 'react'
-import { WeeklyGraph, Streaks, Topxp, Todo } from './DashboardComponents'
-
+import { WeeklyGraph, Streaks, MotivationBox, Todo } from './DashboardComponents'
+import Error404 from '../../ErrorPages/404';
+import Error401 from '../../ErrorPages/401';
 
 function Dashboard() {
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const accessToken = localStorage.getItem("access_token");
+  const {errStatus, setErrStatus}= useAuth();
   const [userData, setUserData] = useState ({
       id: '',
       username: '',
@@ -32,6 +34,7 @@ function Dashboard() {
     streaks_history: 0,
     task_completed: 0,
     updated_at: "",
+    progressbar: 0,
     upload_count : 0 });
   useEffect(() => {
   const fetchProfile = async ()  => {
@@ -69,6 +72,8 @@ function Dashboard() {
         }, [isLoggedIn, navigate]);
 
     if (isLoading) return <Loading duration={400}  showButton={false}/>
+    if (errStatus === 404) return <Error404/>
+    if (errStatus === 401) return <Error401/>
   return (
     <>
       <Background>
@@ -86,7 +91,7 @@ function Dashboard() {
               </div>
               <div className='module-container'>
                 <Todo/>
-                <Topxp/>
+                <MotivationBox/>
               </div>
             </div>
           </div>

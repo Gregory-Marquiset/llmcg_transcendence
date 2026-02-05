@@ -19,11 +19,13 @@ export const initDb = async function (app) {
         await app.pg.transact(async (client) => {
             await client.query(`CREATE TABLE IF NOT EXISTS users (
                 id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                intra_id BIGINT UNIQUE, 
                 username text UNIQUE NOT NULL,
                 email text UNIQUE NOT NULL,
                 password text NOT NULL,
                 avatar_path text NOT NULL,
                 createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+                auth_provider TEXT DEFAULT 'local',
                 twofa_enabled boolean DEFAULT false,
                 twofa_secret text UNIQUE)`);
 
@@ -66,6 +68,7 @@ export const initDb = async function (app) {
                 upload_count integer DEFAULT 0,
                 created_at timestamp DEFAULT CURRENT_TIMESTAMP,
                 updated_at timestamp,
+                progressbar integer DEFAULT 0,
                 last_login timestamp)
                 `);
             await client.query(`CREATE TABLE IF NOT EXISTS todo_list (

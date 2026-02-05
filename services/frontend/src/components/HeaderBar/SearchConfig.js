@@ -33,36 +33,12 @@ export const searchablePages = [
         keywords: [ 'activity' , 'agenda', 'activite' ]
     },
     {
-        id: 'achievement',
-        title: 'Mes réussites',
-        description: 'Consulter mes achievments',
-        path: '/dashboard/achievement',
-        icon: '🏆',
-        keywords: [ 'goals' , 'achievement' , 'badges', 'reussites' ]
-    },
-    {
         id: 'conversations',
         title: 'Messageries',
         description: 'Ouvrir le fil des conversations',
         path: "/dashboard/conversations" ,
         icon: '💬',
         keywords: [ 'messages', 'message', 'conversations' ]
-    },
-    {
-        id: 'ressources',
-        title: 'Mes ressources',
-        description: 'Consulter ma documentation',
-        path: "/dashboard/ressources",
-        icon: '📚',
-        keywords: [ 'docs', 'informations', 'documentations', 'documents' ]
-    },
-    {
-        id: 'export',
-        title: 'Exporter mes données' ,
-        description: 'Sauvegarder et consulter mes données personnelles',
-        path: "/dashboard/exportdata",
-        icon: '📤' ,
-        keywords: [ 'export' , 'save', 'data' ]
     },
     {
         id: 'about',

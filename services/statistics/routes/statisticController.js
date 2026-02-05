@@ -20,6 +20,13 @@ export const postNewTodo = async function (req, reply) {
                 VALUES ($1, $2, $3) RETURNING *`, [req.user.id, req.body.title, req.body.description]);
         const updateHistory = await runSql(app.pg, `INSERT INTO user_history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Added new task :", req.body.title]);
+        await runSql(app.pg, `
+            UPDATE user_stats 
+            SET progressbar = CASE 
+                WHEN progressbar >= 1000 THEN 1000
+                WHEN progressbar + 5 > 1000 THEN 1000
+                ELSE progressbar + 5
+            END WHERE user_id = $1`, [req.user.id]);
         return reply.code(201).send(newTodo.id);
     }
     catch (err){
@@ -32,6 +39,18 @@ export const deleteTodo = async function (req, reply) {
     try {
         const title = await getRowFromDB(app.pg, `SELECT title FROM todo_list WHERE id = $1 AND user_id = $2`,
              [req.params.id, req.user.id]);
+        const todo = await getRowFromDB(app.pg, 
+            `SELECT title, done FROM todo_list WHERE id = $1 AND user_id = $2`,
+            [req.params.id, req.user.id]);
+        await runSql(app.pg, `
+            UPDATE user_stats 
+            SET progressbar = CASE 
+                WHEN $2 = true THEN progressbar
+                WHEN progressbar - 20 < 0 THEN 0
+                ELSE progressbar - 20
+            END 
+            WHERE user_id = $1`, 
+            [req.user.id, todo.done]);
         const response = await getRowFromDB(app.pg, `DELETE FROM todo_list WHERE id = $1 AND user_id = $2`, [req.params.id, req.user.id]);
         const updateHistory = await runSql(app.pg, `INSERT INTO user_history (user_id, title, description)
             VALUES ($1, $2, $3)`, [req.user.id, "Deleted task :", title.title]);
@@ -51,6 +70,13 @@ export const markAsDone = async function (req, reply) {
             return reply.code(404).send({error : "todo not found in data base"});
         const id = await runSql(app.pg, `UPDATE todo_list SET done = $1 WHERE id = $2 AND user_id = $3 RETURNING *`, 
             [req.body.done, req.params.id, req.user.id]);
+        await runSql(app.pg, `
+            UPDATE user_stats 
+            SET progressbar = CASE 
+                WHEN progressbar >= 1000 THEN 1000
+                WHEN progressbar + 20 > 1000 THEN 1000
+                ELSE progressbar + 20
+            END WHERE user_id = $1`, [req.user.id]);
             if (req.body.done){
                 await runSql(app.pg, `INSERT INTO user_history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Has finished :", title.title]);

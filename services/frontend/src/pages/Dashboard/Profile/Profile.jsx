@@ -1,5 +1,5 @@
 import '../../../styles/App.css'
-import { Footer, Background, HeaderBar, Button, Loading } from '../../../components'
+import { Footer, Background, HeaderBar, Button, Loading, LeftMenu } from '../../../components'
 import './Profile.css' 
 import { useState, useEffect } from 'react'
 import { profilepicture } from '../../../assets'
@@ -13,11 +13,28 @@ function Profile() {
       username: '',
       email: '',
       avatar_path: '',
-      twofa_enabled: ''
+      twofa_enabled: '',
+      current_streak_count: 0
   });
+  const [stats, setStats] = useState({
+    app_seniority : 0,
+    created_at : "",
+    current_streak_count : 0,
+    friends_count : 0,
+    last_login : "",
+    monthly_logtime: 0,
+    monthly_logtime_month: "",
+    rank_position: 0,
+    streaks_history: 0,
+    task_completed: 0,
+    updated_at: "",
+    progressbar: 0,
+    upload_count : 0 });
+  const {errStatus, setErrStatus}= useAuth();
   const {isLoggedIn, setIsLoggedIn} = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [modify, setModify] = useState(false);
   const [onError, setOnError] = useState(false);
   const accessToken = localStorage.getItem("access_token");
@@ -66,8 +83,9 @@ function Profile() {
         return;
       }
       const fetchedUserData = await responseMe.json();
-      console.log(fetchedUserData);
+    
       setUserData(fetchedUserData);
+      setStats(fetchedUserData.stats);
       setLoading(false);
       
     } catch (err) {
@@ -88,13 +106,15 @@ const handleModify = () => {
 const avatarUrl = userData.avatar_path && !onError
     ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
     : profilepicture;
-
-  // if (loading) return <Loading duration={400}  showButton={false}/>
+  if (errStatus === 404) return <Error404/>
+  if (errStatus === 401) return <Error401/>
   return (
     <>
       <Background>
         <div className="page-wrapper">
           <HeaderBar/>
+          <div className='core-container'>
+          <LeftMenu setIsLoading={setIsLoading}/>
           <div className='profile-wrapper'>
             <div className='profile-picture'>
               <img onError={() => setOnError(true)} src={avatarUrl} className='profilepic' onMouseEnter={handleModify}/>
@@ -104,16 +124,18 @@ const avatarUrl = userData.avatar_path && !onError
                 </>
               )}
             </div>
+            <p><strong>{stats.progressbar / 10}%</strong> <progress className="progress-bar-xp" value={stats.progressbar} max={1000}></progress></p>
+
               <div className='personal-infos-profile'>
                   <h3 className='div-title'>Mes informations personnelles</h3>
                   <h4 className='infos'> <strong>Name        :   </strong> {userData.username} </h4>
                   <h4 className='infos'> <strong>Email        :   </strong> {userData.email} </h4>
-                  <h4 className='infos'> <strong>Campus   :   </strong> (// set le campus via 42)</h4>
                   <Button text="Modifier mes infos" onClick={handleOnClick}/>
               </div>
               <BadgeWindow name={userData.username} isLoading={setLoading}/>
               <Button text="Se déconnecter" onClick={handleLogOut}/>
               <br/>
+          </div>
           </div>
           </div>
         <Footer/>

@@ -178,7 +178,7 @@ export const getMe = async function (req, reply){
             return reply.code(400).send({message: 'Token missing'});
         }
         const gdprRequest = await getRowFromDB(app.pg, 
-            `SELECT user_id FROM gdpr_history WHERE token = $1 AND action = 'request_data' AND (expires_at IS NULL OR expires_at > NOW()`, 
+            `SELECT user_id FROM gdpr_history WHERE token = $1 AND action = 'request_data' AND (expires_at IS NULL OR expires_at > NOW())`, 
             [token]);
         if (!gdprRequest) {
             return reply.code(404).send({message: 'Invalid or expired token'});
@@ -199,7 +199,7 @@ export const getMe = async function (req, reply){
         ///
         return reply.code(200).send({
             ...userInfos, 
-            stats: userStats, 
+            stats: userStats,   
             todo_list: todoResponse, 
             history: historyResponse, 
             friendships: friendshipsResponse,

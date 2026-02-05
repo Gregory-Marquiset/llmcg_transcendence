@@ -1,6 +1,7 @@
 import '../Dashboard.css'
 import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, YAxis, Tooltip, ReferenceLine} from 'recharts'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../../../../context/AuthContext'
 
 function formatMinutes(minutes) {
     if (minutes === 0)
@@ -18,31 +19,45 @@ function formatMinutes(minutes) {
 export default function WeeklyGraph() {
     const [weeklyLogtime, setWeeklyLogtime] = useState([]);
     const accessToken = localStorage.getItem("access_token");
+    const {errStatus, setErrStatus}= useAuth();
     const fetchWeeklyLogtime = async () => {
-        try {
-            const response = await fetch('api/v1/statistics/weeklylogtime', {
-                method : "GET",
-                headers : {
-                    "authorization" : `Bearer ${accessToken}`,
-                },
-            });
-            if (!response.ok)
-                return;
-            const data = await response.json();
-            const formatted = data.map(d => ({
+    try {
+        const response = await fetch('/api/v1/statistics/weeklylogtime', {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${accessToken}`,
+            },
+        });
+        
+        if (!response.ok) {
+            setErrStatus(response.status);
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            return;
+        }
+        
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error('Expected JSON but got:', text);
+            return;
+        }
+        
+        const data = await response.json();
+        const formatted = data.map(d => ({
             day: new Date(d.day).toLocaleDateString("fr-FR", {
                 day: "2-digit",
                 month: "2-digit"
             }),
             logtime: d.logtime / 60
-            }));
+        }));
 
-            setWeeklyLogtime(formatted);
-        }
-        catch (err){
-            console.error(err);
-        }
+        setWeeklyLogtime(formatted);
     }
+    catch (err) {
+        console.error('Fetch error:', err);
+    }
+}
     useEffect (() => {
         if (accessToken)
             fetchWeeklyLogtime();

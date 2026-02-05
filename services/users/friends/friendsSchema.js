@@ -115,9 +115,8 @@ export const friendsRequestListOpts = {
 						type: "object",
 						properties: {
 							id: { type: "integer" },
-							sender_id: { type: "integer" },
-							receiver_id: { type: "integer" },
-							status: { type: "integer" }
+							username: { type: "string" },
+							avatar_path: { type: "string" }
 						}
 					}
 				}
