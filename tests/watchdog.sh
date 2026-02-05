@@ -7,17 +7,16 @@ set -u
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.yml}"
 ENV_FILE="${ENV_FILE:-.env}"
 
-# 6 minutes = 360s
-INTERVAL_SEC="${INTERVAL_SEC:-360}"
+INTERVAL_SEC="${INTERVAL_SEC:-60}"
 
-# après restart, on attend 90s puis on re-teste
-RECHECK_AFTER_RESTART_SEC="${RECHECK_AFTER_RESTART_SEC:-90}"
+RECHECK_AFTER_RESTART_SEC="${RECHECK_AFTER_RESTART_SEC:-30}"
 
-# où écrire les logs
 LOG_FILE="${LOG_FILE:-./tests/logs_watchdog.log}"
 
-# liste des services à surveiller (override possible)
 SERVICES="${SERVICES:-postgres gateway auth-service chat-service users-service statistics-service gdpr-service frontend project_health}"
+
+WAIT_AFTER_RESTART_SEC="${WAIT_AFTER_RESTART_SEC:-60}"
+WAIT_STEP_SEC="${WAIT_STEP_SEC:-5}"
 
 # -----------------------------
 # Helpers
@@ -26,13 +25,11 @@ ts() { date '+%Y-%m-%d %H:%M:%S'; }
 
 log_line()
 {
-  # <timestamp> | ...
   printf '%s | %s\n' "$(ts)" "$1" >> "$LOG_FILE"
 }
 
 compose()
 {
-  # docker compose --env-file .env -f docker-compose.yml ...
   docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" "$@"
 }
 
@@ -55,7 +52,6 @@ health_of()
 
 is_ok_health()
 {
-  # healthy = ok ; tout le reste = ko (starting/unhealthy/no-container/no-healthcheck/unknown)
   [ "$1" = "healthy" ]
 }
 
@@ -67,22 +63,42 @@ restart_service()
 
 check_all_services()
 {
-  # print "ok" si tout est ok, sinon print "ko <service>"
   for svc in $SERVICES; do
     st="$(health_of "$svc")"
-    if ! is_ok_health "$st"; then
-      echo "ko $svc $st"
-      return 0
-    fi
+
+    case "$st" in
+      healthy)
+        ;;
+      starting)
+        echo "wait $svc $st"
+        return 0
+        ;;
+      *)
+        echo "ko $svc $st"
+        return 0
+        ;;
+    esac
   done
   echo "ok"
   return 0
 }
 
+wait_healthy()
+{
+  svc="$1"
+  waited=0
+  while [ "$waited" -lt "$WAIT_AFTER_RESTART_SEC" ]; do
+    st="$(health_of "$svc")"
+    [ "$st" = "healthy" ] && return 0
+    sleep "$WAIT_STEP_SEC"
+    waited=$((waited + WAIT_STEP_SEC))
+  done
+  return 1
+}
+
 # -----------------------------
 # Main
 # -----------------------------
-# petit garde-fou pour éviter 2 watchdogs
 LOCK_FILE="${LOCK_FILE:-/tmp/watchdog.lock}"
 if [ -f "$LOCK_FILE" ]; then
   oldpid="$(cat "$LOCK_FILE" 2>/dev/null || true)"
@@ -103,16 +119,26 @@ while :; do
     ok)
       log_line "watchdog health check: ok"
       ;;
+    wait\ *)
+      svc="$(printf '%s' "$result" | awk '{print $2}')"
+      st="$(printf '%s' "$result" | awk '{print $3}')"
+      log_line "watchdog health check: waiting $svc (docker_health=$st)"
+      ;;
     ko\ *)
-      # result: "ko <svc> <status>"
       svc="$(printf '%s' "$result" | awk '{print $2}')"
       st="$(printf '%s' "$result" | awk '{print $3}')"
 
       log_line "watchdog health check: ko $svc (docker_health=$st) -> restart"
-      if restart_service "$svc"; then
-        sleep "$RECHECK_AFTER_RESTART_SEC"
 
-        # recheck immédiat
+      if restart_service "$svc"; then
+        # Attente active: on laisse Docker le temps de repasser healthy
+        if wait_healthy "$svc"; then
+          log_line "watchdog post-restart wait: $svc became healthy"
+        else
+          log_line "watchdog post-restart wait: timeout ($svc still not healthy, docker_health=$(health_of "$svc"))"
+        fi
+
+        # Recheck global après le restart (et la phase d'attente)
         result2="$(check_all_services)"
         if [ "$result2" = "ok" ]; then
           log_line "watchdog post-restart recheck: ok"
@@ -124,9 +150,6 @@ while :; do
       else
         log_line "watchdog restart failed: $svc"
       fi
-      ;;
-    *)
-      log_line "watchdog health check: ko unknown (unexpected_result=$result)"
       ;;
   esac
 
