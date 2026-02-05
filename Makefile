@@ -5,8 +5,12 @@
 COMPOSE := docker compose --env-file .env -f docker-compose.yml
 SERVICE ?= project_health
 
+WATCHDOG_SCRIPT := tests/watchdog_health.sh
+WATCHDOG_LOG    := tests_logs/logs_watchdog.log
+WATCHDOG_PID    := tests_logs/watchdog.pid
+
 .DEFAULT_GOAL := help
-.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci info
+.PHONY: help build up up-nc down restart re show show-config health logs logs-tail logs-all test test-nc clean nuke test-ci logs-ci info watchdog-start watchdog-stop watchdog-status watchdog-logs watchdog-clean
 
 ## <----------------- Helper ----------------->
 
@@ -61,6 +65,7 @@ build:
 
 up: build
 	$(COMPOSE) up -d
+	@$(MAKE) --no-print-directory watchdog-start
 	@$(MAKE) --no-print-directory info
 
 up-nc:
@@ -69,6 +74,7 @@ up-nc:
 	@$(MAKE) --no-print-directory info
 
 down:
+	@$(MAKE) --no-print-directory watchdog-stop
 	$(COMPOSE) down
 
 restart:
@@ -78,6 +84,52 @@ restart:
 re:
 	@$(MAKE) --no-print-directory nuke
 	@$(MAKE) --no-print-directory up-nc
+
+## <----------------- Watchdog ----------------->
+
+watchdog-start:
+	@mkdir -p tests_logs
+	@# Si déjà lancé et vivant : ne relance pas
+	@if [ -f "$(WATCHDOG_PID)" ] && kill -0 $$(cat "$(WATCHDOG_PID)") 2>/dev/null; then \
+		echo "watchdog: already running (pid=$$(cat "$(WATCHDOG_PID)"))"; \
+	else \
+		rm -f "$(WATCHDOG_PID)"; \
+		echo "watchdog: starting…"; \
+		COMPOSE_FILE=docker-compose.yml ENV_FILE=.env \
+		INTERVAL_SEC=360 RECHECK_AFTER_RESTART_SEC=90 \
+		LOG_FILE="$(WATCHDOG_LOG)" LOCK_FILE="$(WATCHDOG_PID)" \
+		sh "$(WATCHDOG_SCRIPT)" >/dev/null 2>&1 & \
+		echo $$! > "$(WATCHDOG_PID)"; \
+		echo "watchdog: started (pid=$$(cat "$(WATCHDOG_PID)"))"; \
+	fi
+
+watchdog-status:
+	@if [ -f "$(WATCHDOG_PID)" ] && kill -0 $$(cat "$(WATCHDOG_PID)") 2>/dev/null; then \
+		echo "watchdog: running (pid=$$(cat "$(WATCHDOG_PID)"))"; \
+	else \
+		echo "watchdog: not running"; \
+	fi
+
+watchdog-logs:
+	@touch "$(WATCHDOG_LOG)"
+	@tail -f "$(WATCHDOG_LOG)"
+
+watchdog-stop:
+	@if [ -f "$(WATCHDOG_PID)" ]; then \
+		pid=$$(cat "$(WATCHDOG_PID)" 2>/dev/null || true); \
+		if [ -n "$$pid" ] && kill -0 "$$pid" 2>/dev/null; then \
+			echo "watchdog: stopping (pid=$$pid)…"; \
+			kill "$$pid" 2>/dev/null || true; \
+		fi; \
+		rm -f "$(WATCHDOG_PID)"; \
+		echo "watchdog: stopped"; \
+	else \
+		echo "watchdog: not running"; \
+	fi
+
+watchdog-clean: watchdog-stop
+	@rm -f "$(WATCHDOG_LOG)"
+	@echo "watchdog: log removed"
 
 ## <----------------- Inspection ----------------->
 
@@ -156,10 +208,12 @@ test-nc:
 ## <----------------- Nettoyage ----------------->
 
 clean:
+	@$(MAKE) --no-print-directory watchdog-stop
 	$(COMPOSE) --profile dev down --remove-orphans
 	@if [ -L services/frontend/node_modules ]; then rm -f services/frontend/node_modules; fi
 
 nuke:
+	@$(MAKE) --no-print-directory watchdog-clean
 	@$(COMPOSE) --profile dev down -v --remove-orphans --rmi local
 	@if [ -L services/frontend/node_modules ]; then rm -f services/frontend/node_modules; fi
 
@@ -176,12 +230,14 @@ total-nuke: nuke
 ## <----------------- Utils dev --------------->
 
 dev: clean up
+	@$(MAKE) --no-print-directory watchdog-stop
 	@echo "→ Switch en mode dev (hot reload)…"
 	@echo "→ Remove services prod pour éviter le conflit de port"
 	- $(COMPOSE) stop frontend gateway auth-service users-service
 	- $(COMPOSE) rm -f frontend gateway auth-service users-service
 	@echo "→ Lancement dev (Vite + HMR)…"
 	$(COMPOSE) --profile dev up -d --build --no-deps frontend-dev gateway-dev auth-service-dev users-service-dev
+	@$(MAKE) --no-print-directory watchdog-start
 	@$(MAKE) --no-print-directory info
 
 ## <----------------- Utils CI ----------------->
