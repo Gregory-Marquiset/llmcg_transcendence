@@ -19,6 +19,7 @@ export function useAuth(){
 export function AuthProvider ({ children }) {
     const [authUser, setAuthUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [errStatus, setErrStatus] = useState(0);
 
     const checkRefreshToken = async () => {
       if (!localStorage.getItem("access_token"))
@@ -28,9 +29,16 @@ export function AuthProvider ({ children }) {
           method: "POST",
           credentials: "include",
         });
+        if (res.status === 401){
+            logout();
+            alert("Token expired, automatic logout");
+            setIsLoading(false);
+            return;
+        }
         if (!res.ok) {
           setIsLoggedIn(false);
           setAuthUser(null);
+          setErrStatus(res.status);
           localStorage.removeItem("access_token");
           return ;
         }
@@ -39,14 +47,12 @@ export function AuthProvider ({ children }) {
         setIsLoggedIn(true);
         localStorage.setItem("access_token", data.access_token);
       } catch (err) {
-        console.error("Erreur refresh token :", err);
+        // console.error("Erreur refresh token :", err);
         setIsLoggedIn(false);
         setAuthUser(null);
       }
     }
-    useEffect(() => {
-      checkRefreshToken();
-    }, []);
+    useEffect(() => { checkRefreshToken(); }, []);
     useEffect(() => {
       if (!localStorage.getItem("access_token"))
           return ;
@@ -60,6 +66,8 @@ export function AuthProvider ({ children }) {
         setAuthUser, 
         isLoggedIn,
         setIsLoggedIn,
+        errStatus,
+        setErrStatus
     };
     return (
         <AuthContext.Provider value={value}>

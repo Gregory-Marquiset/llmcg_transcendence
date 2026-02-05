@@ -77,35 +77,6 @@ export const userMeAvatar = async function (req, reply) {
 	}
 }
 
-
-
-// export const userProfil = async function (req, reply) {
-// 	try {
-// 		const userInDb = await getRowFromDB(app.pg, `SELECT id, username, avatar_path FROM users WHERE username = $1`, [req.params.targetUsername]);
-// 		if (!userInDb)
-// 			throw httpError(404, "User not found");
-// 		const isBlocked = await getRowFromDB(app.pg, `SELECT status, blocked_by FROM friendships WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)`,
-// 			[req.user.id, userInDb.id]);
-// 		if (isBlocked?.status)
-// 		{
-// 			userInDb.friendshipsStatus = isBlocked.status;
-// 			userInDb.blockedBy = isBlocked.blocked_by;
-// 		}
-// 		else
-// 		{
-// 			userInDb.friendshipsStatus = null;
-// 			userInDb.blockedBy = null;
-// 		}
-// 		reply.code(200).send(userInDb);
-// 	} catch (err) {
-// 		console.error(`ERROR userProfil: ${ err.message }`);
-// 		if (err.statusCode)
-// 			throw err;
-// 		err.statusCode = 500;
-// 		throw err;
-// 	}
-// }
-
 export const userProfil = async function (req, reply) {
     try {
         const userInDb = await getRowFromDB(app.pg, `

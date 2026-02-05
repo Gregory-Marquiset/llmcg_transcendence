@@ -95,7 +95,8 @@ export const authMeOpts = {
 						upload_count: { type: "integer" },
 						created_at: { type: "string" },
 						updated_at: { type: "string" },
-						last_login: { type: "string" }
+						last_login: { type: "string" },
+						progressbar: { type : "integer"}
 					}
 				}
 				}

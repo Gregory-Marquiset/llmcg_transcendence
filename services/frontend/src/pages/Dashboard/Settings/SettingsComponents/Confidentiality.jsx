@@ -1,13 +1,14 @@
 import '../Settings.css'
 import { motion, AnimatePresence } from 'framer-motion'
-import { LogTitle } from '../../../../components'
+import { LogTitle, Button } from '../../../../components'
 import { useState, useEffect } from 'react'
-
+import { useAuth } from '../../../../context/AuthContext'
 export default function Confidentiality (){
     const [openSection, setOpenSection] = useState(null)
     const accessToken = localStorage.getItem("access_token");
     const [displayHistory, setDisplayHistory] = useState(false);
     const [history, setHistory] = useState([]);
+    const {errStatus, setErrStatus}= useAuth();
     const handleSection = sectionName => {
         if (!displayHistory && openSection === 'confidentiality' ){
             setOpenSection(sectionName);
@@ -72,27 +73,18 @@ export default function Confidentiality (){
         if (accessToken)
             fetchHistory();
     }, []);
+    if (errStatus === 404) return <Error404/>
+  if (errStatus === 401) return <Error401/>
     return( 
         <section onClick={() => handleSection('confidentiality')}>
             <LogTitle text="Confidentialité" />
-            <AnimatePresence>
-            {openSection === 'confidentiality' && (
-                <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                >
-                <button className="btn-setting" onClick={requestData}>Reclamer mes donnees</button>
-                <button className="btn-setting">Supprimer mes données</button>
-                <button className="btn-setting" onClick={updateHistoryView}>Historique RGPD</button>
+                <Button className="btn-setting" onClick={requestData} text="Reclamer mes donnees"/>
+                <Button className="btn-setting" text="Supprimer mes données"/>
+                <Button className="btn-setting" onClick={updateHistoryView} text="Historique RGPD"/>
                 {displayHistory && <pre className="json-preview" onClick={{updateHistoryView}}>
                     <strong>JSON preview : </strong><br/>
                     {JSON.stringify(history, null, 2)}
                 </pre>}
-                </motion.div>
-            )}
-            </AnimatePresence>
         </section>
     )
 }

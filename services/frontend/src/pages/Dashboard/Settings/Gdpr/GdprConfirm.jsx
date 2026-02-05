@@ -2,10 +2,12 @@ import { logoheader } from "../../../../assets";
 import { Background, Footer, LogTitle, Button } from "../../../../components";
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../../context/AuthContext'
 export default function GdprConfirm (){
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
+    const {errStatus, setErrStatus}= useAuth();
     const [status, setStatus] = useState("");
     const confirmDeletion = async () => {
         if (!token){
@@ -33,6 +35,8 @@ export default function GdprConfirm (){
             console.log(err);
         }
     }
+    if (errStatus === 404) return <Error404/>
+    if (errStatus === 401) return <Error401/>
  return (<>
     <Background>
         <img src={logoheader} className="logoheader" alt="42 Tracker" />

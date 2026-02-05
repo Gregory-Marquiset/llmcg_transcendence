@@ -3,10 +3,10 @@ import './Friends.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useState } from 'react'
 import { FriendList, RequestList} from '../../../components'
-
+import { useAuth } from '../../../context/AuthContext'
 function MyFriends() {
-    const accessToken = localStorage.getItem("access_token");
     const [isLoading, setIsLoading] = useState(false);
+    const {errStatus, setErrStatus}= useAuth();
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
     <>
