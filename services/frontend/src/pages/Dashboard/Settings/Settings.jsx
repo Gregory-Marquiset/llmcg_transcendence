@@ -8,12 +8,7 @@ import  { DangerZone, Confidentiality, Languages } from './SettingsComponents'
 import { useAuth } from '../../../context/AuthContext'
 
 function Settings() {
-  const [openSection, setOpenSection] = useState(null)
   const [isLoading, setIsLoading] = useState(false);
-  const {errStatus, setErrStatus}= useAuth();
-  const handleSection = sectionName => {
-    setOpenSection(openSection === sectionName ? null : sectionName)
-  }
 
   return (
     <>

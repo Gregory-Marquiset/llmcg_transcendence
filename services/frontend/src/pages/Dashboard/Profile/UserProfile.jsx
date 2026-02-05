@@ -20,7 +20,7 @@ import {
   respondToFriendRequest
 } from '../../../functions/user'
 import { useNavigate, useParams } from 'react-router-dom'
-import { badges, starBadge } from '../../../badges/badges'
+import { badges } from '../../../badges/badges'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
@@ -138,7 +138,6 @@ function UserProfile() {
       ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
       : profilepicture
 
-      ///
        const computedBadges = badges.map((badge) => {
         const statValue = userData.stats?.[badge.key] ?? 0;
         const {level, progress} = computeBadgeProgress(badge, statValue);
@@ -148,7 +147,6 @@ function UserProfile() {
             progress
         };
     });
-      ///
   if (loading) return <Loading duration={400} showButton={false} />
   if (userData.blockedBy === userData.id) {
   return (
