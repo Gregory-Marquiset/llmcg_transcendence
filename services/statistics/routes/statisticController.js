@@ -20,6 +20,7 @@ export const postNewTodo = async function (req, reply) {
                 VALUES ($1, $2, $3) RETURNING *`, [req.user.id, req.body.title, req.body.description]);
         const updateHistory = await runSql(app.pg, `INSERT INTO user_history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Added new task :", req.body.title]);
+        
         return reply.code(201).send(newTodo.id);
     }
     catch (err){
@@ -51,6 +52,13 @@ export const markAsDone = async function (req, reply) {
             return reply.code(404).send({error : "todo not found in data base"});
         const id = await runSql(app.pg, `UPDATE todo_list SET done = $1 WHERE id = $2 AND user_id = $3 RETURNING *`, 
             [req.body.done, req.params.id, req.user.id]);
+        await runSql(app.pg, `
+            UPDATE user_stats 
+            SET progressbar = CASE 
+                WHEN progressbar >= 100 THEN 100
+                WHEN progressbar + 20 > 100 THEN 100
+                ELSE progressbar + 20
+            END WHERE user_id = $1`, [req.user.id]);
             if (req.body.done){
                 await runSql(app.pg, `INSERT INTO user_history (user_id, title, description)
                 VALUES ($1, $2, $3)`, [req.user.id, "Has finished :", title.title]);

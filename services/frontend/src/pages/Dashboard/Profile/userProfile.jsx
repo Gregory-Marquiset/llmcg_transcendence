@@ -20,7 +20,32 @@ import {
   respondToFriendRequest
 } from '../../../functions/user'
 import { useNavigate, useParams } from 'react-router-dom'
-import BadgeWindow from './BadgeWindow'
+import { badges, starBadge } from '../../../badges/badges'
+
+function computeBadgeProgress(badge, statValue) {
+  const levels = badge.levels;
+
+  let currentLevel = 0;
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (statValue >= levels[i].threshold) {
+      currentLevel = i;
+      break;
+    }
+  }
+  if (currentLevel === levels.length - 1) {
+    return { level: currentLevel, progress: 100 };
+  }
+  const currentThreshold = levels[currentLevel].threshold;
+  const nextThreshold = levels[currentLevel + 1].threshold;
+
+  const progress =
+    ((statValue - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
+
+  return {
+    level: currentLevel,
+    progress: Math.max(0, Math.min(100, progress)),
+  };
+}
 
 function userProfile() {
   const [userData, setUserData] = useState({
@@ -111,9 +136,47 @@ function userProfile() {
       ? `http://localhost:5000/uploads/avatar/${userData.avatar_path}`
       : profilepicture
 
+      ///
+       const computedBadges = badges.map((badge) => {
+        const statValue = userData.stats?.[badge.key] ?? 0;
+        const {level, progress} = computeBadgeProgress(badge, statValue);
+        return {
+            ...badge,
+            level,
+            progress
+        };
+    });
+      ///
   if (loading) return <Loading duration={400} showButton={false} />
-  if(userData.blockedBy !== 0 && userData.blockedBy !== userData.id) return <Button text="De-Bloquer" onClick={handleUnblockUser} />
-  if(userData.blockedBy !== 0 && userData.blockedBy === userData.id) return
+if (userData.blockedBy === CurrUserData.id) {
+  return (
+    <Background>
+      <div className="page-wrapper">
+        <HeaderBar />
+        <div className="profile-wrapper">
+          <h3>{userData.username} vous a bloqué</h3>
+        </div>
+        <Footer />
+      </div>
+    </Background>
+  )
+}
+
+
+  if (userData.blockedBy === userData.id) {
+    return (
+      <Background>
+        <div className="page-wrapper">
+          <HeaderBar />
+          <div className="profile-wrapper">
+            <h3>Vous avez bloqué {userData.username}</h3>
+            <Button text="Débloquer" onClick={handleUnblockUser} />
+          </div>
+          <Footer />
+        </div>
+      </Background>
+    )
+  }
   return (
     <>
       <Background>
@@ -138,7 +201,32 @@ function userProfile() {
                 <strong>Campus : </strong> (// set le campus via 42)
               </h4>
             </div>
-            <BadgeWindow name={userData.username} />
+            <div className='badge-wrapper'>
+            {computedBadges.map((type, index) => {
+                return (
+                    <div key={type.name} className='badge-container'>
+                            <img 
+                                className='badge'
+                                src={type.levels[type.level].path}
+                                alt={`${type.name} - ${type.description}`}
+                            />
+                        <div 
+                            className="badge-progress-container"
+                            style={{ borderColor: '#eab2bb'}}>
+                            <div 
+                                className="badge-progress-fill"
+                                style={{ 
+                                    width: `${type.progress}%`,
+                                    backgroundColor: type.color 
+                                }}
+                            />
+                        </div>
+                        <br/>
+                        <div className="badge-name">{type.name}</div>
+                    </div>
+                );
+            })}
+        </div>
             {userData.friendshipsStatus !== 'pending' &&
               userData.friendshipsStatus !== 'accepted' &&
               userData.friendshipsStatus !== 'blocked' && (
