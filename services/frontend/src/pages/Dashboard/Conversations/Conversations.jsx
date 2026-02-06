@@ -9,7 +9,7 @@ import {
 } from '../../../functions/user'
 
 function Conversations() {
-  const [socket, setSocket] = useState(null);
+  // const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   
@@ -55,44 +55,44 @@ function Conversations() {
   }, [username, accessToken]);
 
   // WebSocket connection
-  useEffect(() => {
-    if (!accessToken || !userData?.id) return;
+  // useEffect(() => {
+  //   if (!accessToken || !userData?.id) return;
 
-    setConnectionStatus('connecting');
-    const host = window.location.hostname;
-    const ws = new WebSocket(`ws://${host}:5000/ws?token=${accessToken}&userId=${CurrUserData.id}`);
+  //   setConnectionStatus('connecting');
+  //   const host = window.location.hostname;
+  //   const ws = new WebSocket(`ws://${host}:5000/ws?token=${accessToken}&userId=${CurrUserData.id}`);
 
     
-    ws.onopen = () => {
-      console.log("WebSocket connected!");
-      setConnectionStatus('connected');
-    };
+  //   ws.onopen = () => {
+  //     console.log("WebSocket connected!");
+  //     setConnectionStatus('connected');
+  //   };
     
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Message reçu:", event.data);
-      if(data.type === "chat:message" && data.payload.fromUserId === userData.id)
-        setMessages((prev) => [...prev, {content: `${data.payload.content}`, sender: 'other'} ]);
-    };
+  //   ws.onmessage = (event) => {
+  //     const data = JSON.parse(event.data);
+  //     console.log("Message reçu:", event.data);
+  //     if(data.type === "chat:message" && data.payload.fromUserId === userData.id)
+  //       setMessages((prev) => [...prev, {content: `${data.payload.content}`, sender: 'other'} ]);
+  //   };
     
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
-      setConnectionStatus('disconnected');
-    };
+  //   ws.onclose = () => {
+  //     console.log("WebSocket disconnected");
+  //     setConnectionStatus('disconnected');
+  //   };
     
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setConnectionStatus('disconnected');
-    };
+  //   ws.onerror = (error) => {
+  //     console.error("WebSocket error:", error);
+  //     setConnectionStatus('disconnected');
+  //   };
     
-    setSocket(ws);
+  //   setSocket(ws);
     
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
-    };
-  }, [accessToken, CurrUserData]);
+  //   return () => {
+  //     if (ws.readyState === WebSocket.OPEN) {
+  //       ws.close();
+  //     }
+  //   };
+  // }, [accessToken, CurrUserData]);
 
   const sendMessage = () => {
     if (!input.trim()) return;

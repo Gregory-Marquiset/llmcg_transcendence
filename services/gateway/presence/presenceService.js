@@ -2,7 +2,7 @@ import { sessionsByUser, userPresence } from "./presenceStore.js";
 import { presenceBroadcaster } from "./presenceBroadcaster.js";
 
 export const onSocketConnected = function (userId, socket, date) {
-    
+    console.log(`\nonSocketConnected\n`);
     let wasOnline = false;
     let currentUserSession = sessionsByUser.get(userId);
     if (!currentUserSession)
@@ -54,7 +54,7 @@ export const onSocketConnected = function (userId, socket, date) {
 
 
 export const onSocketDisconnected = function (userId, socket, date) {
-
+    console.log(`\nonSocketConnected\n`);
     let currentUserSession = sessionsByUser.get(userId);
     if (!currentUserSession)
         return;

@@ -9,6 +9,7 @@ let connectId = 0;
 
 export const websocketHandler = async function (socket, req) {
 	try {
+		console.log(`\n\n\nwebsocketHandler: new socket\n\n\n`);
 		const url = new URL(req.url, 'http://localhost');
 		
 		const token = url.searchParams.get('token');
@@ -153,8 +154,8 @@ export const heartbeat = function () {
 	connectionsIndex?.forEach((value, key) => {
 		if (!key)
 			return;
-		// console.log(`value.userId: ${value.userId}`);
-		// console.log(`value.connectionId: ${value.connectionId}`);
+		console.log(`value.userId: ${value.userId}`);
+		console.log(`value.connectionId: ${value.connectionId}`);
 		// console.log(`value.ip: ${value.ip}\n`);
 		if (key.isAlive === false)
 		{

@@ -182,18 +182,18 @@ await app.register(fastifyWebsocket, {
 	options: { 
 		maxPayload: 1048576,
 		// Ajouter la vérification du protocole
-		verifyClient: (info, callback) => {
-			const protocol = info.req.headers['sec-websocket-protocol'];
+		// verifyClient: (info, callback) => {
+		// 	const protocol = info.req.headers['sec-websocket-protocol'];
 			
-			// Vérifier si le client demande votre protocole
-			if (protocol && protocol.includes('chat-v1')) {
-				// Accepter la connexion avec le protocole 'chat-v1'
-				callback(true, 0, '', { 'Sec-WebSocket-Protocol': 'chat-v1' });
-			} else {
-				// Accepter quand même sans protocole (rétro-compatibilité)
-				callback(true);
-			}
-		}
+		// 	// Vérifier si le client demande votre protocole
+		// 	if (protocol && protocol.includes('chat-v1')) {
+		// 		// Accepter la connexion avec le protocole 'chat-v1'
+		// 		callback(true, 0, '', { 'Sec-WebSocket-Protocol': 'chat-v1' });
+		// 	} else {
+		// 		// Accepter quand même sans protocole (rétro-compatibilité)
+		// 		callback(true);
+		// 	}
+		// }
 	}
 });
 
