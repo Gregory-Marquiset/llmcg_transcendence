@@ -66,8 +66,8 @@ const chatServiceCreateMessage = async function (chatObj, token) {
         },
         body: JSON.stringify(chatObj)
     });
-    console.log(`\nchatserviceCreateMessage response.status: ${response.status}\n
-        response.statusText: ${response.statusText}\n`);
+    //console.log(`\nchatserviceCreateMessage response.status: ${response.status}\n
+    //   response.statusText: ${response.statusText}\n`);
     if (!response.ok) {
          let err = new Error(response.statusText);
          err.statusCode = response.status;
@@ -86,7 +86,7 @@ const deliverMessage = async function (chatServiceResponse) {
         status = "offline";
     if (status === "online")
     {
-        console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is online\n`);
+        //console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is online\n`);
         let event = {
             type: "chat:message",
             payload: chatServiceResponse
@@ -95,7 +95,7 @@ const deliverMessage = async function (chatServiceResponse) {
         let sockSet = sessionsByUser?.get(chatServiceResponse.toUserId)?.socketSet;
         if (!sockSet || sockSet.size === 0)
         {
-            console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
+            //console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
             return;
         }
         sockSet.forEach((socket) => {
@@ -104,7 +104,7 @@ const deliverMessage = async function (chatServiceResponse) {
     }
     else
     {
-        console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
+        //console.log(`\ndeliverMessage user ${chatServiceResponse.toUserId} is offline\n`);
     }
 }
 
@@ -119,7 +119,7 @@ export const pushUndeliveredMessages = async function (token) {
         }
     });
     if (!response.ok) {
-        console.log(`\npushUndeliveredMessages response.status: ${response.status}\n`);
+        //console.log(`\npushUndeliveredMessages response.status: ${response.status}\n`);
         let err = new Error(response.statusText);
         err.statusCode = response.status;
         throw err;
@@ -127,13 +127,13 @@ export const pushUndeliveredMessages = async function (token) {
     let undeliveredMessages = await response.json();
     if (!undeliveredMessages)
         return;
-    console.log(`\npushUndeliveredMessages typeof undeliveredMessages: ${typeof undeliveredMessages}\n
-        undeliveredMessages: ${JSON.stringify(undeliveredMessages)}\n`);
+    //console.log(`\npushUndeliveredMessages typeof undeliveredMessages: ${typeof undeliveredMessages}\n
+        //undeliveredMessages: ${JSON.stringify(undeliveredMessages)}\n`);
 
         for (let i = 0; i < undeliveredMessages.length; i++)
         {
-            console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessages[i]}
-            undeliveredMessage: ${JSON.stringify(undeliveredMessages[i])}\n`);
+            //console.log(`\npushUndeliveredMessage in for each, typeof : ${typeof undeliveredMessages[i]}
+            //undeliveredMessage: ${JSON.stringify(undeliveredMessages[i])}\n`);
 
             try {
                 await deliverMessage(undeliveredMessages[i]);
@@ -160,10 +160,10 @@ export const markAsDeliveredInDb = async function (socket, obj, connectionsIndex
     if (obj.type !== "chat:delivered" || !obj.payload || typeof obj.payload !== "object" ||
         !obj.payload.messageId)
     {
-        console.log(`\nmarkAsDeliveredInDb obj.type: ${obj.type}
-            obj.payload: ${obj.payload}
-            typeof obj.payload: ${typeof obj.payload}
-            obj.payload.messageId: ${obj.payload.messageId}\n`);
+        // console.log(`\nmarkAsDeliveredInDb obj.type: ${obj.type}
+        //     obj.payload: ${obj.payload}
+        //     typeof obj.payload: ${typeof obj.payload}
+        //     obj.payload.messageId: ${obj.payload.messageId}\n`);
         socket.send(JSON.stringify({ type: "error", code: "bad_request_format" }));
         return;
     }
@@ -195,8 +195,8 @@ export const markAsDeliveredInDb = async function (socket, obj, connectionsIndex
         },
         body: JSON.stringify({ messageId })
     });
-    console.log(`\nchatservice markAsDelivered response.status: ${response.status}\n
-    response.statusText: ${response.statusText}\n`);
+    // console.log(`\nchatservice markAsDelivered response.status: ${response.status}\n
+    // response.statusText: ${response.statusText}\n`);
     if (!response.ok) {
         let err = new Error(response.statusText);
         err.statusCode = response.status;
@@ -220,7 +220,7 @@ export const handleChatSendEvent = async function (socket, obj, connectionsIndex
     };
 
     let chatServiceResponse = await chatServiceCreateMessage(chatObj, socket.currentToken);
-    console.log(`\nwebsocketHandler chat service response: ${JSON.stringify(chatServiceResponse)}\n`);
+    //console.log(`\nwebsocketHandler chat service response: ${JSON.stringify(chatServiceResponse)}\n`);
     
     let acknowledgement = {
         type: "chat:sent",

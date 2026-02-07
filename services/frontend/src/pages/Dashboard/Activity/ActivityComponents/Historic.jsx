@@ -17,7 +17,7 @@ export default function Historic({setIsLoading}){
             setErrStatus(response.status);
             const data = await response.json();
             setHistory(data);
-            console.log(data);
+            //console.log(data);
         }
         catch (err){
             console.error("Error while fetchin history : ", err);

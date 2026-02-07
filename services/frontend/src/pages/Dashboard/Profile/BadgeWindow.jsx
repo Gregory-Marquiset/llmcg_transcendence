@@ -44,7 +44,7 @@ export default function BadgeWindow({isLoading}){
             return;
           }
           const fetchedUserData = await responseMe.json();
-          console.log(fetchedUserData);
+          //console.log(fetchedUserData);
           setStats(fetchedUserData.stats);
         } catch (err) {
           console.error("Fetch error:", err);

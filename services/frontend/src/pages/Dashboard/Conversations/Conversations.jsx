@@ -122,7 +122,7 @@ function Conversations() {
       }
     };
 
-    console.log("Envoi du message:", input);
+    //console.log("Envoi du message:", input);
 
     // Ajouter le message envoye a l'affichage immediatement
     setMessages((prev) => [...prev, { content: input, sender: 'current' }]);
