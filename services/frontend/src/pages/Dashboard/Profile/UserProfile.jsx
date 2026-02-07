@@ -238,6 +238,7 @@ function UserProfile() {
             )}
             <br />
           </div>
+            <Button text="Retour" onClick={() => navigate('/dashboard')} />
         </div>
         <Footer />
       </Background>

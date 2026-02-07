@@ -3,7 +3,11 @@
 # Utils
 # =========
 
-_now_ms() { date +%s%3N; }
+_now_ms()
+{
+    echo $(( $(date +%s) * 1000 ))
+}
+
 
 _ansi_strip()
 {
