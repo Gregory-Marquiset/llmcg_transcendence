@@ -28,7 +28,6 @@ function computeBadgeProgress(badge, statValue) {
 export default function BadgeWindow({isLoading}){
     const [stats, setStats] = useState(null);
     const accessToken = localStorage.getItem("access_token");
-    const {errStatus, setErrStatus}= useAuth();
     useEffect(() => {
       const fetchProfile = async () => {
         try {

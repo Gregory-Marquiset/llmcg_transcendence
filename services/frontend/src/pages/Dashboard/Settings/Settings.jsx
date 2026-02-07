@@ -1,6 +1,6 @@
 import '../../../styles/App.css'
 import './Settings.css'
-import { LogTitle } from '../../../components'
+import { Loading, LogTitle } from '../../../components'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Footer, Background, HeaderBar, LeftMenu } from '../../../components'
@@ -10,6 +10,7 @@ import { useAuth } from '../../../context/AuthContext'
 function Settings() {
   const [isLoading, setIsLoading] = useState(false);
 
+  if (isLoading) <Loading/>
   return (
     <>
       <Background>
@@ -20,9 +21,9 @@ function Settings() {
           
           <div className="setting-wrapper">
             <h2 className="settings-title">
-              <LogTitle text="Réglages" />
+              <LogTitle text="Réglages ⚙️" />
             </h2>
-           <Confidentiality/>
+           <Confidentiality loading={setIsLoading}/>
             <Languages/>
             <DangerZone/>
           </div>

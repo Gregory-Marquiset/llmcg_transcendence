@@ -1,12 +1,12 @@
-import { Button, Footer, LogTitle, Background, Separator } from '../../components'
+import { Button, Footer, LogTitle, Background, Separator, SpinLogo } from '../../components'
 import { useNavigate } from 'react-router-dom'
-import { logoheader, favicon } from '../../assets'
+import { logoheader } from '../../assets'
 import { useAuth } from '../../context/AuthContext'
 import '../../styles/App.css'
 import './WelcomeStyles.css'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { containerVariants, itemVariants, logoVariants, faviconVariants } from '../../animations'
+import { containerVariants, itemVariants } from '../../animations'
 import { useTranslation } from 'react-i18next'
 
 function Welcome() {
@@ -26,7 +26,6 @@ function Welcome() {
   }
   const handleSignIn = () => handleNavigateWithDelay('/signIn', 300)
   const handleSignUp = () => handleNavigateWithDelay('/signUp', 600)
-  // const handleAuth2 = () => handleNavigateWithDelay('/Auth2', 600)
   const handleAuth42 = () => handleNavigateWithDelay('/Auth42', 600)
   const { t, i18n } = useTranslation()
   const handleLanguageChange = () => {
@@ -88,7 +87,7 @@ function Welcome() {
             </motion.div>
           </motion.div>
         </div>
-        <img src={favicon} className="favicon" />
+        <SpinLogo/>
         <Footer />
       </Background>
     </>
