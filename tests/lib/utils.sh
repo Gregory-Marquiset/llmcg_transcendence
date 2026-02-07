@@ -8,7 +8,6 @@ _now_ms()
     echo $(( $(date +%s) * 1000 ))
 }
 
-
 _ansi_strip()
 {
     _esc="$(printf '\033')"
