@@ -1,7 +1,7 @@
 import "../../styles/App.css";
 import "../Dashboard/Settings/Settings.css";
 import { useEffect, useState, useCallback } from "react";
-import { Footer, Background, HeaderBar, LeftMenu, LogTitle } from "../../components";
+import { Footer, Background, HeaderBar, LeftMenu, LogTitle, Loading } from "../../components";
 
 import "./Watchdog.css";
 
@@ -32,7 +32,7 @@ export default function WatchdogPage() {
 
   const fetchWatchdog = useCallback(async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       setError("");
 
       const res = await fetch("/api/v1/watchdog", { cache: "no-store" });
@@ -49,7 +49,7 @@ export default function WatchdogPage() {
     } catch (e) {
       setError(String(e));
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   }, []);
 
@@ -63,7 +63,12 @@ export default function WatchdogPage() {
     data?.global === "ok" ? "healthy"
     : data?.global === "wait" ? "starting"
     : "unhealthy";
-
+    useEffect(() => {
+      const interval = setInterval(setIsLoading(true), 2000);
+      setIsLoading(false);
+      return () => clearInterval(interval);
+      }, []);
+  if (isLoading) return <Loading/>
   return (
     <>
       <Background>
@@ -75,7 +80,7 @@ export default function WatchdogPage() {
 
             <div className="setting-wrapper">
               <h2 className="settings-title">
-                <LogTitle text="Watchdog" />
+                <LogTitle text="Watchdog 🐕" />
               </h2>
 
               <section className="wd-card">

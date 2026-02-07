@@ -123,7 +123,7 @@ function Profile() {
 
   if (errStatus === 404) return <Error404 />;
   if (errStatus === 401) return <Error401 />;
-
+  if (isLoading) return <Loading/>
   return (
     <>
       <Background>

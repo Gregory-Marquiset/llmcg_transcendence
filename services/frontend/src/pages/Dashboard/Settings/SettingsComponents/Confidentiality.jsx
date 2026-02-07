@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { LogTitle, Button } from '../../../../components'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
-export default function Confidentiality (){
+export default function Confidentiality ( loading){
     const [openSection, setOpenSection] = useState(null)
     const accessToken = localStorage.getItem("access_token");
     const [displayHistory, setDisplayHistory] = useState(false);
@@ -31,6 +31,7 @@ export default function Confidentiality (){
     const requestData = async () => {
         if (!accessToken)
             return;
+        loading(true);
         try {
             const response = await fetch('/api/v1/gdpr/me', {
                 method : "POST",
@@ -38,6 +39,7 @@ export default function Confidentiality (){
                     'Authorization': `Bearer ${accessToken}`
                 }
             });
+            loading(false);
             if (!response.ok){
                 console.log("error response");
                 return ;
@@ -54,6 +56,7 @@ export default function Confidentiality (){
         if (!confirm("Voulez-vous vraiment supprimer vos données d'activité (todo, historique, stats) ? Votre compte sera conservé. Un email de confirmation vous sera envoyé.")) {
             return;
         }
+
         try {
             const response = await fetch('/api/v1/gdpr/data', {
                 method: "POST",

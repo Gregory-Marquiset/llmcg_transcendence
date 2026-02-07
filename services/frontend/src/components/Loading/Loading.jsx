@@ -2,6 +2,7 @@ import './Loading.css'
 import { Background, Button, HeaderBar, Footer} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react';
+import SpinCube from '../SpinCube/SpinCube';
 
 
 export default function Loading({duration = 1000, showProgress = true, showButton = true, showHeader = true}) {
@@ -27,14 +28,7 @@ export default function Loading({duration = 1000, showProgress = true, showButto
       {showHeader &&
         <HeaderBar/>}
         <div className="page-wrapper">
-        <div className="spinner">
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        </div>
+        <SpinCube/>
         {showProgress && 
         <progress className="progress-bar" value={percentage} max={100}></progress>}
         <br/>

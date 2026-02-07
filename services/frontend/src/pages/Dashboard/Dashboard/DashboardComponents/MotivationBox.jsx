@@ -1,3 +1,4 @@
+import { SpinCube } from '../../../../components'
 import '../Dashboard.css'
 import { useState, useEffect } from 'react'
 
@@ -51,14 +52,7 @@ export default function MotivationBox() {
       <div className="motivation-content">
         <span className="motivation-label">Motivation du jour</span>
         <p className="motivation-quote">“{quote}”</p>
-        <div className="spinner">
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        <div />
-        </div>
+        <SpinCube/>
       </div>
     </div>
   )
