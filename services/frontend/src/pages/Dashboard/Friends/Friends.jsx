@@ -3,14 +3,16 @@ import './Friends.css'
 import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
 import { useState } from 'react'
 import { FriendList, RequestList} from '../../../components'
-import { useAuth } from '../../../context/AuthContext'
+import { useWS } from '../../../context/WebSocketContext.jsx'
+
 function MyFriends() {
     const [refresh, setRefresh] = useState(0)
     const triggerRefresh = () => {
       setRefresh(prev => prev + 1)
     }
-    const accessToken = localStorage.getItem("access_token");
     const [isLoading, setIsLoading] = useState(false);
+    const { presenceMap, isConnected } = useWS()
+
     if (isLoading) return <Loading duration={400}  showButton={false}/>
   return (
     <>
@@ -20,7 +22,7 @@ function MyFriends() {
           <div className='core-container'>
             <LeftMenu setIsLoading={setIsLoading}/>
             <div className='content-container'>
-              <FriendList refresh={refresh} />
+              <FriendList refresh={refresh} presenceMap={presenceMap} isWSConnected={isConnected} />
               <RequestList refresh={refresh} onActionDone={triggerRefresh} />
             </div>
           </div>
@@ -30,7 +32,5 @@ function MyFriends() {
     </>
   )
 }
-
-
 
 export default MyFriends
