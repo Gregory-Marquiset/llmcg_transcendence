@@ -85,17 +85,16 @@ export const getMessagesHistoryOpts = {
 		response: {
 			200: {
 				type: "array",
-				properties: {
-					messagesHistory: {
-						type: "object",
-						properties: {
-							messageId: { type: "integer" },
-							fromUserId: { type: "integer" },
-							toUserId: { type: "integer" },
-							content: { type: "string" },
-							clientSentAt: { type: "string" },
-							requestId: { type: "string" }
-						}
+				items: {
+					type: "object",
+					properties: {
+						messageId: { type: "integer" },
+						fromUserId: { type: "integer" },
+						toUserId: { type: "integer" },
+						content: { type: "string" },
+						createdAt: { type: "string" },
+						clientSentAt: { type: "string" },
+						requestId: { type: "string" }
 					}
 				}
 			}

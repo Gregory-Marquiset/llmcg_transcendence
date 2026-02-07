@@ -144,19 +144,22 @@ export const getMessagesHistory = async function (req, reply) {
             throw httpError(404, "User not found");
 
         const messagesHistory = await getAllRowsFromDb(app.pg, `SELECT * FROM chat_history WHERE (from_user_id = $1 AND to_user_id = $2)
-            OR (from_user_id = $2 AND to_user_id = $1)`, [req.user.id, req.params.userId]);
-        
+            OR (from_user_id = $2 AND to_user_id = $1) ORDER BY created_at ASC`, [req.user.id, req.params.userId]);
+
         let history = [];
-        messagesHistory.forEach((message) => {
-            history.push({
-                messageId: message.id,
-                fromUserId: message.from_user_id,
-                toUserId: message.to_user_id,
-                content: message.content,
-                clientSentAt: message.client_sent_at,
-                requestId: message.request_id
+        if (messagesHistory) {
+            messagesHistory.forEach((message) => {
+                history.push({
+                    messageId: message.id,
+                    fromUserId: message.from_user_id,
+                    toUserId: message.to_user_id,
+                    content: message.content,
+                    createdAt: message.created_at,
+                    clientSentAt: message.client_sent_at,
+                    requestId: message.request_id
+                });
             });
-        });
+        }
 
         reply.code(200).send(history);
     } catch (err) {
