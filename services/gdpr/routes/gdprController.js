@@ -27,7 +27,7 @@ async function sendConfirmationMailAccount({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  //console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 async function sendConfirmationMailDisplay({ to, link, action }) {
@@ -41,7 +41,7 @@ async function sendConfirmationMailDisplay({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+//   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 async function sendConfirmationMailData({ to, link, action }) {
@@ -54,7 +54,7 @@ async function sendConfirmationMailData({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+//   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 export const requestAccountDeletion = async function (req, reply){

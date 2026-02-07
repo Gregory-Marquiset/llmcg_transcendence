@@ -69,7 +69,7 @@ function Chat() {
               }
             }
           } catch (err) {
-            console.error(`Failed to fetch history for friend ${friend.id}:`, err)
+            //console.error(`Failed to fetch history for friend ${friend.id}:`, err)
           }
         }
       } catch (err) {

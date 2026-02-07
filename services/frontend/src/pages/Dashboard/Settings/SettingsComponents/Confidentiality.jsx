@@ -92,7 +92,7 @@ export default function Confidentiality ( loading){
             }
             const data = await response.json();
             setHistory(data);
-            console.log(history);
+            //console.log(history);
         }
         catch(err){
             console.log(err);

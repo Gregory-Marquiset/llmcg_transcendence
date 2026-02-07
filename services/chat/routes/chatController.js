@@ -4,7 +4,6 @@ import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFun
 export const createMessage = async function (req, reply) {
 	try {
         let date = new Date().toISOString();
-        console.log(`\ncreateMessage: typeof req.body: ${typeof req.body}\nreq.body: ${JSON.stringify(req.body)}\n`);
         let chatObj = req.body;
 
         if (typeof chatObj?.content !== "string")
@@ -52,14 +51,6 @@ export const createMessage = async function (req, reply) {
             requestId: isMessageAlreadyInDB.request_id,
             deliveredAt: isMessageAlreadyInDB.delivered_at 
         };
-        // responseObj.messageId = isMessageAlreadyInDB.id;
-        // responseObj.fromUserId = isMessageAlreadyInDB.from_user_id;
-        // responseObj.toUserId = isMessageAlreadyInDB.to_user_id;
-        // responseObj.content = isMessageAlreadyInDB.content;
-        // responseObj.createMessage = new Date().toISOString();
-        // responseObj.requestId = isMessageAlreadyInDB.request_id;
-        console.log(`\ncreateMessage responseObj: ${JSON.stringify(responseObj)}\n`);
-        
         return (reply.code(201).send(responseObj));
     
     } catch (err) {
@@ -112,7 +103,6 @@ export const getUndeliveredMessages = async function (req, reply) {
             return (undeliveredMessagesRewrite);
 
         undeliveredMessages.forEach(undeliveredMessage => {
-            console.log(`\ngetUndeliveredMessage foreach: ${JSON.stringify(undeliveredMessage)}\n`);
             undeliveredMessagesRewrite.push({
                 messageId: undeliveredMessage.id,
                 fromUserId: undeliveredMessage.from_user_id,

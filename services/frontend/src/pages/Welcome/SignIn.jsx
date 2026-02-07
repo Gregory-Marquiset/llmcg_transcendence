@@ -58,7 +58,7 @@ function SignIn() {
       }
 
       const userData = await responseMe.json()
-      console.log(userData)
+      //console.log(userData)
 
       // ✅ IMPORTANT: token d'abord (state + storage) -> WS se connecte sans refresh
       setToken(data.access_token)
