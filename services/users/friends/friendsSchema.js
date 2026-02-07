@@ -94,9 +94,6 @@ export const friendsListOpts = {
 						properties: {
 							id: { type: "integer" },
 							username: { type: "string" },
-							// status: { type: "string" },
-							// lastSeenAt: { type: "string" },
-							// activeSince: { type: "string" },
 							avatar_path: { type: "string" }
 						}
 					}
@@ -105,4 +102,26 @@ export const friendsListOpts = {
 		}
 	},
 	handler: friendsController.friendsList
+}
+
+
+export const friendsRequestListOpts = {
+	schema: {
+		response: {
+			200: {
+				type: "array",
+				properties: {
+					friendsRequestList: {
+						type: "object",
+						properties: {
+							id: { type: "integer" },
+							username: { type: "string" },
+							avatar_path: { type: "string" }
+						}
+					}
+				}
+			}
+		}
+	},
+	handler: friendsController.friendsRequestList
 }

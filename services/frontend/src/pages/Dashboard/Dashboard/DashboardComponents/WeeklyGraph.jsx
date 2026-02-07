@@ -1,27 +1,75 @@
 import '../Dashboard.css'
 import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, YAxis, Tooltip, ReferenceLine} from 'recharts'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../../../../context/AuthContext'
 
-const data = [
-    { date: "01/01/2026", logtime: 15 },
-    { date: "02/01/2026", logtime: 5.5 },
-    { date: "03/01/2026", logtime: 7 },
-    { date: "04/01/2026", logtime: 3.5 },
-    { date: "05/01/2026", logtime: 2 },
-    { date: "06/01/2026", logtime: 11 },
-    { date: "07/01/2026", logtime: 11.2},
-    { date: "08/01/2026", logtime: 12 },
-    { date: "09/01/2026", logtime: 8.5 },
-    { date: "10/01/2026", logtime: 0 },
-    { date: "11/01/2026", logtime: 9.5 }
-]
+function formatMinutes(minutes) {
+    if (minutes === 0)
+        return "0 min";
+    const h = Math.floor(minutes);
+    const m = Math.round(minutes % 60);
+    if (h > 0 && m > 0)
+        return `${h}h ${m}min`;
+    if (h > 0)
+        return `${h}h`;
+    return `${m}min`;
+}
+
+
 export default function WeeklyGraph() {
+    const [weeklyLogtime, setWeeklyLogtime] = useState([]);
+    const accessToken = localStorage.getItem("access_token");
+    const {errStatus, setErrStatus}= useAuth();
+    const fetchWeeklyLogtime = async () => {
+    try {
+        const response = await fetch('/api/v1/statistics/weeklylogtime', {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${accessToken}`,
+            },
+        });
+        
+        if (!response.ok) {
+            setErrStatus(response.status);
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            return;
+        }
+        
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error('Expected JSON but got:', text);
+            return;
+        }
+        
+        const data = await response.json();
+        const formatted = data.map(d => ({
+            day: new Date(d.day).toLocaleDateString("fr-FR", {
+                day: "2-digit",
+                month: "2-digit"
+            }),
+            logtime: d.logtime / 60
+        }));
+
+        setWeeklyLogtime(formatted);
+    }
+    catch (err) {
+        console.error('Fetch error:', err);
+    }
+}
+    useEffect (() => {
+        if (accessToken)
+            fetchWeeklyLogtime();
+    }, []);
+    
     return (
         <div className="weekly-graph">
             <h3>Temps de travail cette semaine</h3>
             <div className="chart-wrapper">
                 <ResponsiveContainer width="100%" height={320}>
                     <AreaChart 
-                        data={data}
+                        data={weeklyLogtime}
                         margin={{ top: 10, right: 30, left: 20, bottom: 0 }}
                     >
                         <defs>
@@ -34,7 +82,7 @@ export default function WeeklyGraph() {
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         
                         <XAxis 
-                            dataKey="date" 
+                            dataKey="day" 
                             stroke="#666"
                             style={{ fontSize: '12px' }}
                         />
@@ -46,6 +94,8 @@ export default function WeeklyGraph() {
                         />
                         
                         <Tooltip 
+                            formatter={(value) => formatMinutes(value)}
+                            labelFormatter={(label) => label}
                             contentStyle={{ 
                                 backgroundColor: 'white', 
                                 border: '1px solid #eab2bb',

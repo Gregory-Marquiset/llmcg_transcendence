@@ -18,6 +18,7 @@ async function authRoutes(app, options) {
 
 	app.post('/2fa/verify', { onRequest: [app.authenticate], ...authOpts.auth2faVerifyOpts });
 
+	app.get('/login/42/callback', authOpts.authLogin42Opts);
 
 	// //DEBUGGING ET DELETE TABLE DANS LA DB
 	// app.get('/auth/debug_db', async (req, reply) => {

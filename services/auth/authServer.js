@@ -4,6 +4,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import cors from '@fastify/cors';
+import 'dotenv/config';
 
 //###IMPORT OWN FILES ###
 import * as auth from './routes/auth.js';
@@ -15,6 +16,7 @@ import metricsPlugin from '../shared/metricsPlugin.js';
 
 import fs from 'fs'
 
+import oauthPlugin from '@fastify/oauth2';
 
 export const app = Fastify({
     logger: true,
@@ -98,12 +100,34 @@ app.get('/health', async (req, reply) => {
   reply.code(200).send({ status: 'ok' });
 });
 
+await app.register(oauthPlugin, {
+  name: 'fortyTwoOAuth2',
+  credentials: {
+    client: {
+      id: process.env.FORTY_TWO_CLIENT_ID,
+      secret: process.env.FORTY_TWO_CLIENT_SECRET,
+    },
+    auth: {
+      authorizeHost: 'https://api.intra.42.fr',
+      authorizePath: '/oauth/authorize',
+      tokenHost: 'https://api.intra.42.fr',
+      tokenPath: '/oauth/token',
+    },
+  },
+  scope: ['public'],
+  startRedirectPath: '/login/42',
+  callbackUri: 'http://localhost:5000/api/v1/auth/login/42/callback',
+})
+
 await app.ready();
 //app.log.info('\nAUTH ROUTES:\n' + app.printRoutes());
 //###### STARTING SERVER ######
 const start = async () => {
-    try {
-        await initDb(app);
+  try {
+    await initDb(app);
+    console.log(process.env.FORTY_TWO_CLIENT_ID)
+    console.log(process.env.FORTY_TWO_CLIENT_SECRET)
+    
         await app.listen({ port: 5000, host: '0.0.0.0' });
     } catch (err) {
         console.error(`\nERROR authServer\n`);

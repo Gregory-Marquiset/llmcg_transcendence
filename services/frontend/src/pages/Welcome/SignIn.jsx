@@ -1,4 +1,4 @@
-import { Button, Footer, LogTitle, Background, Loading} from '../../components'
+import { Button, Footer, LogTitle, Background, Loading, SpinLogo} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { useAuth } from '../../context/AuthContext'
@@ -24,10 +24,8 @@ function SignIn(){
     const manageLogIn = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        // send email password to back
         const payload = { email, password };
         try {
-
         const response = await fetch("/api/v1/auth/login", {
         method: 'POST',
         body: JSON.stringify( payload ),
@@ -39,7 +37,6 @@ function SignIn(){
           setIsLoading(false);
           return;
         }
-        // request info from db from back
         const data = await response.json();
         const responseMe = await fetch('/api/v1/auth/me', {
             method: 'GET',
@@ -54,7 +51,6 @@ function SignIn(){
         }
         const userData = await responseMe.json();
         console.log(userData);
-        //process information and navigateto dashboard
         setAuthUser({Name: userData.username});
         setIsLoggedIn(true);
         navigate('/dashboard');
@@ -65,12 +61,12 @@ function SignIn(){
         }
 
     }
-
-    useEffect(() => {
+   useEffect(() => {
         if (isLoggedIn) {
             navigate('/dashboard');
         }
     }, [isLoggedIn]);
+ 
     if (isLoading) return <Loading showHeader={false} showButton={false}/>
     return (
         <Background>
@@ -130,7 +126,7 @@ function SignIn(){
                     </form>
                 </div>
                 
-                <img src={favicon} className="favicon mt-8" alt="Logo animé"/>
+                <SpinLogo/>
                 <Footer/>
         </Background>
     )

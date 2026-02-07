@@ -112,6 +112,53 @@ services:
       timeout: 3s
       retries: 20
 
+  backup:
+    build:
+      context: ./services/backup
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - BACKUP_DIR=/backups
+      - KEEP_DAYS=7
+      - KEEP_LAST=50
+      - TZ=UTC
+    volumes:
+      - backups_data:/backups
+    networks:
+      - net_database
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  backup-cron:
+    build:
+      context: ./services/backup
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - BACKUP_DIR=/backups
+      - KEEP_DAYS=7
+      - KEEP_LAST=50
+      - TZ=UTC
+      - BACKUP_INTERVAL_SEC=3600
+      - BACKUP_JITTER_SEC=20
+    volumes:
+      - backups_data:/backups
+    networks:
+      - net_database
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["/app/cron.sh"]
+    restart: unless-stopped
+
 ### Backend
 
   gateway:
@@ -121,6 +168,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      HEALTH_FAIL_AFTER: "90"
     expose:
       - "5000"
     networks:
@@ -129,17 +177,35 @@ services:
       - net_monitoring
     volumes:
       - vault_secrets:/vault/secrets
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./tests_logs:/watchdog:ro
+      - backups_data:/backups:ro
+    user: "0:0"
     depends_on:
       postgres:
         condition: service_healthy
       vault:
         condition: service_healthy
+    tmpfs:
+      - /tmp
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+      # [
+      #   "CMD-SHELL",
+      #   "failAfter=$${HEALTH_FAIL_AFTER:-90}; \
+      #   start_ticks=$$(awk '{print $$22}' /proc/1/stat 2>/dev/null || echo 0); \
+      #   hz=$$(getconf CLK_TCK 2>/dev/null || echo 100); \
+      #   up=$$(cut -d' ' -f1 /proc/uptime 2>/dev/null || echo 0); \
+      #   elapsed=$$(awk -v up=\"$$up\" -v st=\"$$start_ticks\" -v hz=\"$$hz\" 'BEGIN{printf \"%d\", up - (st/hz)}'); \
+      #   if [ \"$$elapsed\" -ge \"$$failAfter\" ]; then exit 1; fi; \
+      #   node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+      # ]
+
 
   auth-service:
     build:
@@ -148,6 +214,8 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      FORTY_TWO_CLIENT_ID: "${FORTY_TWO_CLIENT_ID}"
+      FORTY_TWO_CLIENT_SECRET: "${FORTY_TWO_CLIENT_SECRET}"
     expose: 
       - "5000"
     networks:
@@ -166,8 +234,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 20
 
   users-service:
     build:
@@ -189,7 +257,128 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    volumes: 
+      - users_avatar_data:/app/users/uploads/avatar
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+  statistics-service:
+    build:
+      context: .
+      dockerfile: ./services/statistics/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+    expose:
+      - "5000"
+    networks:
+      - net_backend
+      - net_monitoring
+    volumes:
+      - vault_secrets:/vault/secrets
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+  
+  chat-service:
+    build:
+      context: .
+      dockerfile: ./services/chat/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+    expose:
+      - "5000"
+    networks:
+      - net_backend
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+  
+  chat-service:
+    build:
+      context: .
+      dockerfile: ./services/chat/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+    expose:
+      - "5000"
+    networks:
+      - net_backend
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
     # volume: users_avatar_data:/app/users/uploads/avatar
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+
+  gdpr-service:
+    build:
+      context: .
+      dockerfile: ./services/gdpr/Dockerfile
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      SMTP_HOST: "smtp.gmail.com"
+      SMTP_PORT: "587"
+      FRONTEND_URL: "http://localhost:5173"
+    expose:
+      - 5000
+    networks:
+      - net_backend
+      - net_monitoring
+    volumes:
+      - vault_secrets:/vault/secrets
+    depends_on:
+      gateway:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
@@ -310,11 +499,139 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     depends_on:
-      gateway:
+      gateway-dev:
         condition: service_healthy
     networks:
-      - net_gateway
+      net_gateway:
+        aliases: ["frontend"]
     restart: unless-stopped
+    profiles: ["dev"]
+
+  gateway-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - gateway_node_modules:/app/node_modules
+    ports:
+      - "5000:5000"
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/gateway/package.json package.json
+      && ln -sf services/gateway/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/gateway
+      && node --watch server.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["gateway"]
+      net_gateway:
+        aliases: ["gateway"]
+      net_monitoring:
+        aliases: ["gateway"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev"]
+
+  auth-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - auth_node_modules:/app/node_modules
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/auth/package.json package.json
+      && ln -sf services/auth/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/auth
+      && node --watch authServer.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["auth-service"]
+      net_monitoring:
+        aliases: ["auth-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
+    profiles: ["dev"]
+
+  users-service-dev:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    volumes:
+      - ./services:/app/services
+      - users_node_modules:/app/node_modules
+    command: >
+      sh -lc 'cd /app
+      && ln -sf services/users/package.json package.json
+      && ln -sf services/users/package-lock.json package-lock.json
+      && test -f node_modules/.package-lock.json || npm ci
+      && cd /app/services/users
+      && node --watch usersServer.js'
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "5000"
+      JWT_SECRET: "${JWT_SECRET}"
+      DATABASE_URL: "${DATABASE_URL}"
+      NODE_ENV: "development"
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      net_backend:
+        aliases: ["users-service"]
+      net_monitoring:
+        aliases: ["users-service"]
+    depends_on:
+      gateway-dev:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 20
     profiles: ["dev"]
 
 ### Config
@@ -337,8 +654,12 @@ networks:
 
 volumes:
   postgresql_data:
+  users_avatar_data:
   frontend_node_modules:
   prometheus_data:
   grafana_data:
+  gateway_node_modules:
+  auth_node_modules:
+  users_node_modules:
+  backups_data:
   vault_secrets:
-  # users_avatar_data:

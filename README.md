@@ -1,26 +1,26 @@
-> This project has been created as part of the 42 curriculum by 5 42 [students](#contributors-responsabilities).
-
-# llmcg_transcendence — 42 Gamification Platform
-
-A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
+> This project has been created as part of the 42 curriculum lobriott, lzaengel, mda-cunh, cdutel, gmarquiset.
 
 ---
 
 ## Table of Contents
 
-* [Project overview](#project-overview)
-* [Quickstart and tests](#quickstart-and-tests)
+* [Description](#description)
+* [Instructions](#instructions)
 * [CI/CD & Project management](#cicd--project-management)
 * [Modules points](#modules-points)
 * [Contributors responsibilities](#contributors-responsabilities)
-* [Resources & AI Usage](#resources--ai-usage)
+* [Resources](#resources)
 
 ---
-<a id="project-overview"></a>
+<a id="description"></a>
 
-## 🌐 Project Overview
+## 🌐 Description
 
-**Goal:** provide a clean, simple and motivating platform where 42 students can create or join challenges, track progress and compete fairly.
+### llmcg_transcendence — 42 Gamification Platform
+
+**Overview:** A full-stack web application that turns the 42 cursus into a gamified experience: challenges between students, progression, XP, badges and leaderboards — built with a production-minded DevOps & Security baseline.
+
+**Goal:** Provide a clean, simple and motivating platform where 42 students can create or join challenges, track progress and compete fairly.
 
 **Users:** 42 students (multi-user concurrency supported).
 
@@ -29,11 +29,14 @@ A full-stack web application that turns the 42 cursus into a gamified experience
 * Authentication (signup/login) + user profiles
 * Challenges between students (create, join, validate, history)
 * XP, levels, badges, streaks (gamification loop)
-* Leaderboards (global + per challenge/category)
 * Real-time updates : WebSocket events for live challenge updates, notifications, and online presence
 * Basic chat system between two users via WebScket.
 
 > Note: The app must run on **Chrome stable** with **no console errors**.
+
+### Project Management
+
+The team organized the work using clear task distribution and regular coordination. Tasks were managed and tracked through GitHub Projects, allowing everyone to follow progress and responsibilities. Communication was handled primarily via Discord, with weekly video calls to discuss progress, address issues, and plan upcoming work.
 
 ### Architecture
 
@@ -45,7 +48,6 @@ High-level components:
 * **Reverse proxy / WAF**: Nginx + ModSecurity (hardened rules)
 * **Security**: HashiCorp Vault
 * **Observability**: Prometheus + Grafana (metrics, dashboards, alerts)
-* **Logs gestion**: ELK (centralized logs, dashboards, retention)
 
 ### Tech Stack
 
@@ -61,14 +63,17 @@ High-level components:
 
 ### Database
 
-* PostgreSQL
+* PostgreSQL (Chosen for its industry standard status)
 * Adminer
+
+## 📊 Database Schema
+
+➡️ [View database schema diagram](docs/database_schema.mmd)
 
 ### DevOps
 
 * Docker / Docker Compose
 * Prometheus + Grafana
-* ELK (Elasticsearch + Logstash + Kibana)
 * Bash unit test
 * Github workflow
 
@@ -78,14 +83,15 @@ High-level components:
 * HashiCorp Vault for secrets
 
 ---
-<a id="quickstart-and-tests"></a>
+<a id="instructions"></a>
 
-## 🚀 Quickstart and tests
+## 🚀 Instructions
 
 ### Prerequisites
 
 * Docker + Docker Compose
 * GNU Make
+* curl + grep
 
 ### 1) Configure environment
 
@@ -107,7 +113,6 @@ make up
 * Adminer: http://localhost:8080
 * Prometheus: http://localhost:9090
 * Grafana: http://localhost:3000
-* Kibana: http://localhost:<KIBANA_PORT>
 
 ### 4) Stop everything
 
@@ -123,7 +128,7 @@ make re
 
 ### 6) Test and demo accounts
 
-The project provides comprehensive unit tests covering every aspect of our work, from Docker to E2E user stories. It also includes seeded demo users to speed up evaluation and testing.
+The project provides comprehensive unit tests covering the basics for this project. It also up the project for speed up evaluation and testing.
 
 ```bash
 make test
@@ -139,14 +144,8 @@ make test-light
 make test-nc
 # Clean evrything from prvious project run and start tests from scratch
 ```
-**After test completion the project is up and completely usable**
 
-**User accounts**
-* `testuser1` / `test1@transcendence.local` / `1234`
-* `testuser2` / `test2@transcendence.local` / `abcd`
-* `testuser3` / `test3@transcendence.local` / `4321`
-
-> Seeds are applied automatically on every Make rule that builds the project (not implemented yet).
+> After test completion the project is up and completely usable
 
 ---
 <a id="cicd--project-management"></a>
@@ -175,7 +174,7 @@ CI runs on every pull request and includes:
   - Unit tests / build
 
 - **End-to-end**
-  - Acceptance tests (user stories)
+  - Acceptance tests (light user stories)
 
 Versioning work conventions:
 
@@ -210,7 +209,6 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 | Allow users to interact with other users                       | Major |      2 | Planned | lzaengel           | Friends, challenges between users, etc.            |
 | Public API (API key + rate limiting + docs + ≥5 endpoints)     | Major |      2 | Planned | cdutel             | Dedicated API key + docs + throttling              |
 | Prometheus + Grafana                                           | Major |      2 | Planned | gmarquis           | Metrics + dashboards + alerting                    |
-| ELK                                                            | Major |      2 | Planned | gmarquis           | Centralized logs + retention + dashboards          |
 | Cybersecurity (WAF + Vault)                                    | Major |      2 | Planned | mda_cunh           | ModSecurity hardened + HashiCorp Vault             |
 | Health check + status page + automated backups + DR procedures | Minor |      1 | Planned | gmarquis           | Status endpoint/page + backup/restore runbook      |
 | Notification system for CRUD actions                           | Minor |      1 | Planned | lobriott           | In-app notifications (and optional email/webhook)  |
@@ -222,8 +220,6 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 | GDPR compliance features                                       | Minor |      1 | Planned | lobriott           | Export/delete data, consent, etc.                  |
 | Data export & import functionality                             | Minor |      1 | Planned | lzaengel           | Export JSON/CSV/XML; import validation; bulk ops   |
 | Multiple languages (≥3 languages)                              | Minor |      1 | Planned | lzaengel           | i18n + locale switching                            |
-
-**Planned total:** 26 / 14
 
 > We may adjust scope/modules during development, but the goal is to stay **>= 19 points** with solid, demonstrable deliverables.
 
@@ -240,7 +236,7 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 | lzaengel | Frontend Developer              | i18n (≥3 languages), UI integration, OAuth2, Friends gestion, dashboard data extraction |
 | mda_cunh | Security                        | WAF (ModSecurity), Vault secrets |
 | cdutel   | Tech Lead Backend               | Backend architecture, Fastify codebase, JWT/session strategy, database design & migrations, user management/auth, public API (API key + rate limiting + docs) |
-| gmarquis | Product Owner + DevOps          | Backlog & global project documentation, CI/CD, unit test (Bash script), observability (Prometheus/Grafana + ELK), health/status + backups/DR |
+| gmarquis | Product Owner + DevOps          | Backlog & global project documentation, CI/CD, unit test (Bash script), observability (Prometheus/Grafana), health/status + backups/DR |
 
 ### PM + Frontend Lead
 
@@ -257,6 +253,10 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 * Frontend implementation:
   * React app structure, routing, state/data fetching
   * notification system for CRUD actions
+
+* Backend implementation:
+  * GDPR-compliant feature with temporary tokens and an RGPD-compliant process
+  * User statistics management for gamification features
 
 * Analytics + compliance:
   * activity analytics & insights dashboard
@@ -278,7 +278,6 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
 * Frontend developer:
   * integration of features/components
-  * OAuth2 remote auth (provider(s) TBD)
   * Friend gestion
   * Dashboard data extraction
 
@@ -291,6 +290,10 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 * Security:
   * HashiCorp Vault integration for secrets
   * Reverse proxy WAF with ModSecurity + hardened rules for JSON APIs
+
+* Backend implementation:
+  * OAuth2 remote auth (provider(s) TBD)
+
 
 ### Tech Lead Backend
 
@@ -330,13 +333,8 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
   * Release workflow
 
 * Observability:
-  * Prometheus scrape + `/metrics` conventions
-  * Grafana dashboards (RPS, 4xx/5xx, p95/p99, container resources)
-  * Alerting rules (service down, high error rate, latency)
-
-* Logs:
-  * Structured JSON logging conventions + request correlation (`request_id`)
-  * ELK pipeline (Logstash → Elasticsearch) + Kibana dashboards/retention
+  * Prometheus scraps
+  * Grafana dashboards
 
 * Resilience:
   * Health checks + status page
@@ -345,9 +343,9 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 > And a special thanks to the cats, soon we will all be transcended by the power of [the flower of knowledge](https://www.youtube.com/watch?v=uwmeH6Rnj2E)
 
 ---
-<a id="resources--ai-usage"></a>
+<a id="resources"></a>
 
-## 📑 Resources & AI Usage
+## 📑 Resources
 
 ### Documentation / References
 

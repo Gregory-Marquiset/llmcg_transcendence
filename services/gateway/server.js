@@ -12,6 +12,7 @@ import fastifyHttpProxy from '@fastify/http-proxy'
 // import { fileURLToPath } from 'node:url'
 //###IMPORT OWN FILES ###
 import * as health from './routes/health.js'
+import * as watchdog from "./routes/watchdog.js";
 //import * as auth from '../auth/auth.js'
 //import * as user from '../users/user/user.js'
 //import * as friends from '../users/friends/friends.js'
@@ -23,6 +24,7 @@ import metricsPlugin from "../shared/metricsPlugin.js";	//	metrics
 
 import fs from 'fs'
 
+import { backupsRoutes } from "./routes/backups.js";
 
 export const app = Fastify({
 	logger: true,
@@ -72,14 +74,80 @@ await app.register(fastifyHttpProxy, {
 });
 
 await app.register(fastifyHttpProxy, {
+	upstream: 'http://chat-service:5000',
+	prefix: '/api/v1/chat'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://chat-service:5000',
+	prefix: '/api/v1/chat'
+});
+
+await app.register(fastifyHttpProxy, {
 	upstream: 'https://auth-service:5000',
 	prefix: '/_docs/auth',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
+	upstream: 'http://statistics-service:5000',
+	prefix: '/_docs/statistics',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://statistics-service:5000',
+	prefix: '/api/v1/statistics'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/_docs/gdpr',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/api/v1/gdpr'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://statistics-service:5000',
+	prefix: '/_docs/statistics',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://statistics-service:5000',
+	prefix: '/api/v1/statistics'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/_docs/gdpr',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://gdpr-service:5000',
+	prefix: '/api/v1/gdpr'
+});
+
+await app.register(fastifyHttpProxy, {
 	upstream: 'https://users-service:5000',
 	prefix: '/_docs/users',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'http://chat-service:5000',
+	prefix: '/_docs/chat',
+	rewritePrefix: '/docs'
+});
+
+await app.register(fastifyHttpProxy, {
+	upstream: 'https://chat-service:5000',
+	prefix: '/_docs/chat',
 	rewritePrefix: '/docs'
 });
 
@@ -152,7 +220,22 @@ await app.register(authPlugin);
 
 //###### WEBSOCKET PLUGIN ######
 await app.register(fastifyWebsocket, {
-	options: { maxPayload: 1048576 }
+	options: { 
+		maxPayload: 1048576,
+		// Ajouter la vérification du protocole
+		verifyClient: (info, callback) => {
+			const protocol = info.req.headers['sec-websocket-protocol'];
+			
+			// Vérifier si le client demande votre protocole
+			if (protocol && protocol.includes('chat-v1')) {
+				// Accepter la connexion avec le protocole 'chat-v1'
+				callback(true, 0, '', { 'Sec-WebSocket-Protocol': 'chat-v1' });
+			} else {
+				// Accepter quand même sans protocole (rétro-compatibilité)
+				callback(true);
+			}
+		}
+	}
 });
 
 //###### PARSE MULTIPART FORM DATA ######
@@ -186,6 +269,8 @@ await app.register(fastifyBcrypt, {
 //####### ROUTES #######
 await app.register(health.healthRoute);
 await app.register(health.ping);
+await app.register(watchdog.watchdogRoute);
+await app.register(backupsRoutes);
 // app.register(auth.authRoutes, { prefix: '/api/v1' });
 // app.register(user.userRoutes, { prefix: '/api/v1' });
 // app.register(friends.friendsRoutes, { prefix: '/api/v1' });
@@ -194,8 +279,6 @@ await app.register(health.ping);
 await app.register(async function (app){
 	app.get('/ws', { websocket: true }, wsHandler.websocketHandler);
 });
-
-
 
 //###### ERROR HANDLER ######
 app.setErrorHandler((error, req, reply) => {

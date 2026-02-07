@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import '../Dashboard.css'
 import { Pie, Cell, PieChart, ResponsiveContainer } from 'recharts'
 
-export default function Streaks() {
-    const [nbStreaks, setNbStreaks] = useState(9);
+export default function Streaks({count}) {
+    const [nbStreaks, setNbStreak] = useState(count);
     const [displayStreak, setDisplayStreak] = useState(nbStreaks % 7);
     const [pieColor, setPieColor] = useState("");
     useEffect(() => {

@@ -204,5 +204,13 @@ skip() { L_SKIP=$((L_SKIP + 1)); }
 
 require_cmd()
 {
-    command -v "$1" >/dev/null 2>&1 || fail "Commande manquante: $1"
+    cmd="$1"
+
+    if command -v "$cmd" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    failed "Commande manquante: $cmd"
+    ret
+    return 1
 }

@@ -74,7 +74,7 @@ await app.register(fastifySwaggerUi, {
     docExpansion: 'list',
     deepLinking: true
   }
-})
+});
 
 //###### PARSE MULTIPART FORM DATA ######
 await app.register(fastifyMultipart, {

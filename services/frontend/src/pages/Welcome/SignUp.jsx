@@ -1,4 +1,4 @@
-import { Footer, LogTitle, Background, Loading} from '../../components'
+import { Footer, LogTitle, Background, Loading, SpinLogo} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { containerVariants, itemVariants} from '../../animations'
@@ -15,6 +15,10 @@ function SignUp() {
   const [username, setUsername] = useState("")
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false);
+  const isUsernameValid = (username) => username.length >= 3 && username.length <= 20
+  const isPasswordValid = (password) => password.length >= 3 && password.length <= 24
+  const isEmailValid = (email) => /^[^@]+@[^@]+.[^@]+$/.test(email)
+
   const handleNavigateWithDelay = (path, delay = 500) => {
     setIsExiting(true)
     setTimeout(() => {
@@ -24,11 +28,28 @@ function SignUp() {
   const manageSignUp = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        if(password !== confpassword)
-        {
-          alert(t('signup.errors.password_mismatch'));
-          setIsLoading(false);
-          return;
+        if (!isUsernameValid(username)) {
+          alert(t('signup.errors.invalid_username'))
+          setIsLoading(false)
+          return
+        }
+
+        if (!isPasswordValid(password)) {
+          alert(t('signup.errors.password_policy'))
+          setIsLoading(false)
+          return
+        }
+
+        if (!isEmailValid(email)) {
+          alert(t('signup.errors.email_policy'))
+          setIsLoading(false)
+          return
+        }
+
+        if (password !== confpassword) {
+          alert(t('signup.errors.password_mismatch'))
+          setIsLoading(false)
+          return
         }
         const payload = { username, email, password };
         console.log({ username, email, password });
@@ -74,23 +95,11 @@ function SignUp() {
             animate={isExiting ? 'exit' : 'visible'}
           >
             <form onSubmit={manageSignUp} className="space-y-7">
+  
               <motion.div variants={itemVariants}>
                 <div className="flex items-center gap-4">
                   <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
                     {t('signup.username')}
-                  </label>
-                  <input
-                    type="text"
-                    className="feild px-4 py-2 rounded-lg w-80"
-                    name="lastname"
-                  />
-                </div>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <div className="flex items-center gap-4">
-                  <label className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#eab2bb] to-[#545454] text-lg w-40 text-right">
-                    Prénom :
                   </label>
                   <input
                     type="text"
@@ -164,7 +173,7 @@ function SignUp() {
           </motion.div>
         </div>
         
-        <img src={favicon} className="favicon"/>
+        <SpinLogo/>
         <Footer />
     </Background>
   )
