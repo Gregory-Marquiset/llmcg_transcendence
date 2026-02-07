@@ -6,7 +6,9 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    left: 400px;
+    /* left: 400px; */
+    margin: 30px;
+    padding: 20px;
     border: solid 7px #858585;
     border-radius: 5%;
     background: linear-gradient(
@@ -20,9 +22,16 @@
     font-size: clamp(18px, 3vw, 32px);
     min-height: auto;
     white-space: normal;
+    z-index: 400;
 }
 
-
+.content-container {
+    flex: 1;
+    min-width: 0;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
+}
 .weekly-graph h3 {
     font-size: 30px;
     font-weight: 250;

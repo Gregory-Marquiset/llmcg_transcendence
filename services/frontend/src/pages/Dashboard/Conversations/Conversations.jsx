@@ -1,5 +1,6 @@
 import './Conversations.css'
 import '../../../styles/App.css'
+
 import { Footer, Background, HeaderBar, LeftMenu, Loading } from '../../../components'
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from 'react-router-dom'
@@ -145,7 +146,7 @@ function Conversations() {
 
   if (!isLoggedIn) {
     return (
-      <div className="Conversations">
+      <div className="core-container">
         <HeaderBar />
         <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
         <Background />

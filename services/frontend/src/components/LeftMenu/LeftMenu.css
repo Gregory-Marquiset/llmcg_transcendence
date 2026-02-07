@@ -1,4 +1,4 @@
-.left-menu{
+.left-menu {
     display: flex;
     flex-direction: column;
     min-height: 440px;
@@ -7,10 +7,10 @@
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
-    left: 20px;
     flex: 0 0 350px;
-    overflow-x: visible;
+    overflow: visible;
     transition: all 300ms;
+    position: relative;
 }
 
 .btn {
@@ -29,57 +29,32 @@
   filter: drop-shadow(0 2px 2px #545454);
   margin: 10px 0;
   z-index: 4;
+  position: relative;
 }
-
-/* Écran large - tout normal */
-@media (max-width: 1200px) {
-    .left-menu {
-        flex: 0 0 300px;
-        max-width: 300px;
-    }
-    .btn {
-        width: 250px;
-        font-size: 17px;
-    }
-}
-
-/* Tablette - encore plus petit */
-@media (max-width: 1024px) {
-    .left-menu {
-        flex: 0 0 250px;
-        max-width: 250px;
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-    .btn {
-        width: 220px;
-        font-size: 16px;
-        height: 45px;
-    }
-}
-
-/* Petit écran - très compact */
 @media (max-width: 900px) {
-    .left-menu {
-        flex: 0 0 200px;
-        max-width: 200px;
-        padding-left: 8px;
-        padding-right: 8px;
+    .core-container {
+        flex-direction: column;
     }
-    .btn {
-        width: 180px;
-        font-size: 14px;
-        height: 40px;
-        padding: 8px 16px;
-    }
-}
-
-/* Mobile - disparaît complètement */
-@media (max-width: 768px) {
+    
     .left-menu {
+        flex: 0 0 auto;
+        max-width: 100%;
+        width: 100%;
+        padding: 10px;
+        min-height: auto;
+    }
+    
+    .left-menu-logo {
         display: none;
     }
+    
+    .btn {
+        width: 90%;
+        max-width: 400px;
+        margin: 5px auto;
+    }
 }
+
 
 .btn {
   background-color: #eab2bb;

@@ -177,19 +177,20 @@ body {
 }
 
 
-.badge-container{
+.badge-container {
     align-items: center;
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
     width: 140px;
+    position: relative;
 }
 
 .badge-container img{
     object-fit: contain;
     object-position: center;
-    width: 200px; /* ✅ Taille fixe de l'image */
-    height: 200px; /* ✅ Taille fixe de l'image */
+    width: 200px;
+    height: 200px;
 }
 
 .badge-progress{
@@ -206,7 +207,7 @@ body {
 
 .badge-name{
     font-size: 19px;
-    text-align: center; /* ✅ Centre le nom */
+    text-align: center;
 }
 
 .badge:hover{
@@ -225,4 +226,35 @@ body {
 .badge-progress-fill {
     height: 100%;
     transition: width 0.3s ease;
+}
+
+
+
+.badge-tooltip {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.2s ease-in;
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
