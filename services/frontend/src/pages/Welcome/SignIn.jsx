@@ -1,4 +1,4 @@
-import { Button, Footer, LogTitle, Background, Loading} from '../../components'
+import { Button, Footer, LogTitle, Background, Loading, SpinLogo} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { useAuth } from '../../context/AuthContext'
@@ -126,7 +126,7 @@ function SignIn(){
                     </form>
                 </div>
                 
-                <img src={favicon} className="favicon mt-8" alt="Logo animé"/>
+                <SpinLogo/>
                 <Footer/>
         </Background>
     )

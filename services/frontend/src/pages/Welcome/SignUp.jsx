@@ -1,4 +1,4 @@
-import { Footer, LogTitle, Background, Loading} from '../../components'
+import { Footer, LogTitle, Background, Loading, SpinLogo} from '../../components'
 import { useNavigate } from 'react-router-dom'
 import { logoheader, favicon } from '../../assets'
 import { containerVariants, itemVariants} from '../../animations'
@@ -173,7 +173,7 @@ function SignUp() {
           </motion.div>
         </div>
         
-        <img src={favicon} className="favicon"/>
+        <SpinLogo/>
         <Footer />
     </Background>
   )

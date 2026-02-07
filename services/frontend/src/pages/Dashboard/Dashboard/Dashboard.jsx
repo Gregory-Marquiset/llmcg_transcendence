@@ -13,7 +13,7 @@ function Dashboard() {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const accessToken = localStorage.getItem("access_token");
-  const {errStatus, setErrStatus}= useAuth();
+  const {errStatus}= useAuth();
   const [userData, setUserData] = useState ({
       id: '',
       username: '',
@@ -39,12 +39,14 @@ function Dashboard() {
   useEffect(() => {
   const fetchProfile = async ()  => {
     try {
+      setIsLoading(true);
       const response = await fetch('api/v1/auth/me', {
           method : 'GET',
           headers : {
             'Authorization' : `Bearer ${accessToken}`
           }
         });
+        setIsLoading(false);
         if (!response.ok){
           localStorage.clear();
           setIsLoggedIn(false);

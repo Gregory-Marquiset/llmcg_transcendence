@@ -1,11 +1,23 @@
 import './styles/App.css'
 import { Welcome, SignIn, SignUp, Auth2, Auth42, Settings, Profile, Dashboard, Activity, Conversations, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me, Error404, Watchdog
   } from './pages/index.js'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from './context/AuthContext.jsx'
+import { useEffect } from 'react'
 function App() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const lastRoute = localStorage.getItem('lastRoute')
+    if (isLoggedIn && lastRoute && location.pathname === '/dashboard' && lastRoute !== '/dashboard') {
+      navigate(lastRoute, { replace: true })
+    }
+  }, [isLoggedIn])
+
   return (
       <Routes>
         <Route path="/" element={<Welcome />} />
