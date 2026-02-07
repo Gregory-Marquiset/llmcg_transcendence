@@ -1,4 +1,4 @@
-import { Background, LogTitle, Button, Footer } from "../../components"
+import { Background, LogTitle, Button, Footer, SpinLogo } from "../../components"
 
 export default function Error401 () {
     return (
@@ -19,8 +19,8 @@ export default function Error401 () {
         <br /><br />
 
         <Button text="Log in again" onClick={() => navigate('/login')} />
+            <SpinLogo/>
         </Background>
-
         <Footer />
     </>
     )

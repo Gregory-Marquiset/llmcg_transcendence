@@ -168,6 +168,7 @@ label .password-icon {
   transition: filter 300ms;
   animation: logo-spin infinite 20s linear;
   filter: drop-shadow(0 0 1em #545454);
-  height: 90px;
+  height: 120px;
   padding: 1.5em;
+  transition: all 200ms;
 }

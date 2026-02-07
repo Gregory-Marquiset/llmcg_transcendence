@@ -21,13 +21,13 @@
     outline: none;
     border: none;
     background-color: transparent;
-    height: 60px;
-    width: 150px; 
+    height: 90px;
+    width: 170px; 
     z-index: 100;
     padding: 0;
     cursor: pointer;
     filter: drop-shadow(0 0 15px white);
-    transition: all 20ms;
+    transition: all 200ms;
 }
 
 .logo-bar img {

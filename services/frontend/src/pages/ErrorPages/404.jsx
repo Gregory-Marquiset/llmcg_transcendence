@@ -1,4 +1,4 @@
-import { Background, LogTitle, Button, Footer } from "../../components"
+import { Background, LogTitle, Button, Footer, SpinCube, SpinLogo } from "../../components"
 import { logoheader } from "../../assets"
 import { useNavigate } from 'react-router-dom'
 export default function Error404(){
@@ -21,6 +21,7 @@ export default function Error404(){
         <br /><br />
 
         <Button text="Go back home" onClick={() => navigate('/')} />
+            <SpinLogo/>
         </Background>
         <Footer />
     </>
