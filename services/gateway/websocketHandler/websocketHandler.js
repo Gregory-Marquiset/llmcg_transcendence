@@ -35,6 +35,7 @@ export const websocketHandler = async function (socket, req) {
 		const userId = decoded.id;
 		
 		socket.isAlive = true;
+		socket.missedPongs = 0;
 		socket.userId = userId;
 		socket.currentToken = token;
 		socket.badFrames = 0;
@@ -50,6 +51,7 @@ export const websocketHandler = async function (socket, req) {
 		socket.on("pong", () => {
 			console.log(`\npong\n`);
 			socket.isAlive = true;
+			socket.missedPongs = 0;
 		});
 
 		let becameOnline = presence.onSocketConnected(socket.userId, socket, date);
@@ -157,11 +159,22 @@ export const heartbeat = function () {
 		console.log(`value.userId: ${value.userId}`);
 		console.log(`value.connectionId: ${value.connectionId}`);
 		// console.log(`value.ip: ${value.ip}\n`);
+
+		// Si pas de pong reçu depuis le dernier ping
 		if (key.isAlive === false)
 		{
-			key.terminate();
-			return;
+			key.missedPongs++;
+			console.log(`\nMissed pong for user ${value.userId}, count: ${key.missedPongs}\n`);
+
+			// Terminer seulement après 3 pongs manqués (tolérance pour onglets inactifs)
+			if (key.missedPongs >= 3)
+			{
+				console.log(`\nTerminating connection for user ${value.userId} after 3 missed pongs\n`);
+				key.terminate();
+				return;
+			}
 		}
+
 		key.isAlive = false;
 		try {
 			key.ping();

@@ -28,10 +28,49 @@
   margin-bottom: 1rem;
 }
 
+.chat-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-back-btn {
+  background: none;
+  border: 2px solid #eab2bb;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.chat-back-btn:hover {
+  background: #eab2bb;
+  color: white;
+}
+
 .chat-header h1 {
   margin: 0;
   font-size: 1.5rem;
   color: #333;
+}
+
+.chat-peer-status {
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.chat-peer-status.online {
+  background: #d4edda;
+  color: #155724;
+}
+
+.chat-peer-status.offline {
+  background: #f0f0f0;
+  color: #999;
 }
 
 .connection-status {
@@ -116,6 +155,14 @@
 .message p {
   margin: 0;
   color: #333;
+}
+
+.message-time {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 4px;
+  text-align: right;
 }
 
 /* Fade-in animation for messages */

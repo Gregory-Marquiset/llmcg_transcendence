@@ -42,6 +42,11 @@
 }
 
 /* Avatar */
+.friend-avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
 .friend-card img {
     width: 60px;
     height: 60px;
@@ -53,6 +58,25 @@
 .friend-card img:hover {
     border: 3px solid #eab2bb;
     box-shadow: 0 4px 12px rgba(234, 178, 187, 0.6);
+}
+
+.friend-presence-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-color: #ccc;
+}
+
+.friend-presence-dot.online {
+    background-color: #4caf50;
+}
+
+.friend-presence-dot.offline {
+    background-color: #ccc;
 }
 
 

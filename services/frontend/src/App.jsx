@@ -1,5 +1,5 @@
 import './styles/App.css'
-import { Welcome, SignIn, SignUp, Auth2, Auth42, Settings, Profile, Dashboard, Activity, Conversations, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me, Error404, Watchdog
+import { Welcome, SignIn, SignUp, Auth2, Auth42, Settings, Profile, Dashboard, Activity, Chat, Conversations, SetProfile, UserProfile, Friends, Policy, Privacy, CGU, GdprConfirm, Me, Error404, Watchdog
   } from './pages/index.js'
 import { Routes, Route } from 'react-router-dom'
 import ProtectedRoutes from './routes/ProtectedRoute.jsx'
@@ -17,6 +17,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/dashboard/activity" element={<Activity/>}/>
             <Route path="/dashboard/friends" element={<Friends/>}/>
+            <Route path="/dashboard/chat" element={<Chat/>}/>
             <Route path="/users/:username/chat" element={<Conversations/>}/>
             <Route path="/dashboard/settings" element={<Settings/>}/>
             <Route path="/dashboard/profile" element={<Profile/>}/>
