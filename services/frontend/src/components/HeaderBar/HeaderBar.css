@@ -202,16 +202,16 @@
 
 .group-search-bar input,
 .search-bar input {
-    color: #333; /* ✅ Couleur du texte tapé */
+    color: #333;
 }
 
 .group-search-bar input::placeholder,
 .search-bar input::placeholder {
-    color: #999; /* ✅ Couleur du placeholder */
+    color: #999;
 }
 
-/* Si tu veux aussi styliser les labels */
+
 .group-search-bar label,
 .search-bar label {
-    color: white; /* ✅ Couleur des labels */
+    color: white;
 }
