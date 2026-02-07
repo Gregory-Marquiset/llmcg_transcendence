@@ -25,9 +25,9 @@
     return(
       <>
         <div className='header-wrapper'>
-          <button className="logo-bar" onClick={() => handleOnClick("/dashboard") }>
+          <div className="logo-bar">
             <img src={logoheader} />
-          </button>
+          </div>
           <div className="header-bar">
           <div className="group-search-bar">
             <form onSubmit={handleSubmit}>

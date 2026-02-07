@@ -1,5 +1,5 @@
 import '../../../styles/App.css'
-import { Footer, Background, HeaderBar, LeftMenu, Loading} from '../../../components'
+import { Footer, Background, HeaderBar, LeftMenu, Loading, SpinLogo} from '../../../components'
 import { useState } from 'react'
 import { Agenda, ToDoListEditor, Historic} from './ActivityComponents'
 import Error404 from '../../ErrorPages/404';
