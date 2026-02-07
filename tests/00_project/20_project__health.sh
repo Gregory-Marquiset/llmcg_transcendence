@@ -29,9 +29,6 @@ http_get_health "http://localhost:5173/api/v1/users"
 http_get_health "http://localhost:5173/api/v1/statistics"
 http_get_health "http://localhost:5173/api/v1/gdpr"
 
-# gateway health
-http_get_health "http://localhost:5000"
-
 # health route
 net_exists "net_backend"
 net_wget_http "http://gateway:5000/health"

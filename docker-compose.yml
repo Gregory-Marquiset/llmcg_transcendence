@@ -115,7 +115,7 @@ services:
     expose:
       - "5000"
     ports:
-      - "5000:5000"
+      - "5001:5000"
     networks:
       - net_backend
       - net_gateway

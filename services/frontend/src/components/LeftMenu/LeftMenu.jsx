@@ -21,6 +21,7 @@ export default function LeftMenu({setIsLoading}){
             <Button onClick={() => handleOnClick("/dashboard")} text="Mon dashboard"/>
             <Button onClick={() => handleOnClick("/dashboard/activity")} text="Mes activités" />
             <Button onClick={() => handleOnClick("/dashboard/friends")} text="Mes Amis"/>
+            <Button onClick={() => handleOnClick("/dashboard/chat")} text="Messages"/>
             <Button onClick={() => handleOnClick("/dashboard/profile")} text="Mon Profil"/>
             <Button onClick={() => handleOnClick("/dashboard/settings")} text="Mes réglages"/>
             <Button onClick={() => handleOnClick("/dashboard/watchdog")} text="Watchdog" />

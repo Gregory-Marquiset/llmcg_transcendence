@@ -31,9 +31,8 @@ function RequestCard({ request, onActionDone }) {
       console.error('Failed to accept request:', err)
     }
   }
-  const host = window.location.hostname;
   const avatarUrl = request.avatar_path && !onError
-    ? `http://${host}:5000/${request.avatar_path}`
+    ? `/avatar/${request.avatar_path}`
     : profilepicture;
 return (
   <div className="friend-card" onClick={handleClick}>
