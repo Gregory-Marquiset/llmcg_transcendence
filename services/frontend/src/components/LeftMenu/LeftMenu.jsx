@@ -1,4 +1,4 @@
-import { Button } from '../'
+import { Button, SpinLogo } from '../'
 import './LeftMenu.css'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react';
@@ -24,6 +24,8 @@ export default function LeftMenu({setIsLoading}){
             <Button onClick={() => handleOnClick("/dashboard/profile")} text="Mon Profil"/>
             <Button onClick={() => handleOnClick("/dashboard/settings")} text="Mes réglages"/>
             <Button onClick={() => handleOnClick("/dashboard/watchdog")} text="Watchdog" />
+                <br/><br/><br/><br/>
+            <SpinLogo/>
           </div>
     )
 }
