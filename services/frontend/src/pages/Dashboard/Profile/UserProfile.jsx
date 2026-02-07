@@ -198,10 +198,6 @@ function UserProfile() {
                 {' '}
                 <strong>Name : </strong> {userData.username}{' '}
               </h4>
-              <h4 className="infos">
-                {' '}
-                <strong>Campus : </strong> (// set le campus via 42)
-              </h4>
             </div>
             <div className='badge-wrapper'>
             {computedBadges.map((type, index) => {
