@@ -171,4 +171,5 @@ label .password-icon {
   height: 120px;
   padding: 1.5em;
   transition: all 200ms;
+  z-index: -1;
 }

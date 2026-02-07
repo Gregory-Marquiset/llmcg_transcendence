@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react'
 import { badges } from '../../../badges/badges'
-import { useAuth } from '../../../context/AuthContext'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
 
   let currentLevel = 0;
-  for (let i = levels.length - 1; i >= 0; i--) {
+  for (let i = 0; i < levels.length; i++) {
     if (statValue >= levels[i].threshold) {
       currentLevel = i;
-      break;
+    } else {
+      break; 
     }
   }
+
   if (currentLevel === levels.length - 1) {
     return { level: currentLevel, progress: 100 };
   }
@@ -20,14 +21,18 @@ function computeBadgeProgress(badge, statValue) {
 
   const progress =
     ((statValue - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
+  
   return {
     level: currentLevel,
     progress: Math.max(0, Math.min(100, progress)),
   };
 }
+
 export default function BadgeWindow({isLoading}){
     const [stats, setStats] = useState(null);
+    const [hoveredBadge, setHoveredBadge] = useState(null);
     const accessToken = localStorage.getItem("access_token");
+    
     useEffect(() => {
       const fetchProfile = async () => {
         try {
@@ -40,7 +45,6 @@ export default function BadgeWindow({isLoading}){
           if (!responseMe.ok) {
             localStorage.clear();
             console.error("Error while fetching info");
-            setIsLoggedIn(false);
             return;
           }
           const fetchedUserData = await responseMe.json();
@@ -50,12 +54,16 @@ export default function BadgeWindow({isLoading}){
           console.error("Fetch error:", err);
         }
       }
-        if (accessToken)
+      if (accessToken)
           fetchProfile();
-      }, []);
+    }, [accessToken]);
+
+    if (!stats) {
+        return <div className='badge-wrapper'>Loading badges...</div>;
+    }
 
     const computedBadges = badges.map((badge) => {
-        const statValue = stats?.[badge.key] ?? 0;
+        const statValue = stats[badge.key] ?? 0;
         const {level, progress} = computeBadgeProgress(badge, statValue);
         return {
             ...badge,
@@ -66,14 +74,19 @@ export default function BadgeWindow({isLoading}){
 
     return (
         <div className='badge-wrapper'>
-            {computedBadges.map((type, index) => {
+            {computedBadges.map((type) => {
                 return (
-                    <div key={type.name} className='badge-container'>
-                            <img 
-                                className='badge'
-                                src={type.levels[type.level].path}
-                                alt={`${type.name} - ${type.description}`}
-                            />
+                    <div 
+                        key={type.name} 
+                        className='badge-container'
+                        onMouseEnter={() => setHoveredBadge(type.name)}
+                        onMouseLeave={() => setHoveredBadge(null)}
+                    >
+                        <img 
+                            className='badge'
+                            src={type.levels[type.level].path}
+                            alt={`${type.name} - ${type.levels[type.level].description}`}
+                        />
                         <div 
                             className="badge-progress-container"
                             style={{ borderColor: '#eab2bb'}}>
@@ -87,6 +100,12 @@ export default function BadgeWindow({isLoading}){
                         </div>
                         <br/>
                         <div className="badge-name">{type.name}</div>
+                        
+                        {hoveredBadge === type.name && (
+                            <div className="badge-tooltip">
+                                {type.levels[type.level].description}
+                            </div>
+                        )}
                     </div>
                 );
             })}

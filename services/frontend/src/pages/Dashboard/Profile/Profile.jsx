@@ -39,8 +39,8 @@ function Profile() {
     setErrStatus,
     isLoggedIn,
     setIsLoggedIn,
-    logout, // ✅ doit exister dans AuthContext (celui qu’on a corrigé)
-    accessToken, // ✅ token en state (source de vérité)
+    logout, 
+    accessToken,
   } = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -62,14 +62,11 @@ function Profile() {
         },
         credentials: "include", // utile si refresh token cookie
       });
-
-      // ✅ On force le logout local quoi qu’il arrive pour fermer WS immédiatement
       logout();
       setLoading(false);
       navigate('/');
 
     } catch (err) {
-      // ✅ idem : on force logout local
       logout();
       setLoading(false);
       navigate('/');

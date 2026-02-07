@@ -1,15 +1,60 @@
-
-.left-menu{
+.left-menu {
     display: flex;
     flex-direction: column;
     min-height: 440px;
     max-width: 335px;
     z-index: 3;
     padding-left: 15px;
+    padding-right: 15px;
     padding-top: 15px;
-    left: 20px;
     flex: 0 0 350px;
+    overflow: visible;
+    transition: all 300ms;
+    position: relative;
 }
+
+.btn {
+  background-color: #eab2bb;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  height: 50px;
+  width: 280px;
+  font-size: 18px;
+  transition: all 300ms;
+  text-align: center;
+  filter: drop-shadow(0 2px 2px #545454);
+  margin: 10px 0;
+  z-index: 4;
+  position: relative;
+}
+@media (max-width: 900px) {
+    .core-container {
+        flex-direction: column;
+    }
+    
+    .left-menu {
+        flex: 0 0 auto;
+        max-width: 100%;
+        width: 100%;
+        padding: 10px;
+        min-height: auto;
+    }
+    
+    .left-menu-logo {
+        display: none;
+    }
+    
+    .btn {
+        width: 90%;
+        max-width: 400px;
+        margin: 5px auto;
+    }
+}
+
 
 .btn {
   background-color: #eab2bb;

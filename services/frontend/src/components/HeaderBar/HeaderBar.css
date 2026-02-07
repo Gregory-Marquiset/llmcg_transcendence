@@ -199,3 +199,19 @@
         pointer-events: none;
     }
 }
+
+.group-search-bar input,
+.search-bar input {
+    color: #333;
+}
+
+.group-search-bar input::placeholder,
+.search-bar input::placeholder {
+    color: #999;
+}
+
+
+.group-search-bar label,
+.search-bar label {
+    color: white;
+}

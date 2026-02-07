@@ -15,10 +15,8 @@ export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [errStatus, setErrStatus] = useState(0);
 
-  // ✅ token en state (source de vérité pour déclencher WS)
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem("access_token"));
 
-  // ✅ helper unique pour garder storage + state synchro
   const setToken = (token) => {
     if (!token) {
       localStorage.removeItem("access_token");
@@ -66,7 +64,6 @@ export function AuthProvider({ children }) {
       setAuthUser(data.user);
       setIsLoggedIn(true);
 
-      // ✅ MAJ token (localStorage + state)
       setToken(data.access_token);
     } catch (err) {
       setIsLoggedIn(false);
@@ -98,12 +95,10 @@ export function AuthProvider({ children }) {
       errStatus,
       setErrStatus,
 
-      // ✅ exposé pour WS + app
       accessToken,
-      setAccessToken, // (on le garde si tu l’utilises ailleurs)
+      setAccessToken,
 
-      // ✅ méthodes
-      setToken, // <-- recommandé d’utiliser ça partout
+      setToken,
       logout,
     }),
     [authUser, isLoggedIn, errStatus, accessToken]

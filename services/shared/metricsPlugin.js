@@ -4,7 +4,7 @@ import client from "prom-client";
 
 export default fp(async function metricsPlugin(fastify, opts) {
   const serviceName = opts?.serviceName || process.env.SERVICE_NAME || "service";
-  const enableBizMetrics = opts?.enableBizMetrics ?? false; // ✅ NEW
+  const enableBizMetrics = opts?.enableBizMetrics ?? false;
   const registry = client.register;
 
   // évite double init si jamais tu register 2 fois
