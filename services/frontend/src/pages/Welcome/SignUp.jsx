@@ -52,8 +52,6 @@ function SignUp() {
           return
         }
         const payload = { username, email, password };
-        console.log({ username, email, password });
-        console.log("Payload to send:", payload);
         try {
         const response = await fetch("/api/v1/auth/register", {
         method: 'POST',

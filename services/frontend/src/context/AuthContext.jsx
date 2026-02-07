@@ -17,10 +17,19 @@ export function AuthProvider({ children }) {
 
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem("access_token"));
 
+  const setToken = (token) => {
+    if (!token) {
+      localStorage.removeItem("access_token");
+      setAccessToken(null);
+      return;
+    }
+    localStorage.setItem("access_token", token);
+    setAccessToken(token);
+  };
+
   const logout = () => {
     console.log("[AUTH] logout called");
-    localStorage.removeItem("access_token");
-    setAccessToken(null);
+    setToken(null);
     setIsLoggedIn(false);
     setAuthUser(null);
   };
@@ -46,8 +55,7 @@ export function AuthProvider({ children }) {
         setIsLoggedIn(false);
         setAuthUser(null);
         setErrStatus(res.status);
-        localStorage.removeItem("access_token");
-        setAccessToken(null);
+        setToken(null);
         return;
       }
 
@@ -56,8 +64,7 @@ export function AuthProvider({ children }) {
       setAuthUser(data.user);
       setIsLoggedIn(true);
 
-      localStorage.setItem("access_token", data.access_token);
-      setAccessToken(data.access_token);
+      setToken(data.access_token);
     } catch (err) {
       setIsLoggedIn(false);
       setAuthUser(null);
@@ -79,23 +86,25 @@ export function AuthProvider({ children }) {
     return () => clearInterval(interval);
   }, [isLoggedIn]);
 
-  const value = useMemo(() => ({
-    authUser,
-    setAuthUser,
-    isLoggedIn,
-    setIsLoggedIn,
-    errStatus,
-    setErrStatus,
-    accessToken,
-    setAccessToken,
-    logout,
-  }), [authUser, isLoggedIn, errStatus, accessToken]);
+  const value = useMemo(
+    () => ({
+      authUser,
+      setAuthUser,
+      isLoggedIn,
+      setIsLoggedIn,
+      errStatus,
+      setErrStatus,
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+      accessToken,
+      setAccessToken,
+
+      setToken,
+      logout,
+    }),
+    [authUser, isLoggedIn, errStatus, accessToken]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthContext;

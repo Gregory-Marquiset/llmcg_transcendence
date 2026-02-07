@@ -21,7 +21,7 @@ export const onSocketConnected = function (userId, socket, date) {
     if (currentUserSession.offlineTimer) {
         clearTimeout(currentUserSession.offlineTimer);
         currentUserSession.offlineTimer = null;
-        console.log(`\nCancelled offline timer for user ${userId}\n`);
+        //console.log(`\nCancelled offline timer for user ${userId}\n`);
     }
 
     currentUserSession.socketSet.add(socket);
@@ -71,7 +71,7 @@ export const onSocketDisconnected = function (userId, socket, date) {
     // Si c'était la dernière connexion, attendre avant de passer offline
     if (currentUserSession.socketSet.size === 0)
     {
-        console.log(`\nNo more sockets for user ${userId}, setting offline timer\n`);
+        //console.log(`\nNo more sockets for user ${userId}, setting offline timer\n`);
 
         // Délai de 15 secondes avant de passer offline
         // Cela permet à l'utilisateur de changer de page sans perdre son statut online
@@ -94,7 +94,7 @@ export const onSocketDisconnected = function (userId, socket, date) {
                         activeSince: currentUserPresence.activeSince
                     }
                 });
-                console.log(`\nUser ${userId} is now offline after timeout\n`);
+                //console.log(`\nUser ${userId} is now offline after timeout\n`);
             }
         }, 15000); // 15 secondes
     }
