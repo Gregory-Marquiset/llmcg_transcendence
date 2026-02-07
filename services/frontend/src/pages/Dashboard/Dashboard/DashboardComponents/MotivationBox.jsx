@@ -1,6 +1,7 @@
 import { SpinCube } from '../../../../components'
 import '../Dashboard.css'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const motivationalQuotes = [
   "Small steps every day add up to big results.",
@@ -42,6 +43,7 @@ const getRandomQuote = () => {
 }
 export default function MotivationBox() {
   const [quote, setQuote] = useState("")
+  const { t } = useTranslation()	
 
   useEffect(() => {
     setQuote(getRandomQuote())
@@ -50,7 +52,7 @@ export default function MotivationBox() {
   return (
     <div className="friend-ranked motivation-card">
       <div className="motivation-content">
-        <span className="motivation-label">Motivation du jour</span>
+        <span className="motivation-label">{t("dashboard.motivation")}</span>
         <p className="motivation-quote">“{quote}”</p>
         <SpinCube/>
       </div>

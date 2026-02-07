@@ -1,0 +1,73 @@
+{
+  "home": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "login42": "Iniciar sesión con 42",
+    "language": "Cambiar idioma"
+  },
+  "signup": {
+    "username": "Nombre de usuario :",
+    "email": "Dirección de correo :",
+    "password": "Contraseña :",
+    "confirm": "Confirmar contraseña :",
+    "submit": "Crear una cuenta :",
+    "errors": {
+      "password_mismatch": "Las contraseñas no coinciden",
+      "registration_failed": "Registro fallido",
+      "network": "Error de red"
+    },
+    "success": "Cuenta creada con éxito"
+  },
+  "signin": {
+    "email": "Dirección de correo :",
+    "password": "Contraseña :",
+    "password_reset": "¿Olvidaste la contraseña?",
+    "submit": "Iniciar sesión",
+    "errors": {
+      "login_failed": "Error al iniciar sesión",
+      "network": "Error de red"
+    }
+  },
+  "sidebar": {
+    "dashboard": "Tablero",
+    "activity": "Actividad",
+    "friend": "Amigos",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "watchdog": "WatchDog"
+  },
+  "activity": {
+    "editor": "Editor de tareas",
+    "title": "Título",
+    "description": "Descripción",
+    "history": "Tu historial",
+    "agenda": "Agenda",
+    "new_task": "Agregar una nueva tarea :",
+    "task_completed": "Tarea completada",
+    "title_mandatory": "El título es obligatorio",
+    "no_task_to_delete": "No hay tareas para eliminar"
+  },
+  "user": {
+    "number_friends": "Número de amigos",
+    "number_request": "Número de solicitudes pendientes",
+    "accept": "Aceptar",
+    "refuse": "Rechazar",
+    "delete": "Eliminar como amigo",
+    "block": "Bloquear usuario",
+    "name": "Nombre",
+    "add": "Enviar solicitud de amistad",
+    "unblock": "Desbloquear usuario",
+    "blocked_you": "te bloqueó",
+    "you_blocked": "bloqueaste a",
+    "info": "Información"
+  },
+  "dashboard": {
+    "motivation": "Motivación del día",
+    "weekly_time": "Horas trabajadas esta semana",
+    "weekly_time_goal": "Objetivo",
+    "streaks": "Rachas",
+    "no_streaks": "No<0/>tienes<0/>ninguna<0/>racha...",
+    "tasks_amount": "Tienes {{count}} tareas",
+    "add_task": "Agregar algunas"
+  }
+}

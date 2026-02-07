@@ -1,31 +1,73 @@
 {
-    "home":{
-        "login": "Connexion",
-        "register": "Inscription",
-        "login42": "Connexion avec 42",
-        "language": "Changez de langue"
+  "home": {
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "login42": "Se connecter avec 42",
+    "language": "Changer de langue"
+  },
+  "signup": {
+    "username": "Nom d'utilisateur :",
+    "email": "Adresse e-mail :",
+    "password": "Mot de passe :",
+    "confirm": "Confirmer le mot de passe :",
+    "submit": "Créer un compte :",
+    "errors": {
+      "password_mismatch": "Les mots de passe ne correspondent pas",
+      "registration_failed": "Échec de l'inscription",
+      "network": "Erreur réseau"
     },
-    "signup":{
-        "username":"Nom d'utilisateur :",
-        "email": "Adresse email :",
-        "password": "Mot de passe :",
-        "confirm": "Confirmer le mot de passe :",
-        "submit": "Creer un compte :",
-        "errors": {
-            "password_mismatch": "Les mots de passe sont differents",
-            "registration_failed": "L'inscription a echoue",
-            "network": "Erreur reseau"
-        },
-        "success": "Compte cree avec succes"
-    },
-    "signin":{
-        "email": "Adresse email :",
-        "password": "Mot de passe :",
-        "password_reset":"Mot de passe oublié ?",
-        "submit": "Se connecter",
-        "errors": {
-            "login_failed": "La connexion a echoue",
-            "network": "Erreur reseau"
-        }
+    "success": "Compte créé avec succès"
+  },
+  "signin": {
+    "email": "Adresse e-mail :",
+    "password": "Mot de passe :",
+    "password_reset": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "errors": {
+      "login_failed": "Échec de la connexion",
+      "network": "Erreur réseau"
     }
+  },
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "activity": "Activité",
+    "friend": "Amis",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "watchdog": "WatchDog"
+  },
+  "activity": {
+    "editor": "Éditeur de tâches",
+    "title": "Titre",
+    "description": "Description",
+    "history": "Votre historique",
+    "agenda": "Agenda",
+    "new_task": "Ajouter une nouvelle tâche :",
+    "task_completed": "Tâche terminée",
+    "title_mandatory": "Le titre est obligatoire",
+    "no_task_to_delete": "Aucune tâche à supprimer"
+  },
+  "user": {
+    "number_friends": "Nombre d'amis",
+    "number_request": "Nombre de demandes en attente",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "delete": "Supprimer comme ami",
+    "block": "Bloquer l'utilisateur",
+    "name": "Nom",
+    "add": "Envoyer une invitation",
+    "unblock": "Débloquer l'utilisateur",
+    "blocked_you": "vous a bloqué",
+    "you_blocked": "vous avez bloqué",
+    "info": "Informations"
+  },
+  "dashboard": {
+    "motivation": "Motivation du jour",
+    "weekly_time": "Heures travaillées cette semaine",
+    "weekly_time_goal": "Objectif",
+    "streaks": "Séries",
+    "no_streaks": "Vous<0/>n'avez<0/>aucune<0/>série...",
+    "tasks_amount": "Vous avez {{count}} tâches",
+    "add_task": "Ajouter des tâches"
+  }
 }

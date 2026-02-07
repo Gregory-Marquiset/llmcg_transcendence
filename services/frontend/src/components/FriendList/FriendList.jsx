@@ -3,8 +3,10 @@ import { Error401, Error404 } from '../../pages'
 import FriendCard from './FriendCard'
 import './FriendList.css'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 function FriendList({ refresh }) {
+  const { t } = useTranslation()
   const accessToken = localStorage.getItem('access_token')
   const [friends, setFriends] = useState([])
   const [loading, setLoading] = useState(false)
@@ -25,7 +27,7 @@ function FriendList({ refresh }) {
 
   return (
     <div className="friend-list-container">
-      <h3> Number of friends : {friends.length}</h3>
+      <h3> {t("user.number_friends")} : {friends.length}</h3>
       <div className="friend-list">
         {friends.map(friend => (
           <FriendCard key={friend.id} friend={friend} />

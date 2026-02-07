@@ -27,5 +27,47 @@
             "login_failed": "sign in failed",
             "network": "Network error"
         }
-    }
+    },
+	"sidebar":{
+        "dashboard": "Dashboard",
+        "activity": "Activity",
+        "friend": "Friends",
+        "profile": "Profile",
+        "settings": "Settings",
+		"watchdog": "WatchDog"
+    },
+	"activity":{
+		"editor": "To do list editor",
+		"title": "Title",
+		"description": "Description",
+		"history": "Your history",
+		"agenda": "Agenda",
+		"new_task": "Add a new task :",
+		"task_completed": "Task completed",
+		"title_mandatory": "The title is mandatory",
+		"no_task_to_delete": "No task to delete"
+	},
+	"user":{
+		"number_friends": "Number of friends",
+		"number_request": "Number of request pending",
+		"accept": "Accept",
+		"refuse": "Refuse",
+		"delete": "Delete as friend",
+		"block": "Block user",
+		"name": "Name",
+		"add": "Send friend invite",
+		"unblock": "Unblock user",
+		"blocked_you": "blocked you",
+		"you_blocked": "you blocked",
+		"info": "Informations"
+	},
+	"dashboard":{
+		"motivation": "Motivation of the day",
+		"weekly_time": "Hours worked this week",
+		"weekly_time_goal": "Goal",
+		"streaks": "Streaks",
+		"no_streaks": "You<0/>have<0/>no<0/>streaks...",
+		"tasks_amount": "You have {{count}} tasks",
+		"add_task": "Add some"
+	}
 }
