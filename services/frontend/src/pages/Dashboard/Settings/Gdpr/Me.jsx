@@ -23,7 +23,7 @@ export default function Me () {
             }
             const data = await response.json();
             setGdprUserData(data);
-            console.log("MES DATAS ", data);
+            //console.log("MES DATAS ", data);
         }
         catch(err){
             console.log("ERROR : ", err);

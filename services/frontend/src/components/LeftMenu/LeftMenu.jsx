@@ -26,8 +26,11 @@ export default function LeftMenu({setIsLoading}){
             <Button onClick={() => handleOnClick("/dashboard/profile")} text={t('sidebar.profile')}/>
             <Button onClick={() => handleOnClick("/dashboard/settings")} text={t('sidebar.settings')}/>
             <Button onClick={() => handleOnClick("/dashboard/watchdog")} text={t('sidebar.watchdog')} />
-                 <br/><br/><br/><br/>
-            <SpinLogo/>
+            
+             <div className="left-menu-logo">
+                <br/><br/><br/><br/>
+                <SpinLogo/>
+            </div>
           </div>
     )
 }

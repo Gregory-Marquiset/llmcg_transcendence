@@ -31,8 +31,8 @@ const rootDir = dirname(fileURLToPath(import.meta.url));
 //###### AVATAR UPLOADS DIRECTORY
 export const uploadsDir = join(rootDir, './uploads/avatar');
 
-console.log(`\nusersServer.js: rootDir: ${rootDir},\n
-	uploadsDir: ${uploadsDir}\n`);
+// console.log(`\nusersServer.js: rootDir: ${rootDir},\n
+// 	uploadsDir: ${uploadsDir}\n`);
 
 //###### STATIC PLUGIN ######
 await app.register(fastifyStatic, {

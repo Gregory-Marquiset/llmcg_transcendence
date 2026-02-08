@@ -52,7 +52,7 @@ export default function ToDoListEditor(){
         setErrStatus(response.status);
         if (!response.ok) throw new Error('Failed to create todo');
         const data = await response.json();
-        console.log("Todo created:", data);
+        //console.log("Todo created:", data);
         setTitle('');
         setDescription('');
         await fetchTodo();

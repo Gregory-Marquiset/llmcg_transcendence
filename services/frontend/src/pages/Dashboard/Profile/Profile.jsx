@@ -42,7 +42,7 @@ function Profile() {
     setErrStatus,
     isLoggedIn,
     setIsLoggedIn,
-    logout,
+    logout, 
     accessToken,
   } = useAuth();
 
@@ -65,7 +65,6 @@ function Profile() {
         },
         credentials: "include",
       });
-
       logout();
       setLoading(false);
       navigate('/');

@@ -5,7 +5,7 @@ export const getAllTodo = async function (req, reply) {
     try {
         const list = await getAllRowsFromDb(
             app.pg, `SELECT * FROM todo_list WHERE user_id = $1`, [req.user.id]);
-        console.log(`Todo list for user ${req.user.id}:`, list);
+        // console.log(`Todo list for user ${req.user.id}:`, list);
         return reply.code(200).send(list);
     }
     catch (err) {
