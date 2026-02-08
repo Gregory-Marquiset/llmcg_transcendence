@@ -58,7 +58,7 @@ const checkJSONValidity = (obj, socket, connectionsIndex, actualUserId) => {
 
 
 const chatServiceCreateMessage = async function (chatObj, token) {
-    const response = await fetch("http://chat-service:5000/messages", {
+    const response = await fetch("https://chat-service:5000/messages", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const deliverMessage = async function (chatServiceResponse) {
 
 export const pushUndeliveredMessages = async function (token) {
     console.log(`\npushUndeliveredMessages\n`);
-    let response = await fetch("http://chat-service:5000/messages/undelivered", {
+    let response = await fetch("https://chat-service:5000/messages/undelivered", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -187,7 +187,7 @@ export const markAsDeliveredInDb = async function (socket, obj, connectionsIndex
         return;
     }
 
-    let response = await fetch("http://chat-service:5000/messages/delivered", {
+    let response = await fetch("https://chat-service:5000/messages/delivered", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

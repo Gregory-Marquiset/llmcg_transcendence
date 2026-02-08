@@ -12,7 +12,7 @@ RECHECK_AFTER_RESTART_SEC="${RECHECK_AFTER_RESTART_SEC:-30}"
 
 LOG_FILE="${LOG_FILE:-./tests/logs_watchdog.log}"
 
-SERVICES="${SERVICES:-postgres gateway auth-service chat-service users-service statistics-service gdpr-service frontend project_health}"
+SERVICES="${SERVICES:-postgres gateway auth-service chat-service users-service statistics-service gdpr-service frontend}"
 
 WAIT_AFTER_RESTART_SEC="${WAIT_AFTER_RESTART_SEC:-60}"
 WAIT_STEP_SEC="${WAIT_STEP_SEC:-5}"

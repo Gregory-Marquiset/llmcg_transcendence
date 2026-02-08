@@ -170,6 +170,7 @@ services:
       PORT: "5000"
       SERVICE_NAME: "gateway"
       HEALTH_FAIL_AFTER: "90"
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     expose:
       - "5000"
     networks:
