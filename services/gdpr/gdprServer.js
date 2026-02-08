@@ -47,7 +47,7 @@ await app.register(fastifySwagger, {
         components: {
             securitySchemes: {
                 bearerAuth: {
-                    type: 'http',
+                    type: 'https',
                     scheme: 'bearer',
                     bearerFormat: 'JWT'
                 }

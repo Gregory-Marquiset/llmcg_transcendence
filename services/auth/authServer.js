@@ -20,6 +20,7 @@ import oauthPlugin from '@fastify/oauth2';
 
 export const app = Fastify({
     logger: true,
+    trustProxy: true,
     https: {
         key:  fs.readFileSync('/vault/secrets/auth.key'),
         cert: fs.readFileSync('/vault/secrets/auth.crt'),
@@ -37,7 +38,7 @@ export const httpError = (code, message) => {
 
 //###### CORS PLUGIN ###### 
 await app.register(cors, {
-    origin: 'http://localhost:5173',
+    origin: 'http://waf:8001',
     credentials: true
 });
 
@@ -54,7 +55,7 @@ await app.register(fastifySwagger, {
         tags: [{ name: 'auth', description: 'Authentication' }],
         components: {
             securitySchemes: {
-                bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
+                bearerAuth: { type: 'https', scheme: 'bearer', bearerFormat: 'JWT' }
             }
         }
     },
@@ -116,7 +117,7 @@ await app.register(oauthPlugin, {
   },
   scope: ['public'],
   startRedirectPath: '/login/42',
-  callbackUri: 'https://localhost:5000/api/v1/auth/login/42/callback',
+  callbackUri: process.env.FORTY_TWO_REDIRECT_URI,
 })
 
 await app.ready();

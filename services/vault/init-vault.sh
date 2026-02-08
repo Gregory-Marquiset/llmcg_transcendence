@@ -158,7 +158,7 @@ create_db_role "auth-role" "SELECT, INSERT, UPDATE, DELETE"
 
 create_db_role "users-role" "SELECT, INSERT, UPDATE, DELETE"
 
-create_db_role "statistics-role" "SELECT, INSERT, UPDATE"
+create_db_role "statistics-role" "SELECT, INSERT, UPDATE, DELETE"
 
 create_db_role "chat-role" "SELECT, INSERT, UPDATE, DELETE"
 

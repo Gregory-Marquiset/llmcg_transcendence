@@ -27,7 +27,7 @@ async function sendConfirmationMailAccount({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-  //console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 async function sendConfirmationMailDisplay({ to, link, action }) {
@@ -41,7 +41,7 @@ async function sendConfirmationMailDisplay({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-//   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 async function sendConfirmationMailData({ to, link, action }) {
@@ -54,16 +54,17 @@ async function sendConfirmationMailData({ to, link, action }) {
       <a href="${link}">${link}</a>
     `
   });
-//   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 export const requestAccountDeletion = async function (req, reply){
     try {
+        const host = req.headers.host;
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
             VALUES ($1, 'delete_account', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
-        const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
+        const confirmUrl = `https://localhost:8001/gdpr/confirm?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailAccount({
             to: mail.email,
@@ -80,11 +81,12 @@ export const requestAccountDeletion = async function (req, reply){
 
 export const requestDataDeletion = async function (req, reply){
     try {
+        const host = req.headers.host;
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
             VALUES ($1, 'delete_data', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
-        const confirmUrl = `http://localhost:5173/gdpr/confirm?token=${token}`;
+        const confirmUrl = `https://localhost:8001/gdpr/confirm?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailData({
             to: mail.email,
@@ -101,11 +103,12 @@ export const requestDataDeletion = async function (req, reply){
 
 export const requestDataDisplay = async function (req, reply) {
     try {
+        const host = req.headers.host;
         const token = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
         await runSql(app.pg, `INSERT INTO gdpr_history (user_id, action, status, token, expires_at)
             VALUES ($1, 'request_data', 'requested', $2, $3)`, [req.user.id, token, expiresAt]);
-        const confirmUrl = `http://localhost:5173/gdpr/me?token=${token}`;
+        const confirmUrl = `https://localhost:8001/gdpr/me?token=${token}`;
         const mail = await getRowFromDB(app.pg, `SELECT email FROM users WHERE id = $1`, [req.user.id]);
         await sendConfirmationMailDisplay({
             to: mail.email,
