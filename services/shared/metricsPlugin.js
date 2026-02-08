@@ -7,20 +7,17 @@ export default fp(async function metricsPlugin(fastify, opts) {
   const enableBizMetrics = opts?.enableBizMetrics ?? false;
   const registry = client.register;
 
-  // évite double init si jamais tu register 2 fois
   if (!fastify.hasDecorator("promInitialized")) {
     client.collectDefaultMetrics({ register: registry });
     fastify.decorate("promInitialized", true);
   }
 
-  // helpers: évite "A metric with the name ... has already been registered."
   const getOrCreateCounter = (cfg) =>
     registry.getSingleMetric(cfg.name) || new client.Counter(cfg);
 
   const getOrCreateHistogram = (cfg) =>
     registry.getSingleMetric(cfg.name) || new client.Histogram(cfg);
 
-  // HTTP metrics (toujours)
   const httpRequestsTotal = getOrCreateCounter({
     name: "http_requests_total",
     help: "Total HTTP requests",
@@ -34,36 +31,34 @@ export default fp(async function metricsPlugin(fastify, opts) {
     buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2, 5],
   });
 
-  // Business metrics (optionnel)
   if (enableBizMetrics) {
-    const loginSuccessTotal = getOrCreateCounter({
-      name: "login_success_total",
+    const llmcg_loginSuccessTotal = getOrCreateCounter({
+      name: "llmcg_login_success_total",
       help: "Total successful logins",
       labelNames: ["service"],
     });
 
-    const loginFailureTotal = getOrCreateCounter({
-      name: "login_failure_total",
+    const llmcg_loginFailureTotal = getOrCreateCounter({
+      name: "llmcg_login_failure_total",
       help: "Total failed logins",
       labelNames: ["service"],
     });
 
-    const usersCreatedTotal = getOrCreateCounter({
-      name: "users_created_total",
+    const llmcg_usersCreatedTotal = getOrCreateCounter({
+      name: "llmcg_users_created_total",
       help: "Total created users",
       labelNames: ["service"],
     });
 
-    // créer la série à 0 uniquement pour les services qui en ont besoin
-    loginSuccessTotal.labels(serviceName).inc(0);
-    loginFailureTotal.labels(serviceName).inc(0);
-    usersCreatedTotal.labels(serviceName).inc(0);
+    llmcg_loginSuccessTotal.labels(serviceName).inc(0);
+    llmcg_loginFailureTotal.labels(serviceName).inc(0);
+    llmcg_usersCreatedTotal.labels(serviceName).inc(0);
 
     if (!fastify.hasDecorator("bizMetrics")) {
       fastify.decorate("bizMetrics", {
-        loginSuccessTotal,
-        loginFailureTotal,
-        usersCreatedTotal,
+        llmcg_loginSuccessTotal,
+        llmcg_loginFailureTotal,
+        llmcg_usersCreatedTotal,
         serviceName,
       });
     }

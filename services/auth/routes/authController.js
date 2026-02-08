@@ -11,7 +11,7 @@ export const authRegister = async function (req, reply) {
 			VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`, [req.body.username, req.body.email, hashedPWD, "avatar/default.jpg"]);
 		if (rowCount !== 1)
 			throw httpError(409, "Username or email already taken");
-    app.bizMetrics.usersCreatedTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
+    app.bizMetrics.llmcg_usersCreatedTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
 		return (reply.code(201).send({ message: "New entry in database" }));
 	} catch (err) {
 		console.error(`\nERROR authRegister: ${err.message}\n`);
@@ -30,7 +30,7 @@ export const authRegister42 = async function (req, reply) {
 		await runSql(app.pg, `INSERT INTO users(username, email, password, avatar_path) 
 			VALUES ($1, $2, $3, $4)`, [req.body.username, req.body.email, hashedPWD, "default.jpg"]);
 
-		app.bizMetrics.usersCreatedTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
+		app.bizMetrics.llmcg_usersCreatedTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
 		return (reply.code(201).send("New entry in database"));
 	} catch (err) {
 		console.error(`\nERROR authRegister: ${err.message}\n`);
@@ -52,13 +52,13 @@ export const authLogin = async function (req, reply) {
 		const userHashedPassword = await getRowFromDB(app.pg, 'SELECT password FROM users WHERE email = $1', [req.body.email]);
 		if (!userHashedPassword)
 		{
-			app.bizMetrics.loginFailureTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
+			app.bizMetrics.llmcg_loginFailureTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
 			throw httpError(401, "Invalid email or password");
 		}
 		const match = await app.bcrypt.compare(req.body.password, userHashedPassword.password);
 		if (match !== true)
 		{
-			app.bizMetrics.loginFailureTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
+			app.bizMetrics.llmcg_loginFailureTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
 			throw httpError(401, "Invalid email or password");
 		}
 		const twofa_enabled = await getRowFromDB(app.pg, 'SELECT twofa_enabled FROM users WHERE email = $1', [req.body.email]);
@@ -88,7 +88,7 @@ export const authLogin = async function (req, reply) {
 		const access_tok = app.jwt.sign(userInfo, { expiresIn: '5m' });
 		const refresh_tok = app.jwt.sign(userInfo, { expiresIn: '1d' });
 		await runSql(app.pg, `INSERT INTO refreshed_tokens(user_id, token) VALUES ($1, $2)`, [userInfo.id, refresh_tok]);
-		app.bizMetrics.loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
+		app.bizMetrics.llmcg_loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();	// Metrics
 		return (reply
 			.setCookie('refreshToken', refresh_tok, {
 				httpOnly: true,
@@ -392,7 +392,7 @@ export const authLogin42Callback = async (request, reply) => {
 	const refresh_tok = app.jwt.sign(userInfo, { expiresIn: '1d' });
 
 	await runSql(app.pg, `INSERT INTO refreshed_tokens(user_id, token) VALUES ($1, $2)`, [userInfo.id, refresh_tok]);
-	app.bizMetrics.loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();
+	app.bizMetrics.llmcg_loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();
 	return (reply
 		.setCookie('refreshToken', refresh_tok, {
 			httpOnly: true,
