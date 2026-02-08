@@ -31,33 +31,33 @@ export default fp(async function metricsPlugin(fastify, opts) {
   });
 
   if (enableBizMetrics) {
-    const loginSuccessTotal = getOrCreateCounter({
-      name: "login_success_total",
+    const llmcg_loginSuccessTotal = getOrCreateCounter({
+      name: "llmcg_login_success_total",
       help: "Total successful logins",
       labelNames: ["service"],
     });
 
-    const loginFailureTotal = getOrCreateCounter({
-      name: "login_failure_total",
+    const llmcg_loginFailureTotal = getOrCreateCounter({
+      name: "llmcg_login_failure_total",
       help: "Total failed logins",
       labelNames: ["service"],
     });
 
-    const usersCreatedTotal = getOrCreateCounter({
-      name: "users_created_total",
+    const llmcg_usersCreatedTotal = getOrCreateCounter({
+      name: "llmcg_users_created_total",
       help: "Total created users",
       labelNames: ["service"],
     });
 
-    loginSuccessTotal.labels(serviceName).inc(0);
-    loginFailureTotal.labels(serviceName).inc(0);
-    usersCreatedTotal.labels(serviceName).inc(0);
+    llmcg_loginSuccessTotal.labels(serviceName).inc(0);
+    llmcg_loginFailureTotal.labels(serviceName).inc(0);
+    llmcg_usersCreatedTotal.labels(serviceName).inc(0);
 
     if (!fastify.hasDecorator("bizMetrics")) {
       fastify.decorate("bizMetrics", {
-        loginSuccessTotal,
-        loginFailureTotal,
-        usersCreatedTotal,
+        llmcg_loginSuccessTotal,
+        llmcg_loginFailureTotal,
+        llmcg_usersCreatedTotal,
         serviceName,
       });
     }
