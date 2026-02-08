@@ -15,13 +15,13 @@ function FriendCard({ friend }) {
     navigate(`/users/${friend.username}/chat`)
   }
   const host = window.location.hostname;
-  const avatarUrl = friend.avatar_path && !onError
-    ? `http://${host}:5000/${friend.avatar_path}`
-    : profilepicture;
+  const avatarUrl = friend.avatar_path
+      ? `/app/users/uploads/${friend.avatar_path}`
+      : profilepicture;
 
   return (
     <div className="friend-card" onClick={handleClick}>
-      <img src={avatarUrl} onError={() => setOnError(true)} alt={FriendCard.username} />  
+      <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)}/>  
       <h3>{friend.username}</h3>
         <Button
             text="Chat"

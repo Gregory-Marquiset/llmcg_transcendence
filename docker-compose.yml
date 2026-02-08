@@ -4,7 +4,6 @@ services:
 
   vault:
     image: hashicorp/vault:1.15.5
-    container_name: vault
     ports:
       - "8200:8200"
     environment:
@@ -39,7 +38,6 @@ services:
 
   waf:
     image: owasp/modsecurity-crs:nginx
-    container_name: waf
     environment:
       - PARANOIA=1
       - SEC_RULE_ENGINE=DetectionOnly
@@ -47,8 +45,10 @@ services:
       - "8001:443"
       - "8000:80"
     volumes:
+      - users_avatar_data:/app/users/uploads/avatar
       - vault_secrets:/etc/nginx/certs:ro
       - ./services/waf/default.conf:/etc/nginx/conf.d/waf.conf:ro
+      - ./services/waf/custom-rules.conf:/etc/modsecurity.d/owasp-crs/rules/CUSTOM-RULES.conf:ro
     networks:
       - net_gateway
     depends_on:
@@ -168,6 +168,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      SERVICE_NAME: "gateway"
       HEALTH_FAIL_AFTER: "90"
     expose:
       - "5000"
@@ -180,6 +181,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./tests_logs:/watchdog:ro
       - backups_data:/backups:ro
+      - users_avatar_data:/app/users/uploads/avatar
     user: "0:0"
     depends_on:
       postgres:
@@ -214,6 +216,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      SERVICE_NAME: "auth"
       FORTY_TWO_CLIENT_ID: "${FORTY_TWO_CLIENT_ID}"
       FORTY_TWO_CLIENT_SECRET: "${FORTY_TWO_CLIENT_SECRET}"
     expose: 
@@ -244,27 +247,23 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      SERVICE_NAME: "users"
     expose:
       - "5000"
     networks:
       - net_backend
-      - net_monitoring
-    volumes:
-      - vault_secrets:/vault/secrets
+      - net_monitoring      
     depends_on:
       gateway:
         condition: service_healthy
       postgres:
         condition: service_healthy
     restart: unless-stopped
-    volumes: 
+    volumes:
+      - vault_secrets:/vault/secrets
       - users_avatar_data:/app/users/uploads/avatar
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
-        ]
+      test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 20
@@ -276,6 +275,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      SERVICE_NAME: "statistics"
     expose:
       - "5000"
     networks:
@@ -304,8 +304,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
-      JWT_SECRET: "${JWT_SECRET}"
-      DATABASE_URL: "${DATABASE_URL}"
+      SERVICE_NAME: "chat"
     expose:
       - "5000"
     networks:
@@ -316,42 +315,11 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
-        ]
-      interval: 10s
-      timeout: 3s
-      retries: 20
-  
-  chat-service:
-    build:
-      context: .
-      dockerfile: ./services/chat/Dockerfile
-    environment:
-      HOST: "0.0.0.0"
-      PORT: "5000"
-      JWT_SECRET: "${JWT_SECRET}"
-      DATABASE_URL: "${DATABASE_URL}"
-    expose:
-      - "5000"
-    networks:
-      - net_backend
-    depends_on:
-      gateway:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
+    volumes:
+      - vault_secrets:/vault/secrets
     # volume: users_avatar_data:/app/users/uploads/avatar
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "node -e \"require('http').get('http://127.0.0.1:5000/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""
-        ]
+      test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 20
@@ -363,6 +331,7 @@ services:
     environment:
       HOST: "0.0.0.0"
       PORT: "5000"
+      SERVICE_NAME: "gdpr"
       SMTP_HOST: "smtp.gmail.com"
       SMTP_PORT: "587"
       FRONTEND_URL: "http://localhost:5173"
@@ -382,8 +351,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -k https://127.0.0.1:5000/health || exit 1"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 20
 
 ### Frontend
 
@@ -417,36 +386,6 @@ services:
     restart: unless-stopped
 
 ### Metrics
-
-  project_health:
-    build:
-      context: ./services/project_health
-    environment:
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_DB: "${POSTGRES_DB}"
-    networks:
-      - net_backend
-      - net_gateway
-      - net_database
-    depends_on:
-      postgres:
-        condition: service_healthy
-      adminer:
-        condition: service_healthy
-      gateway:
-        condition: service_healthy
-      auth-service:
-        condition: service_healthy
-      users-service:
-        condition: service_healthy
-      frontend:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "/check.sh"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
 
   prometheus:
     build:

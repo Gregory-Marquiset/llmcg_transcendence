@@ -19,10 +19,12 @@ function SetProfile(){
             alert("Aucune image n'a été sélectionnée");
             return ;
         }
+        
+        console.log('Fichier sélectionné:', newAvatar.name, newAvatar.size); // ← Debug
+        
         try{
             const formData = new FormData();
             formData.append('avatar', newAvatar);
-            console.info(accessToken)
             const response = await fetch('/api/v1/users/user/me/avatar', {
                 method : 'PUT',
                 headers : {
@@ -30,8 +32,13 @@ function SetProfile(){
                 },
                 body : formData
             });
+            
+            console.log('Response status:', response.status); // ← Debug
+            console.log('Response:', await response.text()); // ← Debug
+            
             if (!response.ok){
-                alert("The avatar could not exceed 5mo");
+                alert(`Erreur ${response.status}: The avatar could not exceed 5mo`);
+                setLoading(false); // ← N'oublie pas ça !
                 return ;
             }
             setTimeout(() => {
@@ -39,9 +46,11 @@ function SetProfile(){
                 setLoading(false),
                 navigate('/dashboard/profile')},
             1000);
-            } catch (err) {
-                alert(err);
-            }
+        } catch (err) {
+            console.error('Erreur complète:', err); // ← Debug
+            alert(err);
+            setLoading(false); // ← N'oublie pas ça !
+        }
     }
     const handleEmailModification = async ( event ) => {
         event.preventDefault();

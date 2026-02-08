@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
+import fs from 'fs'
 
 //### IMPORT OWN FILES ###
 import * as chat from './routes/chat.js';
@@ -9,7 +10,12 @@ import postgresPlugin from '../shared/postgresPlugin.js';
 import { initDb } from '../shared/postgresFunction.js';
 
 export const app = Fastify({
-	logger: true
+	logger: true,
+	https: {
+		key:  fs.readFileSync('/vault/secrets/chat.key'),
+		cert: fs.readFileSync('/vault/secrets/chat.crt'),
+		ca:   fs.readFileSync('/vault/secrets/ca.crt'),
+  }
 });
 
 export const httpError = (code, message) => {
@@ -27,7 +33,7 @@ await app.register(fastifySwagger, {
 			description: 'Chat service description',
 			version: '0.1.0'
 		},
-		servers: [{ url: 'http://localhost:5000/api/v1/chat' }],
+		servers: [{ url: 'https://localhost:5000/api/v1/chat' }],
 		tags: [{ name: 'chat', description: 'Chat' }],
 		components: {
 			securitySchemes: {

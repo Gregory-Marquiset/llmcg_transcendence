@@ -116,7 +116,7 @@ await app.register(oauthPlugin, {
   },
   scope: ['public'],
   startRedirectPath: '/login/42',
-  callbackUri: 'http://localhost:5000/api/v1/auth/login/42/callback',
+  callbackUri: 'https://localhost:5000/api/v1/auth/login/42/callback',
 })
 
 await app.ready();

@@ -17,6 +17,4 @@ compose_build
 
 compose_up
 
-compose_wait_healthy project_health
-
 local_resume

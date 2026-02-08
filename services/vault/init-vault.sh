@@ -20,6 +20,7 @@ until vault status > /dev/null 2>&1 || [ $? -ne 127 ]; do
   echo "En attente de Vault..."
   sleep 1
 done
+
 # -----------------------------------------------------------------------------
 # 2. INITIALISATION (Si nécessaire)
 # -----------------------------------------------------------------------------
@@ -61,7 +62,7 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# 4. CONFIGURATION (LOGIN & MOTEURS)
+# 4. CONFIGURATION DE BASE (LOGIN & MOTEURS)
 # -----------------------------------------------------------------------------
 ROOT_TOKEN=$(jq -r ".root_token" /vault/config/init-keys.json)
 export VAULT_TOKEN=$ROOT_TOKEN
@@ -70,7 +71,7 @@ if ! vault secrets list -format=json | jq -e '."secret/"' > /dev/null; then
     echo "Activation du moteur KV v2..."
     vault secrets enable -version=2 -path=secret kv
 else
-    echo "ℹMoteur KV déjà actif."
+    echo "ℹ Moteur KV déjà actif."
 fi
 
 if ! vault kv get secret/app/jwt > /dev/null 2>&1; then
@@ -84,80 +85,177 @@ if ! vault secrets list -format=json | jq -e '."database/"' > /dev/null; then
     echo "Activation du moteur Database..."
     vault secrets enable database
 else
-    echo "ℹMoteur Database déjà actif."
+    echo "ℹ Moteur Database déjà actif."
 fi
 
+# -----------------------------------------------------------------------------
+# 5. CONFIGURATION DE LA CONNEXION POSTGRESQL
+# -----------------------------------------------------------------------------
 if ! vault read database/config/postgresql >/dev/null 2>&1; then
     echo "Configuration de la connexion Postgres..."
     vault write database/config/postgresql \
         plugin_name=postgresql-database-plugin \
-        allowed_roles="app-role" \
+        allowed_roles="auth-role,users-role,statistics-role,chat-role,gdpr-role,gateway-role" \
         connection_url="postgresql://{{username}}:{{password}}@postgres:5432/transcendance_database?sslmode=disable" \
         username="${POSTGRES_USER}" \
         password="${POSTGRES_PASSWORD}"
 else
-    echo "Une connexion a postgres existe deja"
+    echo "Une connexion à postgres existe déjà"
 fi
 
-echo "Création du rôle 'app-role'..."
-vault write database/roles/app-role \
-    db_name=postgresql \
-creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
-        GRANT CONNECT ON DATABASE transcendance_database TO \"{{name}}\"; \
-        GRANT USAGE, CREATE ON SCHEMA public TO \"{{name}}\"; \
-        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"{{name}}\"; \
-        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";" \
-    revocation_statements="REASSIGN OWNED BY \"{{name}}\" TO \"${POSTGRES_USER}\"; \
-        DROP OWNED BY \"{{name}}\";" \
-    default_ttl="1m" \
-    max_ttl="10m"
+# -----------------------------------------------------------------------------
+# 6. CRÉATION DES RÔLES VAULT PAR SERVICE (LEAST PRIVILEGE)
+# -----------------------------------------------------------------------------
+echo ""
+echo "==================================================================="
+echo "Création des rôles Vault (safe si tables inexistantes)"
+echo "==================================================================="
 
+create_db_role() {
+  ROLE_NAME="$1"
+  TABLE_PRIVS="$2"
+
+  echo "📝 Création du rôle '${ROLE_NAME}'..."
+
+  vault write database/roles/${ROLE_NAME} \
+    db_name=postgresql \
+    creation_statements="
+      CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
+
+      GRANT CONNECT ON DATABASE ${POSTGRES_DB} TO \"{{name}}\";
+      GRANT USAGE ON SCHEMA public TO \"{{name}}\";
+      GRANT CREATE ON SCHEMA public TO \"{{name}}\";
+
+      -- Tables existantes
+      GRANT ${TABLE_PRIVS}
+      ON ALL TABLES IN SCHEMA public
+      TO \"{{name}}\";
+
+      -- Séquences existantes
+      GRANT USAGE, SELECT
+      ON ALL SEQUENCES IN SCHEMA public
+      TO \"{{name}}\";
+
+      -- Tables futures
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public
+      GRANT ${TABLE_PRIVS}
+      ON TABLES TO \"{{name}}\";
+
+      -- Séquences futures
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public
+      GRANT USAGE, SELECT
+      ON SEQUENCES TO \"{{name}}\";
+    " \
+    revocation_statements="
+      REASSIGN OWNED BY \"{{name}}\" TO \"${POSTGRES_USER}\";
+      DROP OWNED BY \"{{name}}\";
+    " \
+    default_ttl="1h" \
+    max_ttl="24h"
+}
+
+create_db_role "auth-role" "SELECT, INSERT, UPDATE, DELETE"
+
+create_db_role "users-role" "SELECT, INSERT, UPDATE, DELETE"
+
+create_db_role "statistics-role" "SELECT, INSERT, UPDATE"
+
+create_db_role "chat-role" "SELECT, INSERT, UPDATE, DELETE"
+
+create_db_role "gdpr-role" "SELECT, INSERT, UPDATE, DELETE"
+
+create_db_role "gateway-role" "SELECT"
+
+echo ""
+echo "✅ Tous les rôles Vault ont été créés avec succès"
+
+# Rotation du mot de passe root pour sécurité
 vault write -force database/rotate-root/postgresql
 
+# -----------------------------------------------------------------------------
+# 7. CONFIGURATION APPROLE PAR SERVICE
+# -----------------------------------------------------------------------------
+echo ""
+echo "==================================================================="
+echo "Configuration AppRole pour chaque service backend"
+echo "==================================================================="
 
-# -----------------------------------------------------------------------------
-# 5. CONFIGURATION APPROLE (Pour le Backend Node.js)
-# -----------------------------------------------------------------------------
-echo "Activation de l'authentification AppRole..."
 if ! vault auth list | grep -q approle; then
     vault auth enable approle
 fi
 
-echo "Création de la policy 'backend-policy' depuis le fichier..."
+create_service_approle() {
+    SERVICE_NAME=$1
+    DB_ROLE=$2
+    
+    echo ""
+    echo "🔐 Configuration de $SERVICE_NAME..."
+    
+    cat > /tmp/${SERVICE_NAME}-policy.hcl <<EOF
+# Accès au secret JWT
+path "secret/data/app/jwt" {
+  capabilities = ["read"]
+}
 
-vault policy write backend-policy /vault/policies/backend-policy.hcl
+# Accès aux credentials dynamiques de la base de données
+path "database/creds/${DB_ROLE}" {
+  capabilities = ["read"]
+}
 
-echo "Création du rôle 'backend-role'..."
-vault write auth/approle/role/backend-role \
-    token_policies="backend-policy"
+# Accès aux certificats PKI
+path "pki/issue/backend" {
+  capabilities = ["create", "update"]
+}
+EOF
 
-echo "Génération du RoleID et SecretID..."
+    vault policy write ${SERVICE_NAME}-policy /tmp/${SERVICE_NAME}-policy.hcl
+    
+    vault write auth/approle/role/${SERVICE_NAME}-role \
+        token_policies="${SERVICE_NAME}-policy" \
+        token_ttl=1h \
+        token_max_ttl=24h
+    
+    ROLE_ID=$(vault read -field=role_id auth/approle/role/${SERVICE_NAME}-role/role-id)
+    SECRET_ID=$(vault write -field=secret_id -f auth/approle/role/${SERVICE_NAME}-role/secret-id)
+    
+    mkdir -p /vault/secrets
+    echo "{\"role_id\":\"${ROLE_ID}\", \"secret_id\":\"${SECRET_ID}\", \"db_role\":\"${DB_ROLE}\"}" > /vault/secrets/${SERVICE_NAME}-approle.json
+    chmod 644 /vault/secrets/${SERVICE_NAME}-approle.json
+    
+    echo "✅ $SERVICE_NAME configuré (fichier: ${SERVICE_NAME}-approle.json)"
+}
+
+create_service_approle "auth" "auth-role"
+create_service_approle "users" "users-role"
+create_service_approle "statistics" "statistics-role"
+create_service_approle "chat" "chat-role"
+create_service_approle "gdpr" "gdpr-role"
+create_service_approle "gateway" "gateway-role"
+
+cp /vault/secrets/gateway-approle.json /vault/secrets/approle.json
 
 # -----------------------------------------------------------------------------
-# 6. EXPORT DES CREDENTIALS (VOLUME PARTAGÉ)
+# 8. CONFIGURATION PKI POUR CERTIFICATS TLS
 # -----------------------------------------------------------------------------
-echo "Export des credentials vers /vault/secrets/approle.json..."
-mkdir -p /vault/secrets
+echo ""
+echo "==================================================================="
+echo "Configuration PKI pour les certificats TLS"
+echo "==================================================================="
 
-# On écrit un fichier JSON que le backend pourra lire
-echo "{\"role_id\":\"$(vault read -field=role_id auth/approle/role/backend-role/role-id)\", \"secret_id\":\"$(vault write -field=secret_id -f auth/approle/role/backend-role/secret-id)\"}" > /vault/secrets/approle.json
-chmod 666 /vault/secrets/approle.json
-
-
-vault secrets enable pki
+vault secrets enable pki 2>/dev/null || echo "ℹ PKI déjà activé"
 vault secrets tune -max-lease-ttl=8760h pki
 
 # Générer la CA interne
 vault write pki/root/generate/internal \
     common_name="42tracker.local" \
-    ttl=8760h
+    ttl=8760h > /dev/null 2>&1 || echo "ℹ CA déjà générée"
 
 vault write pki/config/urls \
     issuing_certificates="http://vault:8200/v1/pki/ca" \
     crl_distribution_points="http://vault:8200/v1/pki/crl"
 
 vault write pki/roles/backend \
-    allowed_domains="gateway,auth,users,frontend,42tracker.local,localhost,waf" \
+    allowed_domains="gateway,auth,users,statistics,chat,gdpr,frontend,42tracker.local,localhost,waf" \
     allow_subdomains=true \
     allow_bare_domains=true \
     max_ttl="8760h"
@@ -170,6 +268,9 @@ services="
 gateway:gateway
 users:users
 auth:auth
+statistics:statistics
+chat:chat
+gdpr:gdpr
 waf:waf
 "
 
@@ -177,7 +278,7 @@ for entry in $services; do
   NAME=$(echo "$entry" | cut -d: -f1)
   CN=$(echo "$entry" | cut -d: -f2)
 
-  echo "🔐 Issuing cert for $NAME ($CN)"
+  echo "🔐 Génération du certificat pour $NAME ($CN)"
 
   vault write -format=json pki/issue/$ROLE \
     common_name="$CN" \
@@ -190,7 +291,30 @@ for entry in $services; do
   rm "$OUT/${NAME}_raw.json"
 done
 
+# -----------------------------------------------------------------------------
+# 9. RÉSUMÉ ET VALIDATION
+# -----------------------------------------------------------------------------
+echo ""
+echo "==================================================================="
 echo "✅ Vault est prêt !"
+echo "==================================================================="
+echo ""
 echo "🔑 ROOT TOKEN: $ROOT_TOKEN"
+echo ""
+echo "📋 Rôles de base de données créés:"
+echo "   - auth-role      → users, refreshed_tokens"
+echo "   - users-role     → users, friendships, user_stats, user_history"
+echo "   - statistics-role → user_stats, daily_logtime (+ lecture todo_list)"
+echo "   - chat-role      → chat_history (+ lecture users, friendships)"
+echo "   - gdpr-role      → toutes tables (lecture + suppression)"
+echo "   - gateway-role   → users (lecture seule)"
+echo ""
+echo "🔐 Fichiers AppRole créés:"
+ls -lh /vault/secrets/*-approle.json 2>/dev/null | awk '{print "   - " $9}'
+echo ""
+echo "📜 Certificats TLS créés:"
+ls -lh /vault/secrets/*.crt 2>/dev/null | awk '{print "   - " $9}'
+echo ""
+echo "==================================================================="
 
 wait $VAULT_PID
