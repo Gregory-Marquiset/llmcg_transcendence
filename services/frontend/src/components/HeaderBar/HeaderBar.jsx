@@ -3,13 +3,15 @@
   import './HeaderBar.css'
   import { useNavigate } from 'react-router-dom'
   import SearchBar from './SearchBar';
+  import { useTranslation } from 'react-i18next'
 
   export default function HeaderBar() {
     const [showResult, setShowResult] = useState(false);
     const [searchInput, setSearchInput] = useState("");
     const [user, setUser] = useState("");
     const navigate = useNavigate();
-          const [results, setResults] = useState([]);
+    const [results, setResults] = useState([]);
+    const { t } = useTranslation();
 
       const handleOnClick = (path) => {
       setResults([]);
@@ -35,7 +37,7 @@
               <input
                 type="text"
                 className="feild px-4 py-2 rounded-lg"
-                placeholder="Utilisateurs"
+                placeholder={t("headerbar.search_user")}
                 onChange={(e) => setUser(e.target.value)}
               />
             </form>

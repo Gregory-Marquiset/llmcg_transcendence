@@ -15,7 +15,7 @@ function Welcome() {
   const { isLoggedIn } = useAuth()
   useEffect(() => {
     if (isLoggedIn) {
-      navigate('/dashboard') // redirect automatically
+      navigate('/dashboard')
     }
   }, [isLoggedIn, navigate]) 
   const handleNavigateWithDelay = (path, delay = 500) => {
@@ -29,10 +29,15 @@ function Welcome() {
   const handleAuth42 = () => handleNavigateWithDelay('/Auth42', 600)
   const { t, i18n } = useTranslation()
   const handleLanguageChange = () => {
-    const nextLang = i18n.language === 'fr' ? 'en' : 'fr'
-    i18n.changeLanguage(nextLang)
-    localStorage.setItem('lang', nextLang)
+    const languages = ['fr', 'en', 'es'];
+    const currentIndex = languages.indexOf(i18n.language);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    const nextLang = languages[nextIndex];
+
+    i18n.changeLanguage(nextLang);
+    localStorage.setItem('lang', nextLang);
   }
+
   
 
   return (

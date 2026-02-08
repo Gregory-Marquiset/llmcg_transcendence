@@ -6,9 +6,12 @@ import { profilepicture } from '../../../assets'
 import { useAuth } from '../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import BadgeWindow from './BadgeWindow'
-import { Error404, Error401 } from '../../index.js' // adapte si ton import est différent
+import { Error404, Error401 } from '../../index.js'
+import { useTranslation } from 'react-i18next'
 
 function Profile() {
+  const { t } = useTranslation()
+
   const [userData, setUserData] = useState({
     id: '',
     username: '',
@@ -39,8 +42,8 @@ function Profile() {
     setErrStatus,
     isLoggedIn,
     setIsLoggedIn,
-    logout, // ✅ doit exister dans AuthContext (celui qu’on a corrigé)
-    accessToken, // ✅ token en state (source de vérité)
+    logout,
+    accessToken,
   } = useAuth();
 
   const [loading, setLoading] = useState(false);
@@ -60,16 +63,14 @@ function Profile() {
         headers: {
           Authorization: `Bearer ${accessToken || ''}`,
         },
-        credentials: "include", // utile si refresh token cookie
+        credentials: "include",
       });
 
-      // ✅ On force le logout local quoi qu’il arrive pour fermer WS immédiatement
       logout();
       setLoading(false);
       navigate('/');
 
     } catch (err) {
-      // ✅ idem : on force logout local
       logout();
       setLoading(false);
       navigate('/');
@@ -91,7 +92,6 @@ function Profile() {
         });
 
         if (!responseMe.ok) {
-          // session invalide => logout local (ferme WS aussi)
           logout();
           console.error("Error while fetching info");
           setLoading(false);
@@ -142,9 +142,9 @@ function Profile() {
                 />
                 {modify && (
                   <>
-                    <p>Changer l'avatar ?</p>
-                    <Button text="Oui" onClick={handleOnClick} />
-                    <Button text="Non" onClick={() => setModify(false)} />
+                    <p>{t('profile.change_avatar')}</p>
+                    <Button text={t('profile.yes')} onClick={handleOnClick} />
+                    <Button text={t('profile.no')} onClick={() => setModify(false)} />
                   </>
                 )}
               </div>
@@ -155,15 +155,15 @@ function Profile() {
               </p>
 
               <div className='personal-infos-profile'>
-                <h3 className='div-title'>Mes informations personnelles</h3>
-                <h4 className='infos'><strong>Name : </strong> {userData.username}</h4>
-                <h4 className='infos'><strong>Email : </strong> {userData.email}</h4>
-                <Button text="Modifier mes infos" onClick={handleOnClick} />
+                <h3 className='div-title'>{t('profile.personal_infos')}</h3>
+                <h4 className='infos'><strong>{t('profile.name')} </strong> {userData.username}</h4>
+                <h4 className='infos'><strong>{t('profile.email')} </strong> {userData.email}</h4>
+                <Button text={t('profile.edit_infos')} onClick={handleOnClick} />
               </div>
 
               <BadgeWindow name={userData.username} isLoading={setLoading} />
 
-              <Button text="Se déconnecter" onClick={handleLogOut} />
+              <Button text={t('profile.logout')} onClick={handleLogOut} />
               <br />
             </div>
           </div>

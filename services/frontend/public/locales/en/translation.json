@@ -68,6 +68,229 @@
 		"streaks": "Streaks",
 		"no_streaks": "You<0/>have<0/>no<0/>streaks...",
 		"tasks_amount": "You have {{count}} tasks",
-		"add_task": "Add some"
+		"add_task": "Add some",
+		"hello": "Hello"
+	},
+	"conversations": {
+		"title": "Chat with {{username}}",
+		"connected": "Connected",
+		"connecting": "Connecting...",
+		"disconnected": "Disconnected",
+		"no_messages": "No messages yet. Start the conversation!",
+		"input_placeholder": "Type your message...",
+		"send": "Send",
+		"login_required": "Please log in to access the chat",
+		"connection_lost": "Connection lost. Please wait for reconnection."
+	},
+	"profile_settings": {
+		"title": "Edit profile",
+		"change_avatar": "Change avatar:",
+		"update": "Update",
+		"new_username": "New username:",
+		"new_email": "New email:",
+		"back": "Back",
+		"alerts": {
+			"no_image": "No image selected",
+			"avatar_too_large": "Avatar must not exceed 5MB",
+			"avatar_success": "Avatar updated successfully!",
+			"email_error": "Error while updating email",
+			"username_error": "Error while updating username"
+  		}
+	},
+	"profile": {
+		"change_avatar": "Change avatar?",
+		"yes": "Yes",
+		"no": "No",
+		"personal_infos": "My personal information",
+		"name": "Name:",
+		"email": "Email:",
+		"edit_infos": "Edit my information",
+		"logout": "Log out"
+	},
+	"errors": {
+		"401": {
+			"title": "401 — Session expired",
+			"message_line_1": "Your session has expired for security reasons.",
+			"message_line_2": "Please log in again to continue.",
+			"login_again": "Log in again"
+		},
+		"404": {
+			"title": "404 — Page not found",
+			"message_line_1": "The page you are looking for doesn’t exist or has been moved.",
+			"message_line_2": "Let’s get you back on track.",
+			"go_home": "Go back home"
+		}
+	},
+	"watchdog": {
+		"title": "Watchdog 🐕",
+		"global": "Global",
+		"backups": "Backups",
+		"services": "Services",
+		"loading": "Loading…",
+		"last_file": "Last file",
+		"size": "Size",
+		"last_run": "Last run",
+		"next_run": "Next run",
+		"none": "None",
+		"bytes": "bytes",
+		"error_http": "Watchdog error: HTTP {{status}}",
+		"badge": {
+			"ok": "OK",
+			"wait": "WAIT",
+			"ko": "KO"
+		}
+	},
+	"headerbar":{
+		"search_user": "Search User",
+		"search": "Search"
+	},
+	"cgu": {
+		"title": "Terms of Use",
+		"update_date": "Last updated: 16/01/2026"
+	},
+	"cgu_policy": {
+		"acceptance": {
+			"title": "Acceptance",
+			"content": "By using this application, you accept these terms."
+		},
+		"user_conduct": {
+			"title": "User Conduct",
+			"content": "You agree to",
+			"list": [
+			"Use the service respectfully",
+			"Not harass other users",
+			"Not cheat or exploit the game",
+			"Not share your account credentials"
+			]
+		},
+		"account_termination": {
+			"title": "Account Termination",
+			"content": "We reserve the right to suspend or delete accounts that violate these terms."
+		},
+		"intellectual_property": {
+			"title": "Intellectual Property",
+			"content": "This project is developed as part of the curriculum at 42 school."
+		},
+		"liability_limitation": {
+			"title": "Limitation of Liability",
+			"content": "This service is provided 'as is' without any warranty. We are not responsible for data loss or service interruptions."
+		},
+		"terms_modification": {
+			"title": "Modification of Terms",
+			"content": "We may update these terms. Continuing to use the service constitutes acceptance of the new terms."
+		},
+		"educational_project": {
+			"title": "Educational Project",
+			"content": "This application is developed as an educational project at 42 Paris. It is not for commercial use."
+		}
+	},
+	"policy": {
+		"title": "Legal Documents",
+		"description": "Check out our Terms of Use and Privacy Policy",
+		"terms_button": "Terms of Use",
+		"privacy_button": "Privacy Policy"
+	},
+	"privacy": {
+		"title": "Privacy Policy",
+		"update_date": "Last updated: 16/01/2026"
+	},
+	"privacy_policy": {
+		"data_collection": {
+			"title": "Data Collection",
+			"content": "We collect the following information:",
+			"list": [
+			"Username and email (via 42 API or manual registration)",
+			"Profile picture",
+			"Usage statistics and login history",
+			"Authentication tokens"
+			]
+		},
+		"data_usage": {
+			"title": "Data Usage",
+			"content": "Your data is used for:",
+			"list": [
+			"Providing app features and authentication",
+			"Displaying user profiles and statistics",
+			"Enabling social features and dashboard layout"
+			]
+		},
+		"data_storage": {
+			"title": "Data Storage",
+			"content": "Your data is securely stored for:",
+			"list": [
+			"Data is stored securely on our servers",
+			"Session tokens expire after 5 minutes",
+			"Passwords are managed by VAULT (to update)"
+			]
+		},
+		"user_rights": {
+			"title": "User Rights",
+			"content": "You have the right to:",
+			"list": [
+			"Access your personal data",
+			"Request deletion of your data",
+			"Export your app statistics"
+			]
+		},
+		"third_party_services": {
+			"title": "Third-party Services",
+			"content": "To view all privacy policies related to 42Tracker, we declare using:",
+			"list": [
+			"42 API",
+			"AUTH0.2 authentication"
+			]
+		},
+		"cookies": {
+			"title": "Cookies",
+			"content": "We use cookies to:",
+			"list": [
+			"Maintain your login session"
+			]
+		}
+	},
+	"gdpr_confirm": {
+		"title": "Do you confirm to delete all your data?",
+		"description": "It concerns your todo list, logtime, history, and success badges progression",
+		"yes": "Yes",
+		"no": "No",
+		"no_token": "No deletion token"
+	},
+	"gdpr_me": {
+		"title": "Your data",
+		"download": "Download my data (.json)",
+		"show": "Show my data",
+		"json_preview": "JSON preview:",
+		"back": "Back"
+	},
+	"settings": {
+		"title": "Settings ⚙️"
+	},
+	"settings_confidentiality": {
+		"title": "Confidentiality",
+		"request_data": "Request my data",
+		"delete_data": "Delete my data",
+		"history": "GDPR history",
+		"json_preview": "JSON preview:",
+		"confirm_delete_message": "Do you really want to delete your activity data (todo, history, stats)? Your account will be kept. A confirmation email will be sent.",
+		"email_sent": "A confirmation email has been sent. Follow the link to confirm deletion.",
+		"claim_email_sent": "An email has been sent!",
+		"request_error": "Error requesting data",
+		"delete_error": "Error: {{message}}"
+	},
+	"settings_dangerzone": {
+		"title": "Danger zone",
+		"delete_account": "Delete my account",
+		"delete_data": "Erase my data",
+		"email_sent": "A confirmation email has been sent!"
+	},
+	"settings_languages": {
+		"title": "Language preference",
+		"choose_french": "Choose French",
+		"choose_english": "Choose English",
+		"choose_spanish": "Choose Spanish"
+	},
+	"footer": {
+    	"legal_docs": "Legal Documents"
 	}
+
 }

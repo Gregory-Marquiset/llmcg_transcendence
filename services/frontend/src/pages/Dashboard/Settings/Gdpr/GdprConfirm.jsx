@@ -2,14 +2,17 @@ import { logoheader } from "../../../../assets";
 import { Background, Footer, LogTitle, Button } from "../../../../components";
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+
 export default function GdprConfirm (){
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
     const [status, setStatus] = useState("");
     const confirmDeletion = async () => {
         if (!token){
-            alert("No deletion token");
+            alert(t("gdpr_confirm.no_token"));
             navigate('/')
             return ;
         }
@@ -37,11 +40,11 @@ export default function GdprConfirm (){
  return (<>
     <Background>
         <img src={logoheader} className="logoheader" alt="42 Tracker" />
-        <LogTitle text="Do you confirm to delete all your data ?"/>
+        <LogTitle text={t("gdpr_confirm.title")}/>
         <br/>
-        <p>It concerns your todo list, logtime, history. success badges progression</p>
+        <p>{t("gdpr_confirm.description")}</p>
         <br/><br/>
-        <Button text="Yes" onClick={confirmDeletion}/> <Button text="No" onClick={()=> navigate('/')}/>
+        <Button text={t("gdpr_confirm.yes")} onClick={confirmDeletion}/> <Button text={t("gdpr_confirm.no")} onClick={()=> navigate('/')}/>
     </Background>
     <Footer/>
     </>

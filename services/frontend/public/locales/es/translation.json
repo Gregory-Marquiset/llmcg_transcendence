@@ -1,73 +1,296 @@
 {
-  "home": {
-    "login": "Iniciar sesión",
-    "register": "Registrarse",
-    "login42": "Iniciar sesión con 42",
-    "language": "Cambiar idioma"
-  },
-  "signup": {
-    "username": "Nombre de usuario :",
-    "email": "Dirección de correo :",
-    "password": "Contraseña :",
-    "confirm": "Confirmar contraseña :",
-    "submit": "Crear una cuenta :",
-    "errors": {
-      "password_mismatch": "Las contraseñas no coinciden",
-      "registration_failed": "Registro fallido",
-      "network": "Error de red"
+    "home":{
+        "login": "Iniciar sesión",
+        "register": "Registrarse",
+        "login42": "Iniciar sesión con 42",
+        "language": "Cambiar idioma"
     },
-    "success": "Cuenta creada con éxito"
-  },
-  "signin": {
-    "email": "Dirección de correo :",
-    "password": "Contraseña :",
-    "password_reset": "¿Olvidaste la contraseña?",
-    "submit": "Iniciar sesión",
+    "signup":{
+        "username":"Nombre de usuario :",
+        "email": "Correo electrónico :",
+        "password": "Contraseña :",
+        "confirm": "Confirmar contraseña :",
+        "submit": "Crear cuenta :",
+        "errors": {
+            "password_mismatch": "Las contraseñas no coinciden",
+            "registration_failed": "Error en el registro",
+            "network": "Error de red"
+        },
+        "success": "Cuenta creada con éxito"
+    },
+    "signin":{
+        "email": "Correo electrónico :",
+        "password": "Contraseña :",
+        "password_reset":" ¿Olvidaste tu contraseña?",
+        "submit": "Iniciar sesión",
+        "errors": {
+            "login_failed": "Error al iniciar sesión",
+            "network": "Error de red"
+        }
+    },
+    "sidebar":{
+        "dashboard": "Tablero",
+        "activity": "Actividad",
+        "friend": "Amigos",
+        "profile": "Perfil",
+        "settings": "Ajustes",
+        "watchdog": "WatchDog"
+    },
+    "activity":{
+        "editor": "Editor de lista de tareas",
+        "title": "Título",
+        "description": "Descripción",
+        "history": "Tu historial",
+        "agenda": "Agenda",
+        "new_task": "Agregar nueva tarea :",
+        "task_completed": "Tarea completada",
+        "title_mandatory": "El título es obligatorio",
+        "no_task_to_delete": "No hay tareas para eliminar"
+    },
+    "user":{
+        "number_friends": "Número de amigos",
+        "number_request": "Número de solicitudes pendientes",
+        "accept": "Aceptar",
+        "refuse": "Rechazar",
+        "delete": "Eliminar como amigo",
+        "block": "Bloquear usuario",
+        "name": "Nombre",
+        "add": "Enviar invitación de amistad",
+        "unblock": "Desbloquear usuario",
+        "blocked_you": "te bloqueó",
+        "you_blocked": "bloqueaste a",
+        "info": "Información"
+    },
+    "dashboard":{
+        "motivation": "Motivación del día",
+        "weekly_time": "Horas trabajadas esta semana",
+        "weekly_time_goal": "Meta",
+        "streaks": "Rachas",
+        "no_streaks": "No<0/>tienes<0/>ninguna<0/>racha...",
+        "tasks_amount": "Tienes {{count}} tareas",
+        "add_task": "Agregar",
+        "hello": "Hola"
+    },
+    "conversations": {
+        "title": "Chatear con {{username}}",
+        "connected": "Conectado",
+        "connecting": "Conectando...",
+        "disconnected": "Desconectado",
+        "no_messages": "No hay mensajes aún. ¡Comienza la conversación!",
+        "input_placeholder": "Escribe tu mensaje...",
+        "send": "Enviar",
+        "login_required": "Por favor inicia sesión para acceder al chat",
+        "connection_lost": "Conexión perdida. Esperando reconexión..."
+    },
+    "profile_settings": {
+        "title": "Editar perfil",
+        "change_avatar": "Cambiar avatar :",
+        "update": "Actualizar",
+        "new_username": "Nuevo nombre de usuario :",
+        "new_email": "Nuevo correo :",
+        "back": "Volver",
+        "alerts": {
+            "no_image": "No se seleccionó ninguna imagen",
+            "avatar_too_large": "El avatar no debe exceder 5 MB",
+            "avatar_success": "¡Avatar actualizado con éxito!",
+            "email_error": "Error al actualizar el correo",
+            "username_error": "Error al actualizar el nombre de usuario"
+        }
+    },
+    "profile": {
+        "change_avatar": "¿Cambiar avatar?",
+        "yes": "Sí",
+        "no": "No",
+        "personal_infos": "Mi información personal",
+        "name": "Nombre:",
+        "email": "Correo:",
+        "edit_infos": "Editar mi información",
+        "logout": "Cerrar sesión"
+    },
     "errors": {
-      "login_failed": "Error al iniciar sesión",
-      "network": "Error de red"
-    }
-  },
-  "sidebar": {
-    "dashboard": "Tablero",
-    "activity": "Actividad",
-    "friend": "Amigos",
-    "profile": "Perfil",
-    "settings": "Configuración",
-    "watchdog": "WatchDog"
-  },
-  "activity": {
-    "editor": "Editor de tareas",
-    "title": "Título",
-    "description": "Descripción",
-    "history": "Tu historial",
-    "agenda": "Agenda",
-    "new_task": "Agregar una nueva tarea :",
-    "task_completed": "Tarea completada",
-    "title_mandatory": "El título es obligatorio",
-    "no_task_to_delete": "No hay tareas para eliminar"
-  },
-  "user": {
-    "number_friends": "Número de amigos",
-    "number_request": "Número de solicitudes pendientes",
-    "accept": "Aceptar",
-    "refuse": "Rechazar",
-    "delete": "Eliminar como amigo",
-    "block": "Bloquear usuario",
-    "name": "Nombre",
-    "add": "Enviar solicitud de amistad",
-    "unblock": "Desbloquear usuario",
-    "blocked_you": "te bloqueó",
-    "you_blocked": "bloqueaste a",
-    "info": "Información"
-  },
-  "dashboard": {
-    "motivation": "Motivación del día",
-    "weekly_time": "Horas trabajadas esta semana",
-    "weekly_time_goal": "Objetivo",
-    "streaks": "Rachas",
-    "no_streaks": "No<0/>tienes<0/>ninguna<0/>racha...",
-    "tasks_amount": "Tienes {{count}} tareas",
-    "add_task": "Agregar algunas"
-  }
+        "401": {
+            "title": "401 — Sesión expirada",
+            "message_line_1": "Tu sesión ha expirado por motivos de seguridad.",
+            "message_line_2": "Por favor inicia sesión nuevamente para continuar.",
+            "login_again": "Iniciar sesión de nuevo"
+        },
+        "404": {
+            "title": "404 — Página no encontrada",
+            "message_line_1": "La página que buscas no existe o ha sido movida.",
+            "message_line_2": "Volvamos al camino correcto.",
+            "go_home": "Volver al inicio"
+        }
+    },
+    "watchdog": {
+        "title": "Watchdog 🐕",
+        "global": "Global",
+        "backups": "Copias de seguridad",
+        "services": "Servicios",
+        "loading": "Cargando…",
+        "last_file": "Último archivo",
+        "size": "Tamaño",
+        "last_run": "Última ejecución",
+        "next_run": "Próxima ejecución",
+        "none": "Ninguno",
+        "bytes": "bytes",
+        "error_http": "Error Watchdog: HTTP {{status}}",
+        "badge": {
+            "ok": "OK",
+            "wait": "ESPERA",
+            "ko": "KO"
+        }
+    },
+    "headerbar":{
+        "search_user": "Buscar usuario",
+        "search": "Buscar"
+    },
+    "cgu": {
+        "title": "Términos de uso",
+        "update_date": "Última actualización: 16/01/2026"
+    },
+    "cgu_policy": {
+        "acceptance": {
+            "title": "Aceptación",
+            "content": "Al usar esta aplicación, aceptas estos términos."
+        },
+        "user_conduct": {
+            "title": "Conducta del usuario",
+            "content": "Aceptas",
+            "list": [
+                "Usar el servicio de manera respetuosa",
+                "No acosar a otros usuarios",
+                "No hacer trampa ni explotar el juego",
+                "No compartir tus credenciales"
+            ]
+        },
+        "account_termination": {
+            "title": "Terminación de cuenta",
+            "content": "Nos reservamos el derecho de suspender o eliminar cuentas que violen estos términos."
+        },
+        "intellectual_property": {
+            "title": "Propiedad intelectual",
+            "content": "Este proyecto se desarrolla como parte del currículo en 42."
+        },
+        "liability_limitation": {
+            "title": "Limitación de responsabilidad",
+            "content": "Este servicio se proporciona 'tal cual' sin garantía. No nos hacemos responsables por pérdida de datos o interrupciones."
+        },
+        "terms_modification": {
+            "title": "Modificación de los términos",
+            "content": "Podemos actualizar estos términos. Continuar usando el servicio constituye aceptación de los nuevos términos."
+        },
+        "educational_project": {
+            "title": "Proyecto educativo",
+            "content": "Esta aplicación se desarrolla como proyecto educativo en 42 París. No es para uso comercial."
+        }
+    },
+    "policy": {
+        "title": "Documentos legales",
+        "description": "Consulta nuestros Términos de uso y Política de privacidad",
+        "terms_button": "Términos de uso",
+        "privacy_button": "Política de privacidad"
+    },
+    "privacy": {
+        "title": "Política de privacidad",
+        "update_date": "Última actualización: 16/01/2026"
+    },
+    "privacy_policy": {
+        "data_collection": {
+            "title": "Recopilación de datos",
+            "content": "Recopilamos la siguiente información:",
+            "list": [
+                "Nombre de usuario y correo electrónico (a través de la API de 42 o registro manual)",
+                "Foto de perfil",
+                "Estadísticas de uso e historial de inicio de sesión",
+                "Tokens de autenticación"
+            ]
+        },
+        "data_usage": {
+            "title": "Uso de datos",
+            "content": "Tus datos se usan para:",
+            "list": [
+                "Proporcionar funciones de la app y autenticación",
+                "Mostrar perfiles y estadísticas de usuarios",
+                "Habilitar funciones sociales y diseño del tablero"
+            ]
+        },
+        "data_storage": {
+            "title": "Almacenamiento de datos",
+            "content": "Tus datos se almacenan de manera segura para:",
+            "list": [
+                "Los datos se almacenan de forma segura en nuestros servidores",
+                "Los tokens de sesión expiran después de 5 minutos",
+                "Las contraseñas se gestionan mediante VAULT (para actualizar)"
+            ]
+        },
+        "user_rights": {
+            "title": "Derechos del usuario",
+            "content": "Tienes derecho a:",
+            "list": [
+                "Acceder a tus datos personales",
+                "Solicitar la eliminación de tus datos",
+                "Exportar tus estadísticas de la app"
+            ]
+        },
+        "third_party_services": {
+            "title": "Servicios de terceros",
+            "content": "Para ver todas las políticas de privacidad relacionadas con 42Tracker, declaramos usar:",
+            "list": [
+                "API 42",
+                "Autenticación AUTH0.2"
+            ]
+        },
+        "cookies": {
+            "title": "Cookies",
+            "content": "Usamos cookies para:",
+            "list": [
+                "Mantener tu sesión iniciada"
+            ]
+        }
+    },
+    "gdpr_confirm": {
+        "title": "¿Confirmas eliminar todos tus datos?",
+        "description": "Esto incluye tu lista de tareas, tiempo registrado, historial y progreso de badges de éxito",
+        "yes": "Sí",
+        "no": "No",
+        "no_token": "No hay token de eliminación"
+    },
+    "gdpr_me": {
+        "title": "Tus datos",
+        "download": "Descargar mis datos (.json)",
+        "show": "Mostrar mis datos",
+        "json_preview": "Vista previa JSON:",
+        "back": "Volver"
+    },
+    "settings": {
+        "title": "Ajustes ⚙️"
+    },
+    "settings_confidentiality": {
+        "title": "Confidencialidad",
+        "request_data": "Solicitar mis datos",
+        "delete_data": "Eliminar mis datos",
+        "history": "Historial GDPR",
+        "json_preview": "Vista previa JSON:",
+        "confirm_delete_message": "¿Deseas realmente eliminar tus datos de actividad (tareas, historial, estadísticas)? Tu cuenta se conservará. Se enviará un correo de confirmación.",
+        "email_sent": "Se ha enviado un correo de confirmación. Sigue el enlace para confirmar la eliminación.",
+        "claim_email_sent": "¡Se ha enviado un correo!",
+        "request_error": "Error al solicitar datos",
+        "delete_error": "Error: {{message}}"
+    },
+    "settings_dangerzone": {
+        "title": "Zona peligrosa",
+        "delete_account": "Eliminar mi cuenta",
+        "delete_data": "Borrar mis datos",
+        "email_sent": "¡Se ha enviado un correo de confirmación!"
+    },
+    "settings_languages": {
+        "title": "Preferencia de idioma",
+        "choose_french": "Elegir Francés",
+        "choose_english": "Elegir Inglés",
+        "choose_spanish": "Elegir Español"
+    },
+    "footer": {
+    	"legal_docs": "Documentos legales"
+	  }
+
 }

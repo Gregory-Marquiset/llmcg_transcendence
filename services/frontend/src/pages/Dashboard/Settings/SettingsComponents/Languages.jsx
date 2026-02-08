@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function Languages () {
     const [openSection, setOpenSection] = useState(null)
-    const { i18n } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     const handleSection = sectionName => {
         setOpenSection(openSection === sectionName ? null : sectionName)
@@ -13,29 +13,29 @@ export default function Languages () {
 
     const changeLanguage = lang => {
         i18n.changeLanguage(lang)
-        localStorage.setItem('language', lang) // optional but useful
+        localStorage.setItem('language', lang)
     }
 
     return (
         <>
             <section onClick={() => handleSection('languagePreference')}>
-                <LogTitle text="Préférence de langues" />
+                <LogTitle text={t("settings_languages.title")} />
 
                 <Button
                     className="btn-setting"
-                    text="Choisir Français"
+                    text={t("settings_languages.choose_french")}
                     onClick={() => changeLanguage('fr')}
                 />
 
                 <Button
                     className="btn-setting"
-                    text="Choisir Anglais"
+                    text={t("settings_languages.choose_english")}
                     onClick={() => changeLanguage('en')}
                 />
 
                 <Button
                     className="btn-setting"
-                    text="Choisir Espagnol"
+                    text={t("settings_languages.choose_spanish")}
                     onClick={() => changeLanguage('es')}
                 />
             </section>

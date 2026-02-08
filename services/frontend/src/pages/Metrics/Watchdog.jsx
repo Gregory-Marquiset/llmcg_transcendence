@@ -2,19 +2,21 @@ import "../../styles/App.css";
 import "../Dashboard/Settings/Settings.css";
 import { useEffect, useState, useCallback } from "react";
 import { Footer, Background, HeaderBar, LeftMenu, LogTitle, Loading } from "../../components";
+import { useTranslation } from "react-i18next";
 
 import "./Watchdog.css";
 
 function Badge({ status }) {
+  const { t } = useTranslation();
   const cls =
     status === "healthy" ? "wd-badge wd-ok"
     : status === "starting" ? "wd-badge wd-wait"
     : "wd-badge wd-ko";
 
   const label =
-    status === "healthy" ? "OK"
-    : status === "starting" ? "WAIT"
-    : "KO";
+    status === "healthy" ? t("watchdog.badge.ok")
+    : status === "starting" ? t("watchdog.badge.wait")
+    : t("watchdog.badge.ko");
 
   return <span className={cls}>{label}</span>;
 }
@@ -25,6 +27,7 @@ function StatusLabel({ status }) {
 }
 
 export default function WatchdogPage() {
+  const { t } = useTranslation();
   const [data, setData] = useState(null);
   const [backupInfo, setBackupInfo] = useState(null);
   const [error, setError] = useState("");
@@ -44,14 +47,14 @@ export default function WatchdogPage() {
       setData(json);
 
       if (!res.ok) {
-        setError(`Erreur watchdog: HTTP ${res.status}`);
+        setError(t("watchdog.error_http", { status: res.status }));
       }
     } catch (e) {
       setError(String(e));
     } finally {
       // setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchWatchdog();
@@ -80,13 +83,13 @@ export default function WatchdogPage() {
 
             <div className="setting-wrapper">
               <h2 className="settings-title">
-                <LogTitle text="Watchdog 🐕" />
+                <LogTitle text={t("watchdog.title")} />
               </h2>
 
               <section className="wd-card">
                 <div className="wd-global-row">
                   <div className="wd-global-left">
-                    <span className="wd-label">Global</span>
+                    <span className="wd-label">{t("watchdog.global")}</span>
                     <Badge status={globalStatus} />
                     {data?.checkedAt ? <span className="wd-time">{data.checkedAt}</span> : null}
                   </div>
@@ -97,35 +100,35 @@ export default function WatchdogPage() {
 
 
               <section className="wd-card">
-                <div className="wd-services-title">Backups</div>
+                <div className="wd-services-title">{t("watchdog.backups")}</div>
 
                 {!backupInfo ? (
-                  <div className="wd-loading">Chargement…</div>
+                  <div className="wd-loading">{t("watchdog.loading")}</div>
                 ) : (
                   <div className="wd-backups">
                     <div className="wd-backups-row">
-                      <span className="wd-label">Dernier fichier</span>
+                      <span className="wd-label">{t("watchdog.last_file")}</span>
                       <span className="wd-time">
-                        {backupInfo.latest?.name ? backupInfo.latest.name : "Aucun"}
+                        {backupInfo.latest?.name ? backupInfo.latest.name : t("watchdog.none")}
                       </span>
                     </div>
 
                     <div className="wd-backups-row">
-                      <span className="wd-label">Taille</span>
+                      <span className="wd-label">{t("watchdog.size")}</span>
                       <span className="wd-time">
-                        {typeof backupInfo.latest?.size === "number" ? `${backupInfo.latest.size} bytes` : "-"}
+                        {typeof backupInfo.latest?.size === "number" ? `${backupInfo.latest.size} ${t("watchdog.bytes")}` : "-"}
                       </span>
                     </div>
 
                     <div className="wd-backups-row">
-                      <span className="wd-label">Dernier run</span>
+                      <span className="wd-label">{t("watchdog.last_run")}</span>
                       <span className="wd-time">
                         {backupInfo.meta?.lastRunAt ?? "-"}
                       </span>
                     </div>
 
                     <div className="wd-backups-row">
-                      <span className="wd-label">Prochain run</span>
+                      <span className="wd-label">{t("watchdog.next_run")}</span>
                       <span className="wd-time">
                         {backupInfo.meta?.nextRunAt ?? "-"}
                       </span>
@@ -141,11 +144,11 @@ export default function WatchdogPage() {
 
               {!data ? (
                 <section className="wd-card">
-                  <div className="wd-loading">Chargement…</div>
+                  <div className="wd-loading">{t("watchdog.loading")}</div>
                 </section>
               ) : (
                 <section className="wd-card">
-                  <div className="wd-services-title">Services</div>
+                  <div className="wd-services-title">{t("watchdog.services")}</div>
 
                   <div className="wd-list">
                     {data.services?.map((s) => (
