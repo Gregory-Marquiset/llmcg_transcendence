@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import '../Dashboard.css'
 import { Pie, Cell, PieChart, ResponsiveContainer } from 'recharts'
+import { useTranslation, Trans } from 'react-i18next'
 
 export default function Streaks({count}) {
+    const { t } = useTranslation()
     const [nbStreaks, setNbStreak] = useState(count);
     const [displayStreak, setDisplayStreak] = useState(nbStreaks % 7);
     const [pieColor, setPieColor] = useState("");
@@ -23,7 +25,7 @@ export default function Streaks({count}) {
     
     return (
         <div className="streaks">
-            <h3>{nbStreaks === 0 ? 'Streaks 💀' : 'Streaks 🔥'}</h3>
+            <h3>  {t('dashboard.streaks')} {nbStreaks === 0 ? '💀' : '🔥'}</h3>
             <div className="streak-container">
                 <ResponsiveContainer width="100%" height={300}>
                     {nbStreaks !== 0 && <PieChart>
@@ -60,7 +62,7 @@ export default function Streaks({count}) {
                     </>
                     }
                     {nbStreaks === 0 &&
-                        <h3>You<br/>have<br/>no<br/>streaks...<br/></h3>
+                        <h3><Trans i18nKey="dashboard.no_streaks" components={[<br/>]}/></h3>
                     }
                 </div>
                 
