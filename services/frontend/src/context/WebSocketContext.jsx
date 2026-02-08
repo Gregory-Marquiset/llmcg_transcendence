@@ -72,7 +72,6 @@ export function WebSocketProvider({ children }) {
       setStatus("disconnected");
       if (wsRef.current === ws) wsRef.current = null;
 
-      // Reconnect only if we still have a token and it wasn't a clean logout
       const currentToken = tokenRef.current;
       if (currentToken && evt.code !== 1000) {
         const delay = Math.min(1000 * 2 ** reconnectAttempt.current, 30000);
@@ -88,15 +87,12 @@ export function WebSocketProvider({ children }) {
     };
   }, [handleInternalMessage]);
 
-  // Keep tokenRef in sync
   useEffect(() => {
     tokenRef.current = accessToken;
   }, [accessToken]);
 
-  // Connect on first token, close only on logout
   useEffect(() => {
     if (!accessToken) {
-      // Token gone = logout → close socket
       console.log("[WS] no token -> closing socket");
       clearReconnect();
       reconnectAttempt.current = 0;
@@ -112,7 +108,6 @@ export function WebSocketProvider({ children }) {
 
     const ws = wsRef.current;
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
-      // Socket already open — send auth:refresh instead of reconnecting
       if (ws.readyState === WebSocket.OPEN) {
         console.log("[WS] token changed, sending auth:refresh");
         ws.send(JSON.stringify({
@@ -124,11 +119,9 @@ export function WebSocketProvider({ children }) {
       return;
     }
 
-    // No socket yet → connect
     connect(accessToken);
   }, [accessToken, connect]);
 
-  // Cleanup only on full unmount (app closes)
   useEffect(() => {
     return () => {
       clearReconnect();
