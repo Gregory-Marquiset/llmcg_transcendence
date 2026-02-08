@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { profilepicture } from '../../assets'
 import { useState} from 'react'
 import { Button }from '../'
- 
-function FriendCard({ friend }) {
+
+function FriendCard({ friend, status = "offline" }) {
   const navigate = useNavigate()
   const [onError, setOnError] = useState(false)
   const handleClick = () => {
@@ -21,7 +21,10 @@ function FriendCard({ friend }) {
 
   return (
     <div className="friend-card" onClick={handleClick}>
-      <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)}/>  
+      <div className="friend-avatar-wrapper">
+        <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)}/> 
+        <span className={`friend-presence-dot ${status}`} />
+      </div> 
       <h3>{friend.username}</h3>
         <Button
             text="Chat"

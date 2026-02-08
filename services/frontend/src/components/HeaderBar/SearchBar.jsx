@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { searchPages } from './SearchConfig';
-
+import { useTranslation } from 'react-i18next'
 export function SearchBar ({ searchInput, setSearchInput, 
                             results, setResults, showResult, 
                             setShowResult }) {
       const navigate = useNavigate();
       const [selectedIndex, setSelectedIndex] = useState(0);
       const [isLoading, setIsLoading] = useState(false);
+      const { t } = useTranslation();
     
       useEffect(() => {
         if (searchInput.trim() === ''){
@@ -46,7 +47,7 @@ export function SearchBar ({ searchInput, setSearchInput,
             <input
               type="text"
               className="feild px-4 py-2 rounded-lg"
-              placeholder="Rechercher"
+              placeholder={t("headerbar.search")}
               onChange={(e) => setSearchInput(e.target.value)}
               onFocus={() => searchInput && setShowResult(true)}
             />

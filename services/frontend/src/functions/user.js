@@ -123,3 +123,24 @@ export async function getRequestList(token)
     return res.json()
 }
 
+export async function getPresenceForUsers(userIds, token) {
+  if (!userIds || userIds.length === 0) {
+    return {}
+  }
+
+  const ids = userIds.join(',')
+  const res = await fetch(`/api/v1/presence?ids=${ids}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+
+  if (!res.ok) {
+    console.error('Failed to fetch presence')
+    return {}
+  }
+
+  return res.json()
+}
+

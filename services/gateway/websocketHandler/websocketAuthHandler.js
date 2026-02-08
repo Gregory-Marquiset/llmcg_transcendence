@@ -67,10 +67,9 @@ export const handleAuthRefreshEvent = async function (socket, obj, connectionsIn
 			return;
 		}
 
-		if (obj.payload.token.startsWith("Bearer "))
-			socket.currentToken = obj.payload.token;
-		else
-			socket.currentToken = "Bearer " + obj.payload.token;
+		socket.currentToken = obj.payload.token.startsWith("Bearer ")
+			? obj.payload.token.substring(7)
+			: obj.payload.token;
 
 		socket.send(JSON.stringify({ type: "auth:refreshed" }));
 	} catch (err) {

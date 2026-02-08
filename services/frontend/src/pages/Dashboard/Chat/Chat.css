@@ -1,0 +1,138 @@
+.chat-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px;
+  width: 100%;
+  max-width: 800px;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.chat-list-container h3 {
+  font-size: 24px;
+  color: #eab2bb;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.chat-ws-status {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.chat-empty {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+}
+
+.chat-friend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.chat-friend-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background-color: white;
+  border: 2px solid #eab2bb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chat-friend-card:hover {
+  box-shadow: 0 8px 16px rgba(234, 178, 187, 0.6);
+  transform: translateY(-2px);
+}
+
+.chat-friend-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chat-friend-avatar-wrapper img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chat-presence-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #ccc;
+}
+
+.chat-presence-dot.online {
+  background-color: #4caf50;
+}
+
+.chat-presence-dot.offline {
+  background-color: #ccc;
+}
+
+.chat-friend-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-friend-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-friend-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.chat-friend-time {
+  font-size: 12px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.chat-friend-preview {
+  font-size: 13px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-friend-status {
+  font-size: 13px;
+  color: #999;
+}
+
+.chat-friend-status.online {
+  color: #4caf50;
+}
+
+@media (max-width: 768px) {
+  .chat-list-container {
+    margin: 10px;
+  }
+
+  .chat-friend-card {
+    padding: 12px 15px;
+  }
+}

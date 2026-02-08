@@ -1,26 +1,30 @@
-import { Background, LogTitle, Button, Footer } from "../../components"
+import { Background, LogTitle, Button, Footer, SpinCube, SpinLogo } from "../../components"
 import { logoheader } from "../../assets"
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from "react-i18next"
+
 export default function Error404(){
+    const { t } = useTranslation();
     const navigate = useNavigate();
     return (
     <>
         <Background>
         <img src={logoheader} className="logoheader" alt="42 Tracker" />
 
-        <LogTitle text="404 — Page not found" />
+        <LogTitle text={t('errors.404.title')} />
 
         <br />
 
         <p>
-            The page you are looking for doesn’t exist or has been moved.
+            {t('errors.404.message_line_1')}
             <br />
-            Let’s get you back on track.
+            {t('errors.404.message_line_2')}
         </p>
 
         <br /><br />
 
-        <Button text="Go back home" onClick={() => navigate('/')} />
+        <Button text={t('errors.404.go_home')} onClick={() => navigate('/')} />
+            <SpinLogo/>
         </Background>
         <Footer />
     </>

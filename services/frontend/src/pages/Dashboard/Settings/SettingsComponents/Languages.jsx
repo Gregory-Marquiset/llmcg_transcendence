@@ -1,19 +1,44 @@
 import { useState } from 'react'
 import { LogTitle, Button } from '../../../../components'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAuth } from '../../../../context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 export default function Languages () {
     const [openSection, setOpenSection] = useState(null)
+    const { t, i18n } = useTranslation()
+
     const handleSection = sectionName => {
-    setOpenSection(openSection === sectionName ? null : sectionName)
+        setOpenSection(openSection === sectionName ? null : sectionName)
     }
-    return ( <>
-        <section onClick={() => handleSection('languagePreference')}>
-            <LogTitle text="Préférence de langues" />
-                <Button className="btn-setting" text="Choisir Francais"/>
-                <Button className="btn-setting" text="Choisir Anglais"/>
-                <Button className="btn-setting" text="Choisir Espagnol"/>
-        </section>
-    </>)
+
+    const changeLanguage = lang => {
+        i18n.changeLanguage(lang)
+        localStorage.setItem('language', lang)
+    }
+
+    return (
+        <>
+            <section onClick={() => handleSection('languagePreference')}>
+                <LogTitle text={t("settings_languages.title")} />
+
+                <Button
+                    className="btn-setting"
+                    text={t("settings_languages.choose_french")}
+                    onClick={() => changeLanguage('fr')}
+                />
+
+                <Button
+                    className="btn-setting"
+                    text={t("settings_languages.choose_english")}
+                    onClick={() => changeLanguage('en')}
+                />
+
+                <Button
+                    className="btn-setting"
+                    text={t("settings_languages.choose_spanish")}
+                    onClick={() => changeLanguage('es')}
+                />
+            </section>
+        </>
+    )
 }

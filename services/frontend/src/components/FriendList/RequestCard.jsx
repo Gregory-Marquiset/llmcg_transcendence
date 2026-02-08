@@ -4,12 +4,13 @@ import { profilepicture } from '../../assets'
 import { respondToFriendRequest } from '../../functions/user'
 import { Button }from '../'
 import { useState} from 'react'
+import { useTranslation } from 'react-i18next'
 
 function RequestCard({ request, onActionDone }) {
   const accessToken = localStorage.getItem('access_token')
   const navigate = useNavigate()
   const [onError, setOnError] = useState(false)
-  
+  const { t } = useTranslation()
   const handleClick = () => {
     navigate(`/users/${request.username}/profile`)
   }
@@ -35,14 +36,13 @@ function RequestCard({ request, onActionDone }) {
   const avatarUrl = request.avatar_path
       ? `/app/users/uploads/${request.avatar_path}`
       : profilepicture;
-  console.log(avatarUrl)
 return (
   <div className="friend-card" onClick={handleClick}>
     <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)} />
     <h3>{request.username}</h3>
 
     <Button
-      text="Accepter"
+      text={t("user.accept")}
       onClick={(e) => {
         e.stopPropagation();
         handleAcceptRequest();
@@ -50,7 +50,7 @@ return (
     />
 
     <Button
-      text="Refuser"
+      text={t("user.refuse")}
       onClick={(e) => {
         e.stopPropagation();
         handleRefuseRequest();

@@ -2,11 +2,11 @@ import {
   clsx
 } from "./chunk-JFYBPAT5.js";
 import {
-  require_shim
-} from "./chunk-XYVKAWMZ.js";
-import {
   require_react_dom
 } from "./chunk-LS3N2DRT.js";
+import {
+  require_shim
+} from "./chunk-XYVKAWMZ.js";
 import {
   require_react
 } from "./chunk-ROTG7ULQ.js";

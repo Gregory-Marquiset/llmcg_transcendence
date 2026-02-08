@@ -25,6 +25,7 @@ import metricsPlugin from "../shared/metricsPlugin.js";	//	metrics
 import fs from 'fs'
 
 import { backupsRoutes } from "./routes/backups.js";
+import { presenceRoutes } from "./routes/presence.js";
 
 export const app = Fastify({
 	logger: true,
@@ -190,18 +191,18 @@ await app.register(fastifyWebsocket, {
 	options: { 
 		maxPayload: 1048576,
 		// Ajouter la vérification du protocole
-		verifyClient: (info, callback) => {
-			const protocol = info.req.headers['sec-websocket-protocol'];
+		// verifyClient: (info, callback) => {
+		// 	const protocol = info.req.headers['sec-websocket-protocol'];
 			
-			// Vérifier si le client demande votre protocole
-			if (protocol && protocol.includes('chat-v1')) {
-				// Accepter la connexion avec le protocole 'chat-v1'
-				callback(true, 0, '', { 'Sec-WebSocket-Protocol': 'chat-v1' });
-			} else {
-				// Accepter quand même sans protocole (rétro-compatibilité)
-				callback(true);
-			}
-		}
+		// 	// Vérifier si le client demande votre protocole
+		// 	if (protocol && protocol.includes('chat-v1')) {
+		// 		// Accepter la connexion avec le protocole 'chat-v1'
+		// 		callback(true, 0, '', { 'Sec-WebSocket-Protocol': 'chat-v1' });
+		// 	} else {
+		// 		// Accepter quand même sans protocole (rétro-compatibilité)
+		// 		callback(true);
+		// 	}
+		// }
 	}
 });
 
@@ -238,6 +239,7 @@ await app.register(health.healthRoute);
 await app.register(health.ping);
 await app.register(watchdog.watchdogRoute);
 await app.register(backupsRoutes);
+await app.register(presenceRoutes);
 // app.register(auth.authRoutes, { prefix: '/api/v1' });
 // app.register(user.userRoutes, { prefix: '/api/v1' });
 // app.register(friends.friendsRoutes, { prefix: '/api/v1' });
@@ -266,7 +268,9 @@ app.setNotFoundHandler(function (req, reply) {
 const start = async () => {
 	try {
 		await app.listen({port: 5000, host: '0.0.0.0'})
-		setInterval(wsHandler.heartbeat, 30000);
+		// Heartbeat toutes les 60 secondes
+		// Avec tolérance de 3 pongs manqués = jusqu'à 3 minutes d'inactivité avant déconnexion
+		setInterval(wsHandler.heartbeat, 60000);
 	} catch (err) {
 		app.log.error(`\n${err}\n`);
 		process.exit(1);

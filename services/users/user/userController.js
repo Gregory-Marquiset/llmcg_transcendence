@@ -28,7 +28,7 @@ export const userMe = async function (req, reply) {
 		
 		await runSql(app.pg, 'UPDATE users SET username = $1, email = $2 WHERE id = $3', [user_in_db.username, user_in_db.email, req.user.id]);
 		const newUserInfo = await getRowFromDB(app.pg, 'SELECT id, username, email, avatar_path, twofa_enabled, createdAt FROM users WHERE id = $1', [req.user.id]);
-		console.log(`\nuserMe newUserInfo: ${JSON.stringify(newUserInfo)}\n`);
+		// console.log(`\nuserMe newUserInfo: ${JSON.stringify(newUserInfo)}\n`);
 		return (reply.code(200).send(newUserInfo));
 	} catch (err) {
 		console.error(`\nERROR userMe: ${err.message}\n`);
@@ -52,10 +52,10 @@ export const userMeAvatar = async function (req, reply) {
 		const filetype = data.mimetype.substring(data.mimetype.indexOf("/") + 1);
 		// console.log(`\nuserMeAvatar filetype: ${filetype}\n`);
 		const filename = req.user.id + "_" + Date.now() + "." + filetype;
-		console.log(`\nuserMeAvatar filename: ${filename}\n`);
-		console.log(`\nuserMeAvatar uploadsDir: ${uploadsDir}\n`);
+		// console.log(`\nuserMeAvatar filename: ${filename}\n`);
+		// console.log(`\nuserMeAvatar uploadsDir: ${uploadsDir}\n`);
 		const filepath = uploadsDir + '/' + filename;
-		console.log(`\nuserMeAvatar filepath: ${filepath}\n`);
+		// console.log(`\nuserMeAvatar filepath: ${filepath}\n`);
 		await pipeline(data.file, fs.createWriteStream(filepath));
 
 		const oldFileName = await getRowFromDB(app.pg, 'SELECT avatar_path FROM users WHERE id = $1', [req.user.id]);
@@ -109,7 +109,6 @@ export const userProfil = async function (req, reply) {
                OR (sender_id = $2 AND receiver_id = $1)
         `, [req.user.id, userInDb.id]);
 
-        // Structure propre de la réponse
         const response = {
             id: userInDb.id,
             username: userInDb.username,

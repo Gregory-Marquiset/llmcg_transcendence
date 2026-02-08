@@ -1,6 +1,5 @@
 import { app, uploadsDir, httpError } from "../usersServer.js";
 import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js'
-//import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
 
 
 export const sendFriendsRequest = async function (req, reply) {
@@ -8,7 +7,7 @@ export const sendFriendsRequest = async function (req, reply) {
 	try {
 		const targetId = Number(req.params.targetId);
 		const date = new Date().toISOString();
-		console.log(`\nsendFriendRequest req.params: ${targetId}, req.user.id: ${req.user.id}\n`);
+		// console.log(`\nsendFriendRequest req.params: ${targetId}, req.user.id: ${req.user.id}\n`);
 
 		if (targetId === req.user.id)
 			throw httpError(400, "Can't add yourself as friend");
@@ -58,7 +57,7 @@ export const manageFriendRequest = async function (req, reply) {
 	
 	try {
 		const senderId = Number(req.params.senderId);
-		console.log(`\nmanageFriendRequest req.params: ${senderId}, req.user.id: ${req.user.id}\n`);
+		// console.log(`\nmanageFriendRequest req.params: ${senderId}, req.user.id: ${req.user.id}\n`);
 
 		if (senderId === req.user.id)
 			throw httpError(400, "Bad request");
@@ -109,7 +108,7 @@ export const deleteFriend = async function (req, reply) {
 	
 	try {
 		const targetId = Number(req.params.targetId);
-		console.log(`\ndeleteFriend req.params: ${targetId}, req.user.id: ${req.user.id}\n`);
+		// console.log(`\ndeleteFriend req.params: ${targetId}, req.user.id: ${req.user.id}\n`);
 
 		if (targetId === req.user.id)
 			throw httpError(400, "Bad request");
@@ -232,7 +231,7 @@ export const friendsList = async function (req, reply) {
 			// friend.lastSeenAt = friendStatus.lastSeenAt;
 			// friend.activeSince = friendStatus.activeSince;
 			//friend.avatar_path = uploadsDir.replace + friend.avatar_path;
-			console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
+			// console.log(`\nfriendList friend infos: ${JSON.stringify(friend)}\n`);
 		});
 		return (reply.code(200).send(friends));
 	} catch (err) {
@@ -270,7 +269,7 @@ export const friendsRequestList = async function (req, reply) {
 			// friend.lastSeenAt = friendStatus.lastSeenAt;
 			// friend.activeSince = friendStatus.activeSince;
 			//friend.avatar_path = uploadsDir.replace + friend.avatar_path;
-			console.log(`\nrequestList user infos: ${JSON.stringify(friend)}\n`);
+			// console.log(`\nrequestList user infos: ${JSON.stringify(friend)}\n`);
 		});
 		return (reply.code(200).send(friends));
 	} catch (err) {

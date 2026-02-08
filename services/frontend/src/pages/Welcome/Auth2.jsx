@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext"
 
 function Auth2() {
   const navigate = useNavigate()
-  const { setAuthUser, setIsLoggedIn } = useAuth()
+  const { setAuthUser, setIsLoggedIn, setToken } = useAuth()
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -17,7 +17,8 @@ function Auth2() {
 
     const payload = JSON.parse(atob(token.split(".")[1]))
 
-    localStorage.setItem("access_token", token)
+    setToken(token)
+
     setAuthUser({ Name: payload.username })
     setIsLoggedIn(true)
 

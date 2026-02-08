@@ -13,6 +13,7 @@
   overflow-y: clip;
   transition: all 300ms;
   white-space: pre;
+  z-index: 9999;
 }
 .footer:hover{
   height: 30px;

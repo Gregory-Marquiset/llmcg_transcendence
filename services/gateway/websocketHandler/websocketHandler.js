@@ -9,6 +9,7 @@ let connectId = 0;
 
 export const websocketHandler = async function (socket, req) {
 	try {
+		console.log(`\n\n\nwebsocketHandler: new socket\n\n\n`);
 		const url = new URL(req.url, 'http://localhost');
 		
 		const token = url.searchParams.get('token');
@@ -34,11 +35,12 @@ export const websocketHandler = async function (socket, req) {
 		const userId = decoded.id;
 		
 		socket.isAlive = true;
+		socket.missedPongs = 0;
 		socket.userId = userId;
 		socket.currentToken = token;
 		socket.badFrames = 0;
 		let date = new Date().toISOString();
-		console.log(`\nwebsocketHandler: new socket for user ${userId}\n`);
+		//console.log(`\nwebsocketHandler: new socket for user ${userId}\n`);
 
 		connectionsIndex.set(socket, {
 			userId: userId,
@@ -49,6 +51,7 @@ export const websocketHandler = async function (socket, req) {
 		socket.on("pong", () => {
 			console.log(`\npong\n`);
 			socket.isAlive = true;
+			socket.missedPongs = 0;
 		});
 
 		let becameOnline = presence.onSocketConnected(socket.userId, socket, date);
@@ -66,16 +69,6 @@ export const websocketHandler = async function (socket, req) {
 		
 		socket.on("message", async (event) => {
 			try {
-				// NEED AJOUT SECU NOMBRE MSG PAR SECONDE
-
-				// Protocole JSON: {
-				// 	type: "chat:send",
-				//  requestId: id (string a generer de facon random pour ne pas avoir des messages en doublons dans la db),
-				//	payload {
-				//		toUserId: integer,
-				//		content: string
-				//		}
-				//	}
 				let rawText;
 
 				rawText = wsValidatorHandler.checkEventType(event, socket);
@@ -136,13 +129,11 @@ export const websocketHandler = async function (socket, req) {
 	} catch (err) {
 		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}, stack: ${err.stack}\n`);
 		
-		// Fermer le socket seulement en cas d'erreur critique
 		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED" || err.code === 1008)
 			socket.close(1008, "token_expired");
 		else if (typeof err?.code === "string" && (err.code.startsWith("FST_JWT_") || err.code.startsWith("FAST_JWT_")))
 			socket.close(1008, "unauthorized");
 		else {
-			// Ne pas fermer pour toutes les erreurs
 			console.error(`\nNon-critical error, keeping socket open\n`);
 		}
 	}
@@ -156,11 +147,20 @@ export const heartbeat = function () {
 		// console.log(`value.userId: ${value.userId}`);
 		// console.log(`value.connectionId: ${value.connectionId}`);
 		// console.log(`value.ip: ${value.ip}\n`);
+
 		if (key.isAlive === false)
 		{
-			key.terminate();
-			return;
+			key.missedPongs++;
+			//console.log(`\nMissed pong for user ${value.userId}, count: ${key.missedPongs}\n`);
+
+			if (key.missedPongs >= 3)
+			{
+				//console.log(`\nTerminating connection for user ${value.userId} after 3 missed pongs\n`);
+				key.terminate();
+				return;
+			}
 		}
+
 		key.isAlive = false;
 		try {
 			key.ping();
