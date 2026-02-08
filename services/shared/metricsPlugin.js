@@ -1,4 +1,3 @@
-// services/shared/metricsPlugin.js (ESM)
 import fp from "fastify-plugin";
 import client from "prom-client";
 
@@ -64,7 +63,6 @@ export default fp(async function metricsPlugin(fastify, opts) {
     }
   }
 
-  // timings
   fastify.addHook("onRequest", async (req) => {
     if (req.url === "/metrics") return;
     req._startAt = process.hrtime.bigint();

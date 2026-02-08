@@ -144,7 +144,6 @@ export const authLogin2fa = async function (req, reply) {
 }
 
 
-//le front met un header dans la req: Authorization: Bearer <token>
 export const authMe = async function (req, reply) {
 	
 	try {
@@ -156,14 +155,6 @@ export const authMe = async function (req, reply) {
 			userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login, progressbar FROM user_stats WHERE user_id = $1',
 			[req.user.id]);
 		}
-		///
-		// let userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
-		// 	[req.user.id]);
-		// if (!userStats){
-		// 	await runSql(app.pg, 'INSERT INTO user_stats (user_id) VALUES ($1)', [req.user.id]);
-		// 	userStats = await getRowFromDB(app.pg, 'SELECT rank_position, task_completed, friends_count, streaks_history, current_streak_count, monthly_logtime, monthly_logtime_month, app_seniority, upload_count, created_at, updated_at, last_login FROM user_stats WHERE user_id = $1',
-		// 	[req.user.id]);
-		// }
 		let userTodo = await getRowFromDB(app.pg, 'SELECT id FROM todo_list WHERE user_id = $1', [req.user.id]);
 		const created_at = new Date(userStats.created_at);
 		const now = new Date();
@@ -174,10 +165,10 @@ export const authMe = async function (req, reply) {
 		const newSeniority = Math.floor((now - created_at) / (1000 * 60 * 60 * 24)) + 1;
 		if (daysDifference >= 1) {
 			let newStreak = 0;
-			if (daysDifference === 1) { // if log happens the very next day
+			if (daysDifference === 1) {
 				newStreak = 1;
 			}
-			else { // if it happens more than one day after
+			else {
 				await runSql(app.pg, `UPDATE user_stats SET 
 									app_seniority = $1,
 									last_login = $2,
@@ -287,7 +278,6 @@ export const authLogout = async function (req, reply) {
 
 
 
-//le front met un header dans la req: Authorization: Bearer <token>
 export const auth2faSetup = async function (req, reply) {
 
 	try {
@@ -309,7 +299,6 @@ export const auth2faSetup = async function (req, reply) {
 }
 
 
-//le front met un header dans la req: Authorization: Bearer <token>
 export const auth2faVerify = async function (req, reply) {
 
 	try {
@@ -364,7 +353,7 @@ export const authLogin42Callback = async (request, reply) => {
 			intraUser.login,
 			intraUser.email,
 			intraUser.id,
-			'oauth42', // placeholder (jamais utilisé)
+			'oauth42',
 			"avatar/default.jpg",
 			'oauth42'
 			]

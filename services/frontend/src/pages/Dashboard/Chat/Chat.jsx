@@ -36,11 +36,9 @@ function Chat() {
         const data = await getFriendList(accessToken)
         setFriends(data)
 
-        // Charger la présence initiale des amis
         if (data && data.length > 0) {
           const friendIds = data.map(f => f.id)
           const presence = await getPresenceForUsers(friendIds, accessToken)
-          // Convertir le format de présence en map simple status
           const statusMap = {}
           Object.keys(presence).forEach(userId => {
             statusMap[userId] = presence[userId]?.status || "offline"
@@ -48,7 +46,6 @@ function Chat() {
           setPresenceMap(statusMap)
         }
 
-        // Fetch last message for each friend
         for (const friend of data) {
           try {
             const res = await fetch(`/api/v1/chat/messages/with/${friend.id}`, {
@@ -80,7 +77,6 @@ function Chat() {
     if (accessToken) fetchFriends()
   }, [accessToken])
 
-  // Listen for presence updates and new messages
   useEffect(() => {
     const unsubscribe = subscribe((data) => {
       if (data.type === "presence:update" && data.userId) {
@@ -90,7 +86,6 @@ function Chat() {
         }))
       }
 
-      // Update last message preview when receiving a new chat message
       if (data.type === "chat:message" && data.payload) {
         const fromId = data.payload.fromUserId
         setLastMessages((prev) => ({

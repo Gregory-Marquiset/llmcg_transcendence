@@ -109,7 +109,6 @@ export const userProfil = async function (req, reply) {
                OR (sender_id = $2 AND receiver_id = $1)
         `, [req.user.id, userInDb.id]);
 
-        // Structure propre de la réponse
         const response = {
             id: userInDb.id,
             username: userInDb.username,

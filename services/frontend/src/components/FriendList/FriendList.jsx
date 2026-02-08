@@ -13,7 +13,6 @@ function FriendList({ refresh, presenceMap = {}, isWSConnected = false }) {
   const [err, setErr] = useState(0)
   const [initialPresence, setInitialPresence] = useState({})
 
-  // Charger la liste des amis
   useEffect(() => {
     const fetchFriends = async () => {
       setLoading(true)
@@ -29,8 +28,6 @@ function FriendList({ refresh, presenceMap = {}, isWSConnected = false }) {
     fetchFriends()
   }, [accessToken, refresh])
 
-  // Charger la présence SEULEMENT quand le WebSocket est connecté
-  // Cela évite de charger la présence pendant la reconnexion
   useEffect(() => {
     const loadPresence = async () => {
       if (friends.length > 0 && isWSConnected) {
@@ -42,15 +39,10 @@ function FriendList({ refresh, presenceMap = {}, isWSConnected = false }) {
     loadPresence()
   }, [friends, isWSConnected, accessToken])
 
-  // Merger la présence initiale avec les mises à jour WebSocket
-  // presenceMap du WebSocket contient des strings "online"/"offline"
-  // initialPresence de l'API contient des objets { status: "online", ... }
   const getStatus = (friendId) => {
-    // Priorité au WebSocket (temps réel)
     if (presenceMap[friendId]) {
       return presenceMap[friendId]
     }
-    // Sinon utiliser la présence initiale de l'API
     if (initialPresence[friendId]) {
       return initialPresence[friendId].status || "offline"
     }

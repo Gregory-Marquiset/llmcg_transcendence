@@ -69,16 +69,6 @@ export const websocketHandler = async function (socket, req) {
 		
 		socket.on("message", async (event) => {
 			try {
-				// NEED AJOUT SECU NOMBRE MSG PAR SECONDE
-
-				// Protocole JSON: {
-				// 	type: "chat:send",
-				//  requestId: id (string a generer de facon random pour ne pas avoir des messages en doublons dans la db),
-				//	payload {
-				//		toUserId: integer,
-				//		content: string
-				//		}
-				//	}
 				let rawText;
 
 				rawText = wsValidatorHandler.checkEventType(event, socket);
@@ -139,13 +129,11 @@ export const websocketHandler = async function (socket, req) {
 	} catch (err) {
 		console.error(`\nERROR websocketHandler: error code: ${err.code}, message: ${err.message}, stack: ${err.stack}\n`);
 		
-		// Fermer le socket seulement en cas d'erreur critique
 		if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED" || err.code === 1008)
 			socket.close(1008, "token_expired");
 		else if (typeof err?.code === "string" && (err.code.startsWith("FST_JWT_") || err.code.startsWith("FAST_JWT_")))
 			socket.close(1008, "unauthorized");
 		else {
-			// Ne pas fermer pour toutes les erreurs
 			console.error(`\nNon-critical error, keeping socket open\n`);
 		}
 	}
@@ -160,13 +148,11 @@ export const heartbeat = function () {
 		// console.log(`value.connectionId: ${value.connectionId}`);
 		// console.log(`value.ip: ${value.ip}\n`);
 
-		// Si pas de pong reçu depuis le dernier ping
 		if (key.isAlive === false)
 		{
 			key.missedPongs++;
 			//console.log(`\nMissed pong for user ${value.userId}, count: ${key.missedPongs}\n`);
 
-			// Terminer seulement après 3 pongs manqués (tolérance pour onglets inactifs)
 			if (key.missedPongs >= 3)
 			{
 				//console.log(`\nTerminating connection for user ${value.userId} after 3 missed pongs\n`);
