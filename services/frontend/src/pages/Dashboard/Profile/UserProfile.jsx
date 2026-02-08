@@ -239,8 +239,8 @@ function UserProfile() {
               <Button text={t("user.block")} onClick={handleBlockUser} />
             )}
             <br />
-          </div>
             <Button text="Retour" onClick={() => navigate('/dashboard')} />
+          </div>
         </div>
         <Footer />
       </Background>

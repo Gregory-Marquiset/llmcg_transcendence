@@ -122,14 +122,6 @@ function SignIn() {
           <br />
 
           <div className="text-center">
-            <a href="/" className="text-transparent bg-clip-text font-extrabold bg-gradient-to-r from-[#545454] to-[#eab2bb]">
-              {t('signin.password_reset')}
-            </a>
-          </div>
-
-          <br />
-
-          <div className="text-center">
             <input
               type="submit"
               className="submit cursor-pointer"
