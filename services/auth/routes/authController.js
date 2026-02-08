@@ -382,6 +382,7 @@ export const authLogin42Callback = async (request, reply) => {
 
 	await runSql(app.pg, `INSERT INTO refreshed_tokens(user_id, token) VALUES ($1, $2)`, [userInfo.id, refresh_tok]);
 	app.bizMetrics.llmcg_loginSuccessTotal.labels(app.bizMetrics.serviceName).inc();
+	const baseUrl = new URL();
 	return (reply
 		.setCookie('refreshToken', refresh_tok, {
 			httpOnly: true,
