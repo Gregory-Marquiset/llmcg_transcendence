@@ -2,9 +2,11 @@ import '../Activity.css'
 import { Button } from '../../../../components'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 export default function ToDoListEditor(){
     const [title, setTitle]= useState('');
+    const { t } = useTranslation()
     const [description, setDescription]= useState('');
     const [todo, setTodo] = useState([]);
     const accessToken = localStorage.getItem('access_token');
@@ -35,7 +37,7 @@ export default function ToDoListEditor(){
     }, []);
     const newTask = async () => {
     if (!title) {
-        alert("The title is mandatory");
+        alert(t("activity.title_mandatory"));
         return;
     }
     try {
@@ -60,7 +62,7 @@ export default function ToDoListEditor(){
     }
     const deleteTask = async (id) => {
         if (!id){
-            alert("No task to delete");
+            alert(t("activity.no_task_to_delete"));
             return ;
         }
         try {
@@ -84,13 +86,13 @@ export default function ToDoListEditor(){
     }
     return <>
             <div className='todolist-editor-container'>
-                <h3>   To do list editor</h3>
+                <h3>{t("activity.editor")}</h3>
                 <div className='todo' key='0'>
                     <form className='todo' onSubmit={newTask}>
-                        <h3>    Add a new task :</h3>
-                        <h4> Titre</h4>
+                        <h3> {t("activity.new_task")}</h3>
+                        <h4>{t("activity.title")}</h4>
                         <input onChange={(e) => setTitle(e.target.value)} className='input-new-todo'/>
-                        <h4> Description</h4>
+                        <h4> {t("activity.description")}</h4>
                         <input onChange={(e) => setDescription(e.target.value)} className='input-new-todo'/>
                     <Button onClick={newTask} text="Add"/>
                    </form>
@@ -99,12 +101,12 @@ export default function ToDoListEditor(){
             <div className='todo-tile-editor' key={element.id}>
                 <div className='split-todo-container'>
                     <h3>{element.title}</h3>
-                    <p className='todo-description'>Description : {element.description} </p>
+                    <p className='todo-description'>{t("activity.description")} : {element.description} </p>
                 </div>
                 <div className='delete-container'>
                     <button className='delete-todo' onClick={() => deleteTask(element.id)}>X</button>
                 </div>
-                    {element.done === 1 && <p>Task completed</p>}
+                    {element.done === 1 && <p>{t("activity.task_completed")}</p>}
                 </div>))}
             </div>
        </>

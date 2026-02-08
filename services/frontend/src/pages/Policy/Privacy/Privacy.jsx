@@ -1,26 +1,41 @@
 import { HeaderBar, Footer, Background, Button } from "../../../components"
 import '../Policy.css'
-import { PrivacyPolicy } from './PrivacyPolicy'
 import { useNavigate } from 'react-router-dom'  
-function Privacy(){
+import { useTranslation } from 'react-i18next'
+
+export function Privacy(){
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    const PrivacyKeys = [
+        "data_collection",
+        "data_usage",
+        "data_storage",
+        "user_rights",
+        "third_party_services",
+        "cookies"
+    ];
+
     return <>
         <div className="page-wrapper">
             <Background> 
                 <HeaderBar/>
                 <div className="content-wrapper-policy">
-                    <div class="header">Notre politique de confidentialité</div>
+                    <div className="header">{t('privacy.title')}</div>
                     <div className="content">
-                        <div className="date"><strong>Date de mise a jour: 16/01/2026</strong></div>
-                        {PrivacyPolicy.map((cat) => (
-                            <>
-                            <div className="category-title">{cat.title}</div>
-                            <div className="text">{cat.content}</div>
-                            {cat.list && cat.list.map((list) => (
-                                <li>{list}</li>
-                            ))}
-                            </>
-                        ))}
+                        <div className="date"><strong>{t('privacy.update_date')}</strong></div>
+                        {PrivacyKeys.map((key) => {
+                            const listItems = t(`privacy_policy.${key}.list`, { returnObjects: true });
+                            return (
+                                <div key={key}>
+                                    <div className="category-title">{t(`privacy_policy.${key}.title`)}</div>
+                                    <div className="text">{t(`privacy_policy.${key}.content`)}</div>
+                                    {Array.isArray(listItems) && listItems.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </div>
+                            )
+                        })}
                     </div>
                 </div>
                 <Footer/>
@@ -29,4 +44,4 @@ function Privacy(){
     </>
 }
 
-export default Privacy
+export default Privacy;

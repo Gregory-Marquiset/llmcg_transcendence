@@ -3,8 +3,9 @@ import '../Dashboard.css'
 import { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../../context/AuthContext'
-
+import { useTranslation, Trans } from 'react-i18next'
 export default function Todo (){
+    const { t } = useTranslation()
     const navigate = useNavigate();
     const [todo, setTodo] = useState([]);
     const accessToken = localStorage.getItem('access_token');
@@ -60,19 +61,19 @@ export default function Todo (){
     }, []);
     return <>
     <div className='todo-summary'>
-        <h3>   You have {todo.length} tasks</h3>
-        { todo.length === 0 && <Button text="Add some" onClick={() => navigate('/dashboard/activity')}/>}
+        <h3>  <Trans i18nKey="dashboard.tasks_amount" values={{count: todo.length}}/></h3>
+        { todo.length === 0 && <Button text={t("dashboard.add_task")} onClick={() => navigate('/dashboard/activity')}/>}
         {todo.map((element) => (
             <div className='todo' key={element.id}>
                 <div className='todo-title' >{element.title}</div>
-                <p className='todo-description'>Description : {element.description} </p>
+                <p className='todo-description'>{t("activity.description")} : {element.description} </p>
                 {element.done !== 1 && <div className="checkbox-wrapper-5">
                     <div className="check" >
                         <input id={element.id} type="checkbox" checked={element.done} onChange={() => {markAsDone(element)}}/>
                         <label htmlFor={element.id} />
                     </div>
                 </div>}
-                {element.done === 1 && <p>Task completed</p>}
+                {element.done === 1 && <p>{t("activity.task_completed")}</p>}
             </div>))}
     </div>
     </>

@@ -2,15 +2,18 @@ import './Conversations.css'
 import '../../../styles/App.css'
 
 import { Footer, Background, HeaderBar, LeftMenu, Loading } from '../../../components'
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   getUserProfile,
   getCurrUserProfile,
 } from '../../../functions/user'
 import { useWS } from '../../../context/WebSocketContext.jsx'
+import { useTranslation } from 'react-i18next'
+
 
 function Conversations() {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
@@ -104,13 +107,13 @@ function Conversations() {
     });
 
     return unsubscribe;
-  }, [userData, subscribe, send]);
+  }, [userData, subscribe, send])
 
   const sendMessage = useCallback(() => {
-    if (!input.trim()) return;
+    if (!input.trim()) return
 
     if (!isConnected) {
-      alert("Connection lost. Please wait for reconnection.");
+      alert(t('conversations.connection_lost'))
       return;
     }
 
@@ -151,11 +154,11 @@ function Conversations() {
         <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
         <Background />
         <div className="error-container">
-          <h2>Please log in to access the chat</h2>
+          <h2>{t('conversations.login_required')}</h2>
         </div>
         <Footer />
       </div>
-    );
+    )
   }
 
 return (
@@ -168,17 +171,17 @@ return (
           <div className="content-container">
             <div className="chat-container">
               <div className="chat-header">
-                <h1>Chat with {username}</h1>
+                <h1>{t('conversations.title', { username })}</h1>
                 <div className={`connection-status ${connectionStatus}`}>
-                  {connectionStatus === 'connected' && 'Connected'}
-                  {connectionStatus === 'connecting' && 'Connecting...'}
-                  {connectionStatus === 'disconnected' && 'Disconnected'}
+                  {connectionStatus === 'connected' && t('conversations.connected')}
+                  {connectionStatus === 'connecting' && t('conversations.connecting')}
+                  {connectionStatus === 'disconnected' && t('conversations.disconnected')}
                 </div>
               </div>
               <div className="chat-box">
                 {messages.length === 0 ? (
                   <div className="no-messages">
-                    <p>No messages yet. Start the conversation!</p>
+                    <p>{t('conversations.no_messages')}</p>
                   </div>
                 ) : (
                   messages.map((msg, i) => (
@@ -195,14 +198,14 @@ return (
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
+                  placeholder={t('conversations.input_placeholder')}
                   disabled={!isConnected}
                 />
                 <button
                   onClick={sendMessage}
                   disabled={!isConnected || !input.trim()}
                 >
-                  Send
+                  {t('conversations.send')}
                 </button>
               </div>
             </div>
@@ -212,7 +215,7 @@ return (
       </div>
     </Background>
   </>
-);
+)
 
 }
 

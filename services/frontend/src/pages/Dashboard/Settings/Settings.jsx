@@ -6,8 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Footer, Background, HeaderBar, LeftMenu } from '../../../components'
 import  { DangerZone, Confidentiality, Languages } from './SettingsComponents'
 import { useAuth } from '../../../context/AuthContext'
+import { useTranslation } from "react-i18next";
 
 function Settings() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   if (isLoading) <Loading/>
@@ -21,7 +23,7 @@ function Settings() {
           
           <div className="setting-wrapper">
             <h2 className="settings-title">
-              <LogTitle text="Réglages ⚙️" />
+              <LogTitle text={t("settings.title")} />
             </h2>
            <Confidentiality loading={setIsLoading}/>
             <Languages/>

@@ -6,8 +6,10 @@ import { useAuth } from '../../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Error404 from '../../../ErrorPages/404'
 import Error401 from '../../../ErrorPages/401'
+import { useTranslation } from "react-i18next";
 
 export default function DangerZone () {
+    const { t } = useTranslation();
     const { isLoggedIn, setIsLoggedIn } = useAuth();
     const accessToken = localStorage.getItem("access_token");
     const navigate = useNavigate();
@@ -25,7 +27,7 @@ export default function DangerZone () {
                 setErrStatus(response.status);
                 return ;
             }
-            alert("A confirmation mail has been sent !");
+            alert(t("settings_dangerzone.email_sent"));
         }
         catch (err){
             console.log(err);
@@ -43,7 +45,7 @@ export default function DangerZone () {
                 console.log("while delete account");
                 return ;
             }
-            alert("A confirmation mail has been sent !");
+            alert(t("settings_dangerzone.email_sent"));
         }
         catch (err){
             console.log(err);
@@ -57,9 +59,9 @@ export default function DangerZone () {
     if (errStatus === 401) return <Error401/>
     return (
         <section onClick={() => handleSection('dangerZone')}>
-            <LogTitle text="Danger zone" />
-                <Button className="btn-setting" onClick={handleAccountDeletion} text="Supprimer mon compte"/>
-                <Button className="btn-setting" onClick={handleDataDeletion} text="Effacer mes données"/>
+            <LogTitle text={t("settings_dangerzone.title")} />
+                <Button className="btn-setting" onClick={handleAccountDeletion} text={t("settings_dangerzone.delete_account")}/>
+                <Button className="btn-setting" onClick={handleDataDeletion} text={t("settings_dangerzone.delete_data")}/>
         </section>
     )
 }

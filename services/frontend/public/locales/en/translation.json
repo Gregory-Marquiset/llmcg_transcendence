@@ -32,6 +32,7 @@
         "dashboard": "Dashboard",
         "activity": "Activity",
         "friend": "Friends",
+		"conv": "Conversations",
         "profile": "Profile",
         "settings": "Settings",
 		"watchdog": "WatchDog"

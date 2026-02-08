@@ -4,6 +4,7 @@
   import { useNavigate } from 'react-router-dom'
   import SearchBar from './SearchBar';
   import Loading from '../Loading/Loading';
+   import { useTranslation } from 'react-i18next'
   import { useAuth } from '../../context/AuthContext';
 
   export default function HeaderBar() {
@@ -15,7 +16,8 @@
         accessToken,
       } = useAuth();
     const navigate = useNavigate();
-          const [results, setResults] = useState([]);
+    const { t } = useTranslation();
+    const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const handleLogOut = async () => {
     setLoading(true);
@@ -61,7 +63,7 @@
               <input
                 type="text"
                 className="feild px-4 py-2 rounded-lg"
-                placeholder="Utilisateurs"
+                placeholder={t("headerbar.search_user")}
                 onChange={(e) => setUser(e.target.value)}
               />
             </form>

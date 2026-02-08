@@ -3,7 +3,10 @@ import { Background, Footer, LogTitle, Button } from "../../../../components";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../Settings.css'
+import { useTranslation } from "react-i18next";
+
 export default function Me () {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const [gdprUserData, setGdprUserData] = useState({});
     const token = searchParams.get("token");
@@ -59,15 +62,15 @@ export default function Me () {
         <>
             <Background>
                 <img src={logoheader} className="logoheader" alt="42 Tracker" />
-                <LogTitle text="Vos donnees"/>
+                <LogTitle text={t("gdpr_me.title")}/>
                 <br/>
-                <button className="btn-setting" onClick={exportUserData}>Telecharger mes donnees (.json)</button>
-                <button className="btn-setting" onClick={updateView}>Afficher mes donnees</button>
+                <button className="btn-setting" onClick={exportUserData}>{t("gdpr_me.download")}</button>
+                <button className="btn-setting" onClick={updateView}>{t("gdpr_me.show")}</button>
                 {displayGdpr && <pre className="json-preview">
-                    <strong>JSON preview : </strong><br/>
+                    <strong>{t("gdpr_me.json_preview")} </strong><br/>
                     {JSON.stringify(gdprUserData, null, 2)}
                 </pre>}
-                <button className="btn-setting" onClick={() => navigate('/')}>Retour</button>
+                <button className="btn-setting" onClick={() => navigate('/')}>{t("gdpr_me.back")}</button>
             </Background>
             <Footer/>
         </>

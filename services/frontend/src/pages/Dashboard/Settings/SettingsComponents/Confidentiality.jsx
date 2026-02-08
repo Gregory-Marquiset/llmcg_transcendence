@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { LogTitle, Button } from '../../../../components'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
+import { useTranslation } from "react-i18next";
+
 export default function Confidentiality ( loading){
+    const { t } = useTranslation();
     const [openSection, setOpenSection] = useState(null)
     const accessToken = localStorage.getItem("access_token");
     const [displayHistory, setDisplayHistory] = useState(false);
@@ -44,7 +47,7 @@ export default function Confidentiality ( loading){
                 console.log("error response");
                 return ;
             }
-            alert("A mail has been sent !")
+            alert(t("settings_confidentiality.claim_email_sent"))
         }
         catch(err){
             console.log("ERROR : ", err);
@@ -53,7 +56,7 @@ export default function Confidentiality ( loading){
     const requestDataDeletion = async () => {
         if (!accessToken)
             return;
-        if (!confirm("Voulez-vous vraiment supprimer vos données d'activité (todo, historique, stats) ? Votre compte sera conservé. Un email de confirmation vous sera envoyé.")) {
+        if (!confirm(t("settings_confidentiality.confirm_delete_message"))) {
             return;
         }
 
@@ -66,15 +69,15 @@ export default function Confidentiality ( loading){
             });
             if (!response.ok) {
                 const error = await response.json();
-                alert(`Erreur: ${error.message || 'Une erreur est survenue'}`);
+                alert(t("settings_confidentiality.delete_error", { message: error.message }));
                 return;
             }
-            alert("Un email de confirmation vous a été envoyé. Suivez le lien pour confirmer la suppression de vos données.");
+            alert(t("settings_confidentiality.email_sent"));
             fetchHistory();
         }
         catch(err) {
             console.error("ERROR requesting data deletion:", err);
-            alert("Erreur lors de la demande");
+            alert(t("settings_confidentiality.request_error"));
         }
     }
     
@@ -106,12 +109,12 @@ export default function Confidentiality ( loading){
     if (errStatus === 401) return <Error401/>
     return( 
         <section onClick={() => handleSection('confidentiality')}>
-            <LogTitle text="Confidentialité" />
-                <Button className="btn-setting" onClick={requestData} text="Reclamer mes donnees"/>
-                <Button className="btn-setting" onClick={requestDataDeletion} text="Supprimer mes données"/>
-                <Button className="btn-setting" onClick={updateHistoryView} text="Historique RGPD"/>
+            <LogTitle text={t("settings_confidentiality.title")} />
+                <Button className="btn-setting" onClick={requestData} text={t("settings_confidentiality.request_data")}/>
+                <Button className="btn-setting" onClick={requestDataDeletion} text={t("settings_confidentiality.delete_data")}/>
+                <Button className="btn-setting" onClick={updateHistoryView} text={t("settings_confidentiality.history")}/>
                 {displayHistory && <pre className="json-preview" onClick={{updateHistoryView}}>
-                    <strong>JSON preview : </strong><br/>
+                    <strong>{t("settings_confidentiality.json_preview")} </strong><br/>
                     {JSON.stringify(history, null, 2)}
                 </pre>}
         </section>

@@ -21,6 +21,7 @@ import {
 } from '../../../functions/user'
 import { useNavigate, useParams } from 'react-router-dom'
 import { badges } from '../../../badges/badges'
+import { useTranslation } from 'react-i18next'
 
 function computeBadgeProgress(badge, statValue) {
   const levels = badge.levels;
@@ -49,6 +50,7 @@ function computeBadgeProgress(badge, statValue) {
 }
 
 function UserProfile() {
+  const { t } = useTranslation()	
   const {errStatus, setErrStatus}= useAuth();
   const [userData, setUserData] = useState({
     id: '',
@@ -155,7 +157,7 @@ function UserProfile() {
       <div className="page-wrapper">
         <HeaderBar />
         <div className="profile-wrapper">
-          <h3>{userData.username} vous a bloqué</h3>
+          <h3>{userData.username} {t("user.blocked_you")}</h3>
         </div>
         <Footer />
       </div>
@@ -171,8 +173,8 @@ function UserProfile() {
         <div className="page-wrapper">
           <HeaderBar />
           <div className="profile-wrapper">
-            <h3>Vous avez bloqué {userData.username}</h3>
-            <Button text="Débloquer" onClick={handleUnblockUser} />
+            <h3>{t("user.you_blocked")} {userData.username}</h3>
+            <Button text={t("user.unblock")} onClick={handleUnblockUser} />
           </div>
           <Footer />
         </div>
@@ -193,10 +195,10 @@ function UserProfile() {
               />
             </div>
             <div className="personal-infos-profile">
-              <h3 className="div-title">informations</h3>
+              <h3 className="div-title">{t("user.info")}</h3>
               <h4 className="infos">
                 {' '}
-                <strong>Name : </strong> {userData.username}{' '}
+                <strong>{t("user.name")} : </strong> {userData.username}{' '}
               </h4>
             </div>
             <div className='badge-wrapper'>
@@ -228,13 +230,13 @@ function UserProfile() {
             {userData.friendshipsStatus !== 'pending' &&
               userData.friendshipsStatus !== 'accepted' &&
               userData.friendshipsStatus !== 'blocked' && (
-                <Button text="Ajouter en ami" onClick={handleAddFriend} />
+                <Button text={t("user.add")} onClick={handleAddFriend} />
               )}
             {(userData.friendshipsStatus === 'accepted') && (
-              <Button text="Supprimer un ami" onClick={handleDeleteFriend} />
+              <Button text={t("user.delete")} onClick={handleDeleteFriend} />
             )}
             {userData.blockedBy === null && (
-              <Button text="Bloquer" onClick={handleBlockUser} />
+              <Button text={t("user.block")} onClick={handleBlockUser} />
             )}
             <br />
           </div>

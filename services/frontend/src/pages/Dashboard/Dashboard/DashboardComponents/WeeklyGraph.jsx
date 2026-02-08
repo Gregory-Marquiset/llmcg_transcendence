@@ -2,6 +2,7 @@ import '../Dashboard.css'
 import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, YAxis, Tooltip, ReferenceLine} from 'recharts'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 function formatMinutes(minutes) {
     if (minutes === 0)
@@ -17,6 +18,7 @@ function formatMinutes(minutes) {
 
 
 export default function WeeklyGraph() {
+    const { t } = useTranslation()
     const [weeklyLogtime, setWeeklyLogtime] = useState([]);
     const accessToken = localStorage.getItem("access_token");
     const {errStatus, setErrStatus}= useAuth();
@@ -65,7 +67,7 @@ export default function WeeklyGraph() {
     
     return (
         <div className="weekly-graph">
-            <h3>Temps de travail cette semaine</h3>
+            <h3>{t("dashboard.weekly_time")}</h3>
             <div className="chart-wrapper">
                 <ResponsiveContainer width="100%" height={320}>
                     <AreaChart 
@@ -109,7 +111,7 @@ export default function WeeklyGraph() {
                             strokeDasharray="5 5"
                             strokeWidth={2}
                             label={{ 
-                                value: 'Objectif', 
+                                value: t("dashboard.weekly_time_goal"), 
                                 position: 'right',
                                 fill: '#858585',
                                 fontSize: 12,
