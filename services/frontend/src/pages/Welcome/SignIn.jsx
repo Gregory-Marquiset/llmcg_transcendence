@@ -13,7 +13,7 @@ function SignIn() {
     setAuthUser,
     isLoggedIn,
     setIsLoggedIn,
-    setToken, // ✅ nouveau
+    setToken,
   } = useAuth()
 
   const navigate = useNavigate()
@@ -60,7 +60,6 @@ function SignIn() {
       const userData = await responseMe.json()
       //console.log(userData)
 
-      // ✅ IMPORTANT: token d'abord (state + storage) -> WS se connecte sans refresh
       setToken(data.access_token)
 
       setAuthUser({ Name: userData.username })

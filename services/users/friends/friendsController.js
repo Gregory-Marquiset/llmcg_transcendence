@@ -1,6 +1,5 @@
 import { app, uploadsDir, httpError } from "../usersServer.js";
 import { getRowFromDB, getAllRowsFromDb, runSql } from '../../shared/postgresFunction.js'
-//import { getPresenceForUsers } from "../../gateway/presence/presenceService.js";
 
 
 export const sendFriendsRequest = async function (req, reply) {

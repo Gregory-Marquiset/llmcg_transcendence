@@ -32,12 +32,10 @@ function Conversations() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   };
 
-  // Auto-scroll vers le bas
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load chat history from API
   const loadHistory = async (peerId, currentUserId) => {
     try {
       const res = await fetch(`/api/v1/chat/messages/with/${peerId}`, {
@@ -61,7 +59,6 @@ function Conversations() {
     }
   }
 
-  // Fetch user profile + load history
   useEffect(() => {
     const fetchProfile = async () => {
       setIsLoading(true)
@@ -76,7 +73,6 @@ function Conversations() {
           return
         }
 
-        // Load message history
         await loadHistory(fetchedUserData.id, fetchedCurrUserData.id)
 
         setIsLoading(false)
@@ -90,7 +86,6 @@ function Conversations() {
     if (accessToken) fetchProfile()
   }, [username, accessToken]);
 
-  // Listen for incoming chat messages
   useEffect(() => {
     if (!userData) return;
 
@@ -98,7 +93,6 @@ function Conversations() {
       if (data.type === "chat:message" && data.payload?.fromUserId === userData.id) {
         setMessages((prev) => [...prev, { content: data.payload.content, sender: 'other' }]);
 
-        // Mark message as delivered
         send({
           type: "chat:delivered",
           payload: { messageId: data.payload.messageId }
@@ -126,12 +120,9 @@ function Conversations() {
       }
     };
 
-    //console.log("Envoi du message:", input);
 
-    // Ajouter le message envoye a l'affichage immediatement
     setMessages((prev) => [...prev, { content: input, sender: 'current' }]);
 
-    // Envoyer au serveur
     send(messageJson);
     setInput("");
   }, [input, isConnected, userData, send]);

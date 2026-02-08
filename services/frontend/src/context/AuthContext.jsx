@@ -1,11 +1,7 @@
 import { createContext, useState, useContext, useEffect, useMemo } from "react";
 
-/**
- * Authentification Context
- */
 const AuthContext = createContext(null);
 
-// Custom hook
 export function useAuth() {
   return useContext(AuthContext);
 }
@@ -35,7 +31,6 @@ export function AuthProvider({ children }) {
   };
 
   const checkRefreshToken = async () => {
-    // Si pas de token => pas besoin de refresh
     const current = localStorage.getItem("access_token");
     if (!current) return;
 
@@ -68,7 +63,6 @@ export function AuthProvider({ children }) {
     } catch (err) {
       setIsLoggedIn(false);
       setAuthUser(null);
-      // On ne supprime pas forcément le token ici (à toi de décider)
     }
   };
 

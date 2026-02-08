@@ -17,7 +17,6 @@ function Auth2() {
 
     const payload = JSON.parse(atob(token.split(".")[1]))
 
-    // ✅ IMPORTANT: token d'abord (state + storage) -> WS sans refresh
     setToken(token)
 
     setAuthUser({ Name: payload.username })

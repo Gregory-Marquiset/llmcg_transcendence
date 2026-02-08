@@ -67,7 +67,6 @@ export const handleAuthRefreshEvent = async function (socket, obj, connectionsIn
 			return;
 		}
 
-		// Stocker le token sans "Bearer " pour être cohérent avec la connexion initiale
 		socket.currentToken = obj.payload.token.startsWith("Bearer ")
 			? obj.payload.token.substring(7)
 			: obj.payload.token;

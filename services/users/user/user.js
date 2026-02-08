@@ -8,6 +8,4 @@ async function userRoutes(app, options) {
 	app.get('/user/:targetUsername/profil', { onRequest: [app.authenticate], ...userOpts.userProfilOpts });
 }
 
-//METTRE UNE SECU SI AVATAR A ETE DELETE !!!!
-
 export { userRoutes };

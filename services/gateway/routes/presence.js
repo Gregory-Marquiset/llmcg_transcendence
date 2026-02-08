@@ -1,7 +1,6 @@
 import { getPresenceForUsers } from "../presence/presenceService.js";
 
 export async function presenceRoutes(app, options) {
-	// GET /api/v1/presence?ids=1,2,3
 	app.get('/api/v1/presence', {
 		preHandler: app.authenticate
 	}, async (req, reply) => {
@@ -11,17 +10,14 @@ export async function presenceRoutes(app, options) {
 				return reply.code(400).send({ message: "Missing 'ids' query parameter" });
 			}
 
-			// Parse comma-separated IDs
 			const ids = idsParam.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
 
 			if (ids.length === 0) {
 				return reply.code(400).send({ message: "No valid IDs provided" });
 			}
 
-			// Get presence for all requested users
 			const presenceMap = getPresenceForUsers(ids);
 
-			// Convert Map to object for JSON response
 			const presenceObj = {};
 			presenceMap.forEach((value, key) => {
 				presenceObj[key] = value;
