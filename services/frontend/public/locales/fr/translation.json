@@ -1,73 +1,295 @@
 {
-  "home": {
-    "login": "Se connecter",
-    "register": "S'inscrire",
-    "login42": "Se connecter avec 42",
-    "language": "Changer de langue"
-  },
-  "signup": {
-    "username": "Nom d'utilisateur :",
-    "email": "Adresse e-mail :",
-    "password": "Mot de passe :",
-    "confirm": "Confirmer le mot de passe :",
-    "submit": "Créer un compte :",
-    "errors": {
-      "password_mismatch": "Les mots de passe ne correspondent pas",
-      "registration_failed": "Échec de l'inscription",
-      "network": "Erreur réseau"
+    "home":{
+        "login": "Se connecter",
+        "register": "S'inscrire",
+        "login42": "Se connecter avec 42",
+        "language": "Changer de langue"
     },
-    "success": "Compte créé avec succès"
-  },
-  "signin": {
-    "email": "Adresse e-mail :",
-    "password": "Mot de passe :",
-    "password_reset": "Mot de passe oublié ?",
-    "submit": "Se connecter",
+    "signup":{
+        "username":"Nom d'utilisateur :",
+        "email": "Adresse email :",
+        "password": "Mot de passe :",
+        "confirm": "Confirmer le mot de passe :",
+        "submit": "Créer un compte :",
+        "errors": {
+            "password_mismatch": "Les mots de passe ne correspondent pas",
+            "registration_failed": "Échec de l'inscription",
+            "network": "Erreur réseau"
+        },
+        "success": "Compte créé avec succès"
+    },
+    "signin":{
+        "email": "Adresse email :",
+        "password": "Mot de passe :",
+        "password_reset":" Mot de passe oublié ?",
+        "submit": "Se connecter",
+        "errors": {
+            "login_failed": "Échec de la connexion",
+            "network": "Erreur réseau"
+        }
+    },
+    "sidebar":{
+        "dashboard": "Tableau de bord",
+        "activity": "Activité",
+        "friend": "Amis",
+        "profile": "Profil",
+        "settings": "Paramètres",
+        "watchdog": "WatchDog"
+    },
+    "activity":{
+        "editor": "Éditeur de liste de tâches",
+        "title": "Titre",
+        "description": "Description",
+        "history": "Votre historique",
+        "agenda": "Agenda",
+        "new_task": "Ajouter une nouvelle tâche :",
+        "task_completed": "Tâche terminée",
+        "title_mandatory": "Le titre est obligatoire",
+        "no_task_to_delete": "Aucune tâche à supprimer"
+    },
+    "user":{
+        "number_friends": "Nombre d'amis",
+        "number_request": "Nombre de demandes en attente",
+        "accept": "Accepter",
+        "refuse": "Refuser",
+        "delete": "Supprimer en tant qu'ami",
+        "block": "Bloquer l'utilisateur",
+        "name": "Nom",
+        "add": "Envoyer une demande d'ami",
+        "unblock": "Débloquer l'utilisateur",
+        "blocked_you": "vous a bloqué",
+        "you_blocked": "vous avez bloqué",
+        "info": "Informations"
+    },
+    "dashboard":{
+        "motivation": "Motivation du jour",
+        "weekly_time": "Heures travaillées cette semaine",
+        "weekly_time_goal": "Objectif",
+        "streaks": "Séries",
+        "no_streaks": "Vous<0/>n'avez<0/>aucune<0/>série...",
+        "tasks_amount": "Vous avez {{count}} tâches",
+        "add_task": "Ajouter",
+        "hello": "Bonjour"
+    },
+    "conversations": {
+        "title": "Discussion avec {{username}}",
+        "connected": "Connecté",
+        "connecting": "Connexion...",
+        "disconnected": "Déconnecté",
+        "no_messages": "Aucun message pour l'instant. Commencez la conversation !",
+        "input_placeholder": "Tapez votre message...",
+        "send": "Envoyer",
+        "login_required": "Veuillez vous connecter pour accéder au chat",
+        "connection_lost": "Connexion perdue. Veuillez attendre la reconnexion."
+    },
+    "profile_settings": {
+        "title": "Modifier le profil",
+        "change_avatar": "Changer l'avatar :",
+        "update": "Mettre à jour",
+        "new_username": "Nouveau nom d'utilisateur :",
+        "new_email": "Nouvel email :",
+        "back": "Retour",
+        "alerts": {
+            "no_image": "Aucune image sélectionnée",
+            "avatar_too_large": "L'avatar ne doit pas dépasser 5 Mo",
+            "avatar_success": "Avatar mis à jour avec succès !",
+            "email_error": "Erreur lors de la mise à jour de l'email",
+            "username_error": "Erreur lors de la mise à jour du nom d'utilisateur"
+        }
+    },
+    "profile": {
+        "change_avatar": "Changer l'avatar ?",
+        "yes": "Oui",
+        "no": "Non",
+        "personal_infos": "Mes informations personnelles",
+        "name": "Nom :",
+        "email": "Email :",
+        "edit_infos": "Modifier mes informations",
+        "logout": "Se déconnecter"
+    },
     "errors": {
-      "login_failed": "Échec de la connexion",
-      "network": "Erreur réseau"
+        "401": {
+            "title": "401 — Session expirée",
+            "message_line_1": "Votre session a expiré pour des raisons de sécurité.",
+            "message_line_2": "Veuillez vous reconnecter pour continuer.",
+            "login_again": "Se reconnecter"
+        },
+        "404": {
+            "title": "404 — Page introuvable",
+            "message_line_1": "La page que vous cherchez n'existe pas ou a été déplacée.",
+            "message_line_2": "Retournez sur la bonne voie.",
+            "go_home": "Retour à l'accueil"
+        }
+    },
+    "watchdog": {
+        "title": "Watchdog 🐕",
+        "global": "Global",
+        "backups": "Sauvegardes",
+        "services": "Services",
+        "loading": "Chargement…",
+        "last_file": "Dernier fichier",
+        "size": "Taille",
+        "last_run": "Dernière exécution",
+        "next_run": "Prochaine exécution",
+        "none": "Aucun",
+        "bytes": "octets",
+        "error_http": "Erreur Watchdog : HTTP {{status}}",
+        "badge": {
+            "ok": "OK",
+            "wait": "ATTENTE",
+            "ko": "KO"
+        }
+    },
+    "headerbar":{
+        "search_user": "Rechercher un utilisateur",
+        "search": "Rechercher"
+    },
+    "cgu": {
+        "title": "Conditions d'utilisation",
+        "update_date": "Dernière mise à jour : 16/01/2026"
+    },
+    "cgu_policy": {
+        "acceptance": {
+            "title": "Acceptation",
+            "content": "En utilisant cette application, vous acceptez ces conditions."
+        },
+        "user_conduct": {
+            "title": "Conduite des utilisateurs",
+            "content": "Vous vous engagez à",
+            "list": [
+                "Utiliser le service de manière respectueuse",
+                "Ne pas harceler les autres utilisateurs",
+                "Ne pas tricher ou exploiter le jeu",
+                "Ne pas partager vos identifiants de compte"
+            ]
+        },
+        "account_termination": {
+            "title": "Résiliation de compte",
+            "content": "Nous nous réservons le droit de suspendre ou de supprimer les comptes qui violent ces conditions."
+        },
+        "intellectual_property": {
+            "title": "Propriété intellectuelle",
+            "content": "Ce projet est développé dans le cadre du cursus de l'école 42."
+        },
+        "liability_limitation": {
+            "title": "Limitation de responsabilité",
+            "content": "Ce service est fourni 'tel quel' sans aucune garantie. Nous ne sommes pas responsables des pertes de données ou des interruptions de service."
+        },
+        "terms_modification": {
+            "title": "Modification des conditions",
+            "content": "Nous pouvons mettre à jour ces conditions. La poursuite de l'utilisation constitue une acceptation des nouvelles conditions."
+        },
+        "educational_project": {
+            "title": "Projet éducatif",
+            "content": "Cette application est réalisée dans un cadre pédagogique à 42 Paris. Elle n'a pas de vocation commerciale."
+        }
+    },
+    "policy": {
+        "title": "Documents légaux",
+        "description": "Consultez nos Conditions d'utilisation et notre Politique de confidentialité",
+        "terms_button": "Conditions d'utilisation",
+        "privacy_button": "Politique de confidentialité"
+    },
+    "privacy": {
+        "title": "Politique de confidentialité",
+        "update_date": "Dernière mise à jour : 16/01/2026"
+    },
+    "privacy_policy": {
+        "data_collection": {
+            "title": "Collecte de données",
+            "content": "Nous collectons les informations suivantes :",
+            "list": [
+                "Nom d'utilisateur et email (via API 42 ou inscription manuelle)",
+                "Photo de profil",
+                "Statistiques d'utilisation et historique des connexions",
+                "Tokens d'authentification"
+            ]
+        },
+        "data_usage": {
+            "title": "Utilisation des données",
+            "content": "Vos données sont utilisées pour :",
+            "list": [
+                "Fournir les fonctionnalités de l'application et l'authentification",
+                "Afficher les profils utilisateurs et les statistiques",
+                "Activer les fonctionnalités sociales et la mise en page du tableau de bord"
+            ]
+        },
+        "data_storage": {
+            "title": "Stockage des données",
+            "content": "Vos données sont stockées en toute sécurité pour :",
+            "list": [
+                "Les données sont sécurisées sur nos serveurs",
+                "Les tokens de session expirent après 5 minutes",
+                "Les mots de passe sont gérés par VAULT (à mettre à jour)"
+            ]
+        },
+        "user_rights": {
+            "title": "Droits des utilisateurs",
+            "content": "Vous avez le droit de :",
+            "list": [
+                "Accéder à vos données personnelles",
+                "Demander la suppression de vos données",
+                "Exporter vos statistiques de l'application"
+            ]
+        },
+        "third_party_services": {
+            "title": "Services tiers",
+            "content": "Pour consulter toutes les politiques de confidentialité liées à 42Tracker, nous déclarons utiliser :",
+            "list": [
+                "API 42",
+                "Authentification AUTH0.2"
+            ]
+        },
+        "cookies": {
+            "title": "Cookies",
+            "content": "Nous utilisons des cookies pour :",
+            "list": [
+                "Maintenir votre session de connexion"
+            ]
+        }
+    },
+    "gdpr_confirm": {
+        "title": "Confirmez-vous la suppression de toutes vos données ?",
+        "description": "Cela concerne votre todo list, votre temps de connexion, votre historique et la progression des badges de réussite",
+        "yes": "Oui",
+        "no": "Non",
+        "no_token": "Aucun token de suppression"
+    },
+    "gdpr_me": {
+        "title": "Vos données",
+        "download": "Télécharger mes données (.json)",
+        "show": "Afficher mes données",
+        "json_preview": "Aperçu JSON :",
+        "back": "Retour"
+    },
+    "settings": {
+        "title": "Paramètres ⚙️"
+    },
+    "settings_confidentiality": {
+        "title": "Confidentialité",
+        "request_data": "Demander mes données",
+        "delete_data": "Supprimer mes données",
+        "history": "Historique GDPR",
+        "json_preview": "Aperçu JSON :",
+        "confirm_delete_message": "Voulez-vous vraiment supprimer vos données d'activité (todo, historique, statistiques) ? Votre compte sera conservé. Un email de confirmation sera envoyé.",
+        "email_sent": "Un email de confirmation a été envoyé. Suivez le lien pour confirmer la suppression.",
+        "claim_email_sent": "Un email a été envoyé !",
+        "request_error": "Erreur lors de la demande des données",
+        "delete_error": "Erreur : {{message}}"
+    },
+    "settings_dangerzone": {
+        "title": "Zone dangereuse",
+        "delete_account": "Supprimer mon compte",
+        "delete_data": "Effacer mes données",
+        "email_sent": "Un email de confirmation a été envoyé !"
+    },
+    "settings_languages": {
+        "title": "Préférence de langue",
+        "choose_french": "Choisir le français",
+        "choose_english": "Choisir l'anglais",
+        "choose_spanish": "Choisir l'espagnol"
+    },
+    "footer": {
+        "legal_docs": "Documents légaux"
     }
-  },
-  "sidebar": {
-    "dashboard": "Tableau de bord",
-    "activity": "Activité",
-    "friend": "Amis",
-    "profile": "Profil",
-    "settings": "Paramètres",
-    "watchdog": "WatchDog"
-  },
-  "activity": {
-    "editor": "Éditeur de tâches",
-    "title": "Titre",
-    "description": "Description",
-    "history": "Votre historique",
-    "agenda": "Agenda",
-    "new_task": "Ajouter une nouvelle tâche :",
-    "task_completed": "Tâche terminée",
-    "title_mandatory": "Le titre est obligatoire",
-    "no_task_to_delete": "Aucune tâche à supprimer"
-  },
-  "user": {
-    "number_friends": "Nombre d'amis",
-    "number_request": "Nombre de demandes en attente",
-    "accept": "Accepter",
-    "refuse": "Refuser",
-    "delete": "Supprimer comme ami",
-    "block": "Bloquer l'utilisateur",
-    "name": "Nom",
-    "add": "Envoyer une invitation",
-    "unblock": "Débloquer l'utilisateur",
-    "blocked_you": "vous a bloqué",
-    "you_blocked": "vous avez bloqué",
-    "info": "Informations"
-  },
-  "dashboard": {
-    "motivation": "Motivation du jour",
-    "weekly_time": "Heures travaillées cette semaine",
-    "weekly_time_goal": "Objectif",
-    "streaks": "Séries",
-    "no_streaks": "Vous<0/>n'avez<0/>aucune<0/>série...",
-    "tasks_amount": "Vous avez {{count}} tâches",
-    "add_task": "Ajouter des tâches"
-  }
 }

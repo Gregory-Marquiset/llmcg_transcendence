@@ -7,8 +7,10 @@ import { useEffect, useState } from 'react'
 import { WeeklyGraph, Streaks, MotivationBox, Todo } from './DashboardComponents'
 import Error404 from '../../ErrorPages/404';
 import Error401 from '../../ErrorPages/401';
+import { useTranslation } from "react-i18next";
 
 function Dashboard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +87,7 @@ function Dashboard() {
             <LeftMenu setIsLoading={setIsLoading} className="left-menu"/>
             <div className='content-container'>
               <br/>
-              <>      Bonjour {userData.username},</>
+              <>      {t("dashboard.hello")} {userData.username},</>
               <br/>
               <div className='module-container'>
                 <WeeklyGraph/>
