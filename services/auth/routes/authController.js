@@ -390,5 +390,5 @@ export const authLogin42Callback = async (request, reply) => {
 			maxAge: 24 * 60 * 60
 		})
 		.code(302)
-		.redirect(`https//${process.env.FORTY_TWO_REDIRECT_URI}/Auth2?token=${access_tok}`))
+		.redirect(`https://${process.env.FORTY_TWO_REDIRECT_URI}:8001/Auth2?token=${access_tok}`))
 }

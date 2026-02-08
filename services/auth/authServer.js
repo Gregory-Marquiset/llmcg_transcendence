@@ -117,7 +117,7 @@ await app.register(oauthPlugin, {
   },
   scope: ['public'],
   startRedirectPath: '/login/42',
-  callbackUri: `https//${process.env.FORTY_TWO_REDIRECT_URI}/api/v1/auth/login/42/callback`,
+  callbackUri: `https://${process.env.FORTY_TWO_REDIRECT_URI}:8001/api/v1/auth/login/42/callback`,
 })
 
 await app.ready();
