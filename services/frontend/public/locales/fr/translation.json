@@ -292,5 +292,10 @@
     },
     "footer": {
         "legal_docs": "Documents légaux"
+    },
+    "chat": {
+        "message": "Messages",
+        "add_friend": "Ajoutez des amis pour commencer à discuter !"
     }
+
 }
