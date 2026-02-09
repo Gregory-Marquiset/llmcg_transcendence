@@ -385,24 +385,24 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 
 | Module                                                         |  Type | Points | Status  | Owner              | Notes                                             |
 | -------------------------------------------------------------- | ----: | -----: | ------- | ------------------ | ------------------------------------------------- |
-| Use a frontend framework (React)                               | Minor |      1 | Planned | lobriott / lzaengel | React                                              |
-| Use a backend framework (Fastify)                              | Minor |      1 | Planned | cdutel             | Node.js + Fastify                                  |
-| Standard user management and authentication                    | Major |      2 | Planned | cdutel             | Core auth flows + user lifecycle                   |
-| Implement a complete 2FA system                                | Minor |      1 | Planned | cdutel             | TOTP/app-based (details in Wiki)                   |
-| Allow users to interact with other users                       | Major |      2 | Planned | lzaengel           | Friends, challenges between users, etc.            |
-| Public API (API key + rate limiting + docs + ≥5 endpoints)     | Major |      2 | Planned | cdutel             | Dedicated API key + docs + throttling              |
-| Prometheus + Grafana                                           | Major |      2 | Planned | gmarquis           | Metrics + dashboards + alerting                    |
-| Cybersecurity (WAF + Vault)                                    | Major |      2 | Planned | mda_cunh           | ModSecurity hardened + HashiCorp Vault             |
-| Health check + status page + automated backups + DR procedures | Minor |      1 | Planned | gmarquis           | Status endpoint/page + backup/restore runbook      |
-| Notification system for CRUD actions                           | Minor |      1 | Planned | lobriott           | In-app notifications (and optional email/webhook)  |
-| Custom-made design system (≥10 reusable components)            | Minor |      1 | Planned | lobriott           | Palette, typography, icons, components             |
-| OAuth 2.0 remote auth (Google/GitHub/42/etc.)                  | Minor |      1 | Planned | lzaengel           | OAuth2 login + account linking                     |
-| User activity analytics & insights dashboard                   | Minor |      1 | Planned | lobriott           | Basic analytics & insights                         |
-| Gamification system to reward users                            | Minor |      1 | Planned | lobriott           | XP/badges UX + reward loops                        |
-| Advanced analytics dashboard with data visualization           | Major |      2 | Planned | lobriott           | Charts + aggregates                                |
-| GDPR compliance features                                       | Minor |      1 | Planned | lobriott           | Export/delete data, consent, etc.                  |
-| Data export & import functionality                             | Minor |      1 | Planned | lzaengel           | Export JSON/CSV/XML; import validation; bulk ops   |
-| Multiple languages (≥3 languages)                              | Minor |      1 | Planned | lzaengel           | i18n + locale switching                            |
+| Use a frontend framework (React)                               | Minor |      1 |   Done  | lobriott / lzaengel | React                                              |
+| Use a backend framework (Fastify)                              | Minor |      1 |   Done  | cdutel             | Node.js + Fastify                                  |
+| Realtime feature with websocket                                | Major |      2 |   Done  | cdutel / mda_cunh  | Chat and online status                             |
+| Allow users to interact with other users                       | Major |      2 |   Done  | lzaengel           | Friends, challenges between users, etc.            |
+| Public API (API key + rate limiting + docs + ≥5 endpoints)     | Major |      2 |   Done  | cdutel             | Dedicated API key + docs + throttling              |
+| Custom-made design system (≥10 reusable components)            | Minor |      1 |   Done  | lobriott / lzaengel | Palette, typography, icons, components             |
+| Advenced searching feature                                     | Minor |      1 |   Done  | lobriott           | Dashboard menu searching                           |
+| Multiple languages (≥3 languages)                              | Minor |      1 |   Done  | lzaengel           | i18n + locale switching                            |
+| Standard user management and authentication                    | Major |      2 |   Done  | cdutel             | Core auth flows + user lifecycle                   |
+| OAuth 2.0 remote auth (Google/GitHub/42/etc.)                  | Minor |      1 |   Done  | mda_cunh           | OAuth2 login + account linking                     |
+| User activity analytics & insights dashboard                   | Minor |      1 |   Done  | lobriott           | Basic analytics & insights                         |
+| Cybersecurity (WAF + Vault)                                    | Major |      2 |   Done  | mda_cunh           | ModSecurity hardened + HashiCorp Vault             |
+| Prometheus + Grafana                                           | Major |      2 |   Done  | gmarquis           | Metrics + dashboards + alerting                    |
+| Micro-service                                                  | Major |      2 |   Done  | gmarquis           | All services are managed in there own container    |
+| Health check + status page + automated backups + DR procedures | Minor |      1 |   Done  | gmarquis           | Status endpoint/page + backup/restore runbook      |
+| GDPR compliance features                                       | Minor |      1 |   Done  | lobriott           | Export/delete data, consent, etc.                  |
+| CI/CD + git team workflow                                      | Major |      2 |   Done  | gmarquis           | Continuous integration/deployment + PR strict rules |
+| Bash script tester + github action workflow                    | Major |      2 |   Done  | gmarquis           | 100% personalized Bash test + auto launch in PR    | 
 
 > We may adjust scope/modules during development, but the goal is to stay **>= 19 points** with solid, demonstrable deliverables.
 
@@ -417,11 +417,11 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
 | -------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | lobriott | Project Manager + Frontend Lead | Planning / Coordination, UI/UX & mockups, React frontend, design system (reusable components), notifications, analytics dashboards, GDPR features, gamification UX |
 | lzaengel | Frontend Developer              | i18n (≥3 languages), UI integration, OAuth2, Friends gestion, dashboard data extraction |
-| mda_cunh | Security                        | WAF (ModSecurity), Vault secrets |
+| mda_cunh | Security / Debuging             | WAF (ModSecurity), Vault secrets + Mercge conflict specialist |
 | cdutel   | Tech Lead Backend               | Backend architecture, Fastify codebase, JWT/session strategy, database design & migrations, user management/auth, public API (API key + rate limiting + docs) |
 | gmarquis | Product Owner + DevOps          | Backlog & global project documentation, CI/CD, unit test (Bash script), observability (Prometheus/Grafana), health/status + backups/DR |
 
-### PM + Frontend Lead
+### PM + Fullstack Developer
 
 <a href="https://profile.intra.42.fr/users/lobriott">
   <img alt="Lou's 42 stats" src="https://badge.mediaplus.ma/darkblue/lobriott?1337Badge=off&UM6P=off" />
@@ -464,7 +464,7 @@ Target: **>= 19 points** (Majors: 2 pts, Minors: 1 pt)
   * Friend gestion
   * Dashboard data extraction
 
-### Security
+### Security + Fullstack Developer
 
 <a href="https://profile.intra.42.fr/users/mda-cunh">
   <img alt="Mda-cunh's 42 stats" src="https://badge.mediaplus.ma/darkblue/mda-cunh?1337Badge=off&UM6P=off" />
