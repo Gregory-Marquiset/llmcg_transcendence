@@ -10,7 +10,7 @@ export default defineConfig({
     strictPort: true,
     hmr: { clientPort: 5173 },
     proxy: {
-      '/api': { target: 'http://gateway:5000', changeOrigin: true },
+      '/api': { target: 'https://gateway:5000', changeOrigin: true },
     },
   },
 })

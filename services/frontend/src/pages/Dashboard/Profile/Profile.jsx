@@ -115,9 +115,9 @@ function Profile() {
   };
 
   const host = window.location.hostname;
-  const avatarUrl = userData.avatar_path && !onError
-    ? `http://${host}:5000/${userData.avatar_path}`
-    : profilepicture;
+  const avatarUrl = userData.avatar_path
+      ? `/app/users/uploads/${userData.avatar_path}`
+      : profilepicture;
 
   if (errStatus === 404) return <Error404 />;
   if (errStatus === 401) return <Error401 />;
@@ -131,13 +131,7 @@ function Profile() {
             <LeftMenu setIsLoading={setIsLoading} />
             <div className='profile-wrapper'>
               <div className='profile-picture'>
-                <img
-                  onError={() => setOnError(true)}
-                  src={avatarUrl}
-                  className='profilepic'
-                  onMouseEnter={handleModify}
-                  alt="profile"
-                />
+                <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)} onMouseEnter={handleModify}/>
                 {modify && (
                   <>
                     <p>{t('profile.change_avatar')}</p>

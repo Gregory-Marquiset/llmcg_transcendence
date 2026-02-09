@@ -53,7 +53,7 @@ https_get()
         tmp_h="/tmp/https_get_headers.$$"
         tmp_b="/tmp/https_get_body.$$"
 
-        code="$(curl -sS -D "$tmp_h" -o "$tmp_b" -w '%{http_code}' "$url" 2>/dev/null || echo "000")"
+        code="$(curl -ksS -D "$tmp_h" -o "$tmp_b" -w '%{http_code}' "$url" 2>/dev/null || echo "000")"
 
         echo "---- HEADERS ----"
         cat "$tmp_h" 2>/dev/null || true
@@ -61,7 +61,7 @@ https_get()
         echo "---- BODY (head) ----"
         head -n 120 "$tmp_b" 2>/dev/null || true
     else
-        code="$(curl -sS -o /dev/null -w '%{http_code}' "$url" 2>/dev/null || echo "000")"
+        code="$(curl -ksS -o /dev/null -w '%{http_code}' "$url" 2>/dev/null || echo "000")"
     fi
 
     if _code_match "$expected" "$code"; then
@@ -116,7 +116,7 @@ https_post()
     tmpfile="$(mktemp)"
 
     if [ -n "$verbose" ]; then
-        http_code="$(curl -v --silent --show-error -o "$tmpfile" -w '%{http_code}' \
+        http_code="$(curl -kv --silent --show-error -o "$tmpfile" -w '%{http_code}' \
             -H 'Content-Type: application/json' -d "$data" "$url")" || {
             body="$(cat "$tmpfile" 2>/dev/null)"
             rm -f "$tmpfile"
@@ -128,7 +128,7 @@ https_post()
             return 1
         }
     else
-        http_code="$(curl --silent --show-error -o "$tmpfile" -w '%{http_code}' \
+        http_code="$(curl -k --silent --show-error -o "$tmpfile" -w '%{http_code}' \
             -H 'Content-Type: application/json' -d "$data" "$url")" || {
             body="$(cat "$tmpfile" 2>/dev/null)"
             rm -f "$tmpfile"

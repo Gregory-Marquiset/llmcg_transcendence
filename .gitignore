@@ -41,5 +41,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+#vault 
+services/vault/data/
+services/vault/config/init-keys.json
 
 services/users/uploads/avatar
+
+tests_logs/

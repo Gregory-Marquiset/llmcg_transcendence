@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { createRequire } from "node:module";
+import fs from 'fs'
 
 const require = createRequire(import.meta.url);
 const sharedMetricsPlugin = require("../shared/metricsPlugin.js");
@@ -14,7 +15,12 @@ import { statsRoutes } from './routes/statistic.js';
 // import { eventsRoutes } from './routes/events.js';
 
 export const app = Fastify({
-    logger: true
+    logger: true,
+    https: {
+        key:  fs.readFileSync('/vault/secrets/statistics.key'),
+        cert: fs.readFileSync('/vault/secrets/statistics.crt'),
+        ca:   fs.readFileSync('/vault/secrets/ca.crt'),
+  }
 });
 
 // ===== METRICS =====
@@ -30,7 +36,7 @@ await app.register(fastifySwagger, {
             version: '1.0.0'
         },
         servers: [
-            { url: 'http://localhost:5000', description: 'Statistics Service' }
+            { url: 'https://localhost:5000', description: 'Statistics Service' }
         ],
         tags: [
             { name: 'stats', description: 'Récupération des statistiques' },

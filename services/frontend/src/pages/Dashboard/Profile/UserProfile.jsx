@@ -136,10 +136,10 @@ function UserProfile() {
   }, [username, accessToken])
 
   const host = window.location.hostname;
-  const avatarUrl =
-    userData.avatar_path && !onError
-      ? `http://${host}:5000/${userData.avatar_path}`
-      : profilepicture
+  const avatarUrl = userData.avatar_path
+      ? `/app/users/uploads/${userData.avatar_path}`
+      : profilepicture;
+  console.log(avatarUrl)
 
        const computedBadges = badges.map((badge) => {
         const statValue = userData.stats?.[badge.key] ?? 0;
@@ -188,11 +188,7 @@ function UserProfile() {
           <HeaderBar />
           <div className="profile-wrapper">
             <div className="profile-picture">
-              <img
-                onError={() => setOnError(true)}
-                src={avatarUrl}
-                className="profilepic"
-              />
+              <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)} />
             </div>
             <div className="personal-infos-profile">
               <h3 className="div-title">{t("user.info")}</h3>

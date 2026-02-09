@@ -21,11 +21,19 @@ import * as wsHandler from './websocketHandler/websocketHandler.js'
 import authPlugin from '../shared/authPlugin.js'
 //Metrics for Prometheus
 import metricsPlugin from "../shared/metricsPlugin.js";	//	metrics
+
+import fs from 'fs'
+
 import { backupsRoutes } from "./routes/backups.js";
 import { presenceRoutes } from "./routes/presence.js";
 
 export const app = Fastify({
-	logger: true
+	logger: true,
+  	https: {
+    	key:  fs.readFileSync('/vault/secrets/gateway.key'),
+    	cert: fs.readFileSync('/vault/secrets/gateway.crt'),
+    	ca:   fs.readFileSync('/vault/secrets/ca.crt'),
+  }
 });
 
 await app.register(metricsPlugin, { serviceName: "gateway", enableBizMetrics: false });	//	metrics
@@ -57,62 +65,62 @@ await app.register(metricsPlugin, { serviceName: "gateway", enableBizMetrics: fa
 
 //###### HTTP PROXY PLUGIN ######
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://auth-service:5000',
+	upstream: 'https://auth-service:5000',
 	prefix: '/api/v1/auth'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://users-service:5000',
+	upstream: 'https://users-service:5000',
 	prefix: '/api/v1/users'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://chat-service:5000',
+	upstream: 'https://chat-service:5000',
 	prefix: '/api/v1/chat'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://auth-service:5000',
+	upstream: 'https://auth-service:5000',
 	prefix: '/_docs/auth',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://statistics-service:5000',
+	upstream: 'https://statistics-service:5000',
 	prefix: '/_docs/statistics',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://statistics-service:5000',
+	upstream: 'https://statistics-service:5000',
 	prefix: '/api/v1/statistics'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://gdpr-service:5000',
+	upstream: 'https://gdpr-service:5000',
 	prefix: '/_docs/gdpr',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://gdpr-service:5000',
+	upstream: 'https://gdpr-service:5000',
 	prefix: '/api/v1/gdpr'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://users-service:5000',
+	upstream: 'https://users-service:5000',
 	prefix: '/_docs/users',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://chat-service:5000',
+	upstream: 'https://chat-service:5000',
 	prefix: '/_docs/chat',
 	rewritePrefix: '/docs'
 });
 
 await app.register(fastifyHttpProxy, {
-	upstream: 'http://users-service:5000',
+	upstream: 'https://users-service:5000',
 	prefix: '/avatar',
 	rewritePrefix: '/avatar'
 });

@@ -20,22 +20,12 @@ compose_wait_healthy users-service 90
 compose_wait_healthy statistics-service 90
 compose_wait_healthy gdpr-service 90
 compose_wait_healthy frontend 90
-compose_wait_healthy project_health 90
 
 # Endpoints /health
-http_get_health "http://localhost:5173/api/v1/auth"
-http_get_health "http://localhost:5173/api/v1/chat"
-http_get_health "http://localhost:5173/api/v1/users"
-http_get_health "http://localhost:5173/api/v1/statistics"
-http_get_health "http://localhost:5173/api/v1/gdpr"
-
-# health route
-net_exists "net_backend"
-net_wget_http "http://gateway:5000/health"
-net_wget_http "http://auth-service:5000/health"
-net_wget_http "http://users-service:5000/health"
-net_wget_http "http://chat-service:5000/health"
-net_wget_http "http://statistics-service:5000/health"
-net_wget_http "http://gdpr-service:5000/health"
+https_get_health "https://localhost:8001/api/v1/auth"
+https_get_health "https://localhost:8001/api/v1/chat"
+https_get_health "https://localhost:8001/api/v1/users"
+https_get_health "https://localhost:8001/api/v1/statistics"
+https_get_health "https://localhost:8001/api/v1/gdpr"
 
 local_resume

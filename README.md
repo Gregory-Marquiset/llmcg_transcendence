@@ -107,10 +107,8 @@ make up
 
 ### 3) Open the app
 
-* Frontend: http://localhost:5173
+* Frontend: https://localhost:8001/
 * Backend API: http://localhost:5000
-* Fastify docs: http://localhost:5000/docs
-* Adminer: http://localhost:8080
 * Prometheus: http://localhost:9090
 * Grafana: http://localhost:3000
 
@@ -146,6 +144,191 @@ make test-nc
 ```
 
 > After test completion the project is up and completely usable
+
+### 7) Backend API docs
+
+#### API – Auth & Users/Friends Microservices
+
+Base URL : `https://localhost:5000/api/v1`
+
+## Auth Microservice
+
+### Register
+
+**POST** `/auth/register`
+
+```json
+{
+  "username": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+
+### Login
+
+**POST** `/auth/login`
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response**
+
+```json
+{
+  "access_token": "string"
+}
+```
+
+* `access_token` → Header `Authorization: Bearer <token>`
+* `refresh_token` → Cookie (à refresh toutes les 5 min)
+
+### Login 2FA
+
+**POST** `/auth/login2fa`
+⚠️ À revoir
+
+### Me
+
+**GET** `/auth/me`
+🔒 Authorization required
+
+```json
+{
+  "id": 1,
+  "username": "string",
+  "email": "string",
+  "avatar_path": "string",
+  "twofa_enabled": 0,
+  "createdAt": "string"
+}
+```
+
+### Refresh Token
+
+**POST** `/auth/refresh`
+
+* Renvoie un nouvel `access_token`
+* Reset le `refresh_token` (cookie)
+
+### Logout
+
+**DELETE** `/auth/logout`
+
+### 2FA Setup
+
+**POST** `/auth/2fa/setup`
+🔒 Authorization required
+
+```json
+{
+  "secret": "string"
+}
+```
+
+⚠️ À revoir
+
+### 2FA Verify
+
+**POST** `/auth/2fa/verify`
+🔒 Authorization required
+⚠️ À revoir
+
+---
+
+## Users / Friends Microservice
+
+### Update My Profile
+
+**PATCH** `/users/user/me`
+🔒 Authorization required
+
+```json
+{
+  "new_username": "string",
+  "new_email": "string"
+}
+```
+
+### Upload Avatar
+
+**POST** `/users/user/me/avatar`
+🔒 Authorization required
+
+### Get User Profile
+
+**GET** `/users/user/:targetId/profil`
+🔒 Authorization required
+
+```json
+{
+  "id": 1,
+  "username": "string",
+  "avatar_path": "string"
+}
+```
+
+---
+
+### Friends
+
+### Send Friend Request
+
+**POST** `/users/friends/:targetId/request`
+🔒 Authorization required
+
+```json
+{
+  "sender_id": 1,
+  "receiver_id": 2,
+  "status": "pending"
+}
+```
+
+### Accept / Refuse Friend Request
+
+**PATCH** `/users/friends/:senderId`
+🔒 Authorization required
+
+```json
+{
+  "action": "accept | refuse"
+}
+```
+
+### Delete Friend
+
+**DELETE** `/users/friends/:targetId/delete`
+🔒 Authorization required
+
+### Block User
+
+**POST** `/users/friends/:targetId/block`
+🔒 Authorization required
+
+### Unblock User
+
+**POST** `/users/friends/:targetId/unblock`
+🔒 Authorization required
+
+### Friends List
+
+**GET** `/users/friends/list`
+🔒 Authorization required
+
+```json
+[
+  {
+    "id": 1,
+    "username": "string",
+    "avatar_path": "string"
+  }
+]
+```
 
 ---
 <a id="cicd--project-management"></a>

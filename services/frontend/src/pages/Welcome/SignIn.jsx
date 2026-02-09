@@ -20,12 +20,26 @@ function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-
+  const isPasswordValid = (password) => password.length >= 3 && password.length <= 24
+  const isEmailValid = (email) => /^[^@]+@[^@]+.[^@]+$/.test(email)
   const handleOnClick = () => navigate('/')
 
   const manageLogIn = async (event) => {
-    event.preventDefault()
-    setIsLoading(true)
+    event.preventDefault();
+    setIsLoading(true);
+
+
+    if (!isPasswordValid(password)) {
+      alert(t('signup.errors.password_policy'))
+      setIsLoading(false)
+      return
+    }
+
+    if (!isEmailValid(email)) {
+      alert(t('signup.errors.email_policy'))
+      setIsLoading(false)
+      return
+    }
 
     const payload = { email, password }
 

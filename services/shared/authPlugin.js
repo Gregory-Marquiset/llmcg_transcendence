@@ -1,21 +1,25 @@
-import fp from 'fastify-plugin'
-import fastifyJWT from '@fastify/jwt'
-import dotenv from 'dotenv'
+import fp from 'fastify-plugin';
+import fastifyJWT from '@fastify/jwt';
+import { getVaultSecret } from './vaultClient.js';
 
-async function authPlugin (app, opts) {
-    dotenv.config();
-    if (!process.env.JWT_SECRET)    
-        throw new Error('JWT_SECRET manquant dans les variables d’environnement');
+async function authPlugin(app) {
+
+    const jwt = await getVaultSecret('secret/data/app/jwt');
+
+    if (!jwt?.value) {
+        throw new Error('JWT secret introuvable dans Vault');
+    }
+
     await app.register(fastifyJWT, {
-        secret: process.env.JWT_SECRET,
+        secret: jwt.value
     });
 
-    await app.decorate("authenticate", async function (req, reply) {
+    app.decorate('authenticate', async function (req, reply) {
         try {
             await req.jwtVerify();
         } catch (err) {
-            console.error(`\nERROR: ${err.message}\n`);
-            reply.code(401).send({ error: "Unauthorized" });
+            app.log.error(err);
+            reply.code(401).send({ error: 'Unauthorized' });
         }
     });
 }

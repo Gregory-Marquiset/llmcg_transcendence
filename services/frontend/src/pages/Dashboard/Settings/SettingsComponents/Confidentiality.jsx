@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../../../../context/AuthContext'
 import { useTranslation } from "react-i18next";
 
-export default function Confidentiality ( loading){
+export default function Confidentiality ({ loading }){
     const { t } = useTranslation();
     const [openSection, setOpenSection] = useState(null)
     const accessToken = localStorage.getItem("access_token");

@@ -15,8 +15,15 @@ import { initDb } from '../shared/postgresFunction.js';
 
 import metricsPlugin from '../shared/metricsPlugin.js';
 
+import fs from 'fs'
+
 export const app = Fastify({
-	logger: true
+	logger: true,
+	https: {
+		key:  fs.readFileSync('/vault/secrets/users.key'),
+		cert: fs.readFileSync('/vault/secrets/users.crt'),
+		ca:   fs.readFileSync('/vault/secrets/ca.crt'),
+  }
 });
 
 await app.register(metricsPlugin, { serviceName: "users", enableBizMetrics: false });	//	metrics
@@ -49,7 +56,7 @@ await app.register(fastifySwagger, {
 			description: 'Users service description',
 			version: '0.1.0'
 		},
-		servers: [{ url: 'http://localhost:5000/api/v1/users' }],
+		servers: [{ url: 'https://localhost:5000', description: 'Users' }],
 		tags: [{ name: 'users', description: 'Users' }],
 		components: {
 			securitySchemes: {

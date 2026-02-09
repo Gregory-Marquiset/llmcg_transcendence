@@ -12,6 +12,10 @@ function SetProfile(){
     const [newName, setNewName] = useState();
     const [newEmail, setNewEmail] = useState();
     useAuth();
+    const isUsernameValid = (newName) => newName.length >= 3 && newName.length <= 20
+    const isEmailValid = (newEmail) => /^[^@]+@[^@]+.[^@]+$/.test(newEmail)
+    const handleOnClick = () => navigate('/')
+    
     const accessToken = localStorage.getItem('access_token')
     const [loading, setLoading] = useState(false);
     const {errStatus, setErrStatus}= useAuth();
@@ -22,10 +26,12 @@ function SetProfile(){
             alert(t('profile_settings.alerts.no_image'));
             return ;
         }
+        
+        console.log('Fichier sélectionné:', newAvatar.name, newAvatar.size); // ← Debug
+        
         try{
             const formData = new FormData();
             formData.append('avatar', newAvatar);
-            console.info(accessToken)
             const response = await fetch('/api/v1/users/user/me/avatar', {
                 method : 'PUT',
                 headers : {
@@ -33,6 +39,10 @@ function SetProfile(){
                 },
                 body : formData
             });
+            
+            console.log('Response status:', response.status); // ← Debug
+            console.log('Response:', await response.text()); // ← Debug
+            
             if (!response.ok){
                 alert(t('profile_settings.alerts.avatar_too_large'));
                 return ;
@@ -42,13 +52,20 @@ function SetProfile(){
                 setLoading(false),
                 navigate('/dashboard/profile')},
             1000);
-            } catch (err) {
-                alert(err);
-            }
+        } catch (err) {
+            console.error('Erreur complète:', err); // ← Debug
+            alert(err);
+            setLoading(false); // ← N'oublie pas ça !
+        }
     }
     const handleEmailModification = async ( event ) => {
         event.preventDefault();
         setLoading(true);
+        if (!isEmailValid(newEmail)) {
+            alert(t('signup.errors.email_policy'))
+            setIsLoading(false)
+            return
+        }
         try {
             const pathData = await fetch('/api/v1/users/user/me', {
                 method : 'PATCH',
@@ -79,6 +96,11 @@ function SetProfile(){
     const handleNameModification = async ( event ) => {
         event.preventDefault();
         setLoading(true);
+        if (!isUsernameValid(newName)) {
+            alert(t('signup.errors.invalid_username'))
+            setIsLoading(false)
+            return
+        }
         try{
             const patchData = await fetch('/api/v1/users/user/me', {
                 method : 'PATCH',

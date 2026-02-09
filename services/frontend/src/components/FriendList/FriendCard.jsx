@@ -14,16 +14,17 @@ function FriendCard({ friend, status = "offline" }) {
   const handleChat = () => {
     navigate(`/users/${friend.username}/chat`)
   }
-  const avatarUrl = friend.avatar_path && !onError
-    ? `/avatar/${friend.avatar_path}`
-    : profilepicture;
+  const host = window.location.hostname;
+  const avatarUrl = friend.avatar_path
+      ? `/app/users/uploads/${friend.avatar_path}`
+      : profilepicture;
 
   return (
     <div className="friend-card" onClick={handleClick}>
       <div className="friend-avatar-wrapper">
-        <img src={avatarUrl} onError={() => setOnError(true)} alt={friend.username} />
+        <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)}/> 
         <span className={`friend-presence-dot ${status}`} />
-      </div>
+      </div> 
       <h3>{friend.username}</h3>
         <Button
             text="Chat"
