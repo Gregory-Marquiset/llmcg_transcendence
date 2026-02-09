@@ -8,9 +8,8 @@ GF_AUTH_DISABLE_SIGNOUT_MENU=false
 JWT_SECRET=CiTestToken
 FORTY_TWO_CLIENT_ID=xxxx
 FORTY_TWO_CLIENT_SECRET=xxx
-FORTY_TWO_REDIRECT_URI=https://localhost:5000/api/v1/auth/login/42/callback
+FORTY_TWO_REDIRECT_URI=f6r2s1.clusters.42paris.fr
 POSTGRES_USER=ci_dbuser
 POSTGRES_PASSWORD=ci_db_pass
 POSTGRES_DB=transcendance_database
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
-HOST_PC=f6r3s1.clusters.42paris.fr

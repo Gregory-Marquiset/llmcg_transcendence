@@ -12,6 +12,10 @@ function SetProfile(){
     const [newName, setNewName] = useState();
     const [newEmail, setNewEmail] = useState();
     useAuth();
+    const isUsernameValid = (newName) => newName.length >= 3 && newName.length <= 20
+    const isEmailValid = (newEmail) => /^[^@]+@[^@]+.[^@]+$/.test(newEmail)
+    const handleOnClick = () => navigate('/')
+    
     const accessToken = localStorage.getItem('access_token')
     const [loading, setLoading] = useState(false);
     const {errStatus, setErrStatus}= useAuth();
@@ -57,6 +61,11 @@ function SetProfile(){
     const handleEmailModification = async ( event ) => {
         event.preventDefault();
         setLoading(true);
+        if (!isEmailValid(newEmail)) {
+            alert(t('signup.errors.email_policy'))
+            setIsLoading(false)
+            return
+        }
         try {
             const pathData = await fetch('/api/v1/users/user/me', {
                 method : 'PATCH',
@@ -87,6 +96,11 @@ function SetProfile(){
     const handleNameModification = async ( event ) => {
         event.preventDefault();
         setLoading(true);
+        if (!isUsernameValid(newName)) {
+            alert(t('signup.errors.invalid_username'))
+            setIsLoading(false)
+            return
+        }
         try{
             const patchData = await fetch('/api/v1/users/user/me', {
                 method : 'PATCH',

@@ -159,7 +159,7 @@ watchdog-clean: watchdog-stop
 
 info:
 	@echo ""
-	@echo "Frontend:	https://$(HOST_PC):8001"
+	@echo "Frontend:	https://$(FORTY_TWO_REDIRECT_URI):8001"
 	@echo "Prometheus:	http://localhost:9090"
 	@echo "Grafana:	http://localhost:3000"
 	@echo ""

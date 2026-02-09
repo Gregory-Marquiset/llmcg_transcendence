@@ -43,7 +43,7 @@ export function WebSocketProvider({ children }) {
     const host = window.location.host;
     const wsUrl = `${protocol}://${host}/ws?token=${encodeURIComponent(token)}`;
 
-    console.log("[WS] connecting to", wsUrl);
+    console.log("[WS] connecting to wss");
     setStatus("connecting");
 
     const ws = new WebSocket(wsUrl);

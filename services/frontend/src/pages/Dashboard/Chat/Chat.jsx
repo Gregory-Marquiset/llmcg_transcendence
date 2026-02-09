@@ -149,9 +149,9 @@ function Chat() {
 
 function ChatFriendCard({ friend, status, lastMessage, onClick }) {
   const [onError, setOnError] = useState(false)
-  const avatarUrl = friend.avatar_path && !onError
-    ? `/avatar/${friend.avatar_path}`
-    : profilepicture
+  const avatarUrl = friend.avatar_path
+      ? `/app/users/uploads/${friend.avatar_path}`
+      : profilepicture;
 
   const previewText = lastMessage
     ? (lastMessage.content.length > 40
@@ -162,11 +162,7 @@ function ChatFriendCard({ friend, status, lastMessage, onClick }) {
   return (
     <div className="chat-friend-card" onClick={onClick}>
       <div className="chat-friend-avatar-wrapper">
-        <img
-          src={avatarUrl}
-          onError={() => setOnError(true)}
-          alt={friend.username}
-        />
+        <img src={onError ? profilepicture : avatarUrl} className='profilepic' onError={() => setOnError(true)} />
         <span className={`chat-presence-dot ${status}`} />
       </div>
       <div className="chat-friend-info">
