@@ -122,22 +122,26 @@ create_db_role() {
     creation_statements="
       CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';
 
+      -- Connexion à la base
       GRANT CONNECT ON DATABASE ${POSTGRES_DB} TO \"{{name}}\";
-      GRANT USAGE ON SCHEMA public TO \"{{name}}\";
-      GRANT CREATE ON SCHEMA public TO \"{{name}}\";
+      
+      -- Accès au schéma public
+      GRANT USAGE, CREATE ON SCHEMA public TO \"{{name}}\";
 
       -- Permissions sur tables existantes
       GRANT ${TABLE_PRIVS} ON ALL TABLES IN SCHEMA public TO \"{{name}}\";
+      
+      -- Permissions sur séquences existantes
       GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";
 
-      -- Permissions sur tables futures créées par N'IMPORTE QUEL utilisateur
+      -- Permissions sur tables créées par le super-user
       ALTER DEFAULT PRIVILEGES FOR ROLE ${POSTGRES_USER} IN SCHEMA public
       GRANT ${TABLE_PRIVS} ON TABLES TO \"{{name}}\";
 
       ALTER DEFAULT PRIVILEGES FOR ROLE ${POSTGRES_USER} IN SCHEMA public
       GRANT USAGE, SELECT ON SEQUENCES TO \"{{name}}\";
-
-      -- Permissions sur les tables que CE rôle créera lui-même
+      
+      -- Permissions sur tables que ce rôle crée lui-même
       ALTER DEFAULT PRIVILEGES FOR ROLE \"{{name}}\" IN SCHEMA public
       GRANT ${TABLE_PRIVS} ON TABLES TO \"{{name}}\";
 
@@ -147,6 +151,7 @@ create_db_role() {
     revocation_statements="
       REASSIGN OWNED BY \"{{name}}\" TO \"${POSTGRES_USER}\";
       DROP OWNED BY \"{{name}}\";
+      DROP ROLE IF EXISTS \"{{name}}\";
     " \
     default_ttl="1h" \
     max_ttl="24h"
