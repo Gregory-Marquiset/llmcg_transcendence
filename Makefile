@@ -3,7 +3,13 @@
 # =========
 
 COMPOSE := docker compose --env-file .env -f docker-compose.yml
-SERVICE ?= project_health
+
+ifneq (,$(wildcard .env))
+	include .env
+	export
+endif
+
+SERVICE ?= frontend
 
 WATCHDOG_SCRIPT := tests/watchdog.sh
 WATCHDOG_LOG    := tests_logs/logs_watchdog.log
@@ -153,9 +159,7 @@ watchdog-clean: watchdog-stop
 
 info:
 	@echo ""
-	@echo "Frontend:	http://localhost:5173"
-	@echo "Fastify docs:	http://localhost:5000/docs"
-	@echo "Adminer:	http://localhost:8080"
+	@echo "Frontend:	https://$(HOST_PC):8001"
 	@echo "Prometheus:	http://localhost:9090"
 	@echo "Grafana:	http://localhost:3000"
 	@echo ""

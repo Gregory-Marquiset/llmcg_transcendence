@@ -13,3 +13,4 @@ POSTGRES_USER=ci_dbuser
 POSTGRES_PASSWORD=ci_db_pass
 POSTGRES_DB=transcendance_database
 DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+HOST_PC=f6r3s1.clusters.42paris.fr
