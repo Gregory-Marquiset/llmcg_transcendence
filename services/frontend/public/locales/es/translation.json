@@ -292,6 +292,11 @@
     },
     "footer": {
     	"legal_docs": "Documentos legales"
-	  }
+	  },
+    "chat": {
+        "message": "Mensajes",
+        "add_friend": "¡Añade amigos para empezar a chatear!"
+    }
+
 
 }

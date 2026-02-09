@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { getFriendList, getPresenceForUsers } from '../../../functions/user'
 import { profilepicture } from '../../../assets'
 import { useWS } from '../../../context/WebSocketContext.jsx'
+import { useTranslation } from 'react-i18next'
 
 function formatPreviewTime(dateStr) {
   if (!dateStr) return '';
@@ -21,6 +22,7 @@ function formatPreviewTime(dateStr) {
 }
 
 function Chat() {
+  const { t } = useTranslation()
   const accessToken = localStorage.getItem('access_token')
   const navigate = useNavigate()
   const [friends, setFriends] = useState([])
@@ -116,13 +118,13 @@ function Chat() {
             <LeftMenu setIsLoading={setIsLoading} />
             <div className="content-container">
               <div className="chat-list-container">
-                <h3>Messages</h3>
+                <h3>{t("chat.message")}</h3>
                 <div className="chat-ws-status">
                   {isConnected ? "Connected" : "Disconnected"}
                 </div>
                 {friends.length === 0 ? (
                   <div className="chat-empty">
-                    <p>Add friends to start chatting!</p>
+                    <p>{t("chat.add_friend")}</p>
                   </div>
                 ) : (
                   <div className="chat-friend-list">
