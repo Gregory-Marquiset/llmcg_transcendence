@@ -126,25 +126,23 @@ create_db_role() {
       GRANT USAGE ON SCHEMA public TO \"{{name}}\";
       GRANT CREATE ON SCHEMA public TO \"{{name}}\";
 
-      -- Tables existantes
-      GRANT ${TABLE_PRIVS}
-      ON ALL TABLES IN SCHEMA public
-      TO \"{{name}}\";
+      -- Permissions sur tables existantes
+      GRANT ${TABLE_PRIVS} ON ALL TABLES IN SCHEMA public TO \"{{name}}\";
+      GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO \"{{name}}\";
 
-      -- Séquences existantes
-      GRANT USAGE, SELECT
-      ON ALL SEQUENCES IN SCHEMA public
-      TO \"{{name}}\";
+      -- Permissions sur tables futures créées par N'IMPORTE QUEL utilisateur
+      ALTER DEFAULT PRIVILEGES FOR ROLE ${POSTGRES_USER} IN SCHEMA public
+      GRANT ${TABLE_PRIVS} ON TABLES TO \"{{name}}\";
 
-      -- Tables futures
-      ALTER DEFAULT PRIVILEGES IN SCHEMA public
-      GRANT ${TABLE_PRIVS}
-      ON TABLES TO \"{{name}}\";
+      ALTER DEFAULT PRIVILEGES FOR ROLE ${POSTGRES_USER} IN SCHEMA public
+      GRANT USAGE, SELECT ON SEQUENCES TO \"{{name}}\";
 
-      -- Séquences futures
-      ALTER DEFAULT PRIVILEGES IN SCHEMA public
-      GRANT USAGE, SELECT
-      ON SEQUENCES TO \"{{name}}\";
+      -- Permissions sur les tables que CE rôle créera lui-même
+      ALTER DEFAULT PRIVILEGES FOR ROLE \"{{name}}\" IN SCHEMA public
+      GRANT ${TABLE_PRIVS} ON TABLES TO \"{{name}}\";
+
+      ALTER DEFAULT PRIVILEGES FOR ROLE \"{{name}}\" IN SCHEMA public
+      GRANT USAGE, SELECT ON SEQUENCES TO \"{{name}}\";
     " \
     revocation_statements="
       REASSIGN OWNED BY \"{{name}}\" TO \"${POSTGRES_USER}\";
